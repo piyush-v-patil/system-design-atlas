@@ -1,0 +1,784 @@
+{
+ "source": {
+  "repo": "https://github.com/donnemartin/system-design-primer",
+  "commit": "ae9bbd7b02d90b9866215de185217d33f39ab733",
+  "path": "solutions/system_design/query_cache/README.md"
+ },
+ "preamble": "",
+ "rootId": "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+ "order": [
+  "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+  "step-1-outline-use-cases-and-constraints",
+  "use-cases",
+  "well-scope-the-problem-to-handle-only-the-following-use-cases",
+  "constraints-and-assumptions",
+  "state-assumptions",
+  "calculate-usage",
+  "step-2-create-a-high-level-design",
+  "step-3-design-core-components",
+  "use-case-user-sends-a-request-resulting-in-a-cache-hit",
+  "cache-implementation",
+  "when-to-update-the-cache",
+  "step-4-scale-the-design",
+  "expanding-the-memory-cache-to-many-machines",
+  "additional-talking-points",
+  "sql-scaling-patterns",
+  "nosql",
+  "caching",
+  "asynchronism-and-microservices",
+  "communications",
+  "security",
+  "latency-numbers",
+  "ongoing"
+ ],
+ "nodes": {
+  "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries": {
+   "id": "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+   "title": "Design a key-value cache to save the results of the most recent web server queries",
+   "depth": 1,
+   "level": 0,
+   "order": 0,
+   "parentId": null,
+   "childIds": [
+    "step-1-outline-use-cases-and-constraints",
+    "step-2-create-a-high-level-design",
+    "step-3-design-core-components",
+    "step-4-scale-the-design",
+    "additional-talking-points"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries"
+   ],
+   "headingMarkdown": "# Design a key-value cache to save the results of the most recent web server queries",
+   "markdown": "\n\n*Note: This document links directly to relevant areas found in the [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) to avoid duplication.  Refer to the linked content for general talking points, tradeoffs, and alternatives.*\n\n",
+   "sourceLines": [
+    1,
+    4
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics"
+   ],
+   "images": []
+  },
+  "step-1-outline-use-cases-and-constraints": {
+   "id": "step-1-outline-use-cases-and-constraints",
+   "title": "Step 1: Outline use cases and constraints",
+   "depth": 2,
+   "level": 1,
+   "order": 1,
+   "parentId": "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+   "childIds": [
+    "use-cases",
+    "constraints-and-assumptions"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 1: Outline use cases and constraints"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-1-outline-use-cases-and-constraints"
+   ],
+   "headingMarkdown": "## Step 1: Outline use cases and constraints",
+   "markdown": "\n\n> Gather requirements and scope the problem.\n> Ask questions to clarify use cases and constraints.\n> Discuss assumptions.\n\nWithout an interviewer to address clarifying questions, we'll define some use cases and constraints.\n\n",
+   "sourceLines": [
+    5,
+    12
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-cases": {
+   "id": "use-cases",
+   "title": "Use cases",
+   "depth": 3,
+   "level": 2,
+   "order": 2,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 1: Outline use cases and constraints",
+    "Use cases"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases"
+   ],
+   "headingMarkdown": "### Use cases",
+   "markdown": "\n\n",
+   "sourceLines": [
+    13,
+    14
+   ],
+   "urls": [],
+   "images": []
+  },
+  "well-scope-the-problem-to-handle-only-the-following-use-cases": {
+   "id": "well-scope-the-problem-to-handle-only-the-following-use-cases",
+   "title": "We'll scope the problem to handle only the following use cases",
+   "depth": 4,
+   "level": 3,
+   "order": 3,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "We'll scope the problem to handle only the following use cases"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingMarkdown": "#### We'll scope the problem to handle only the following use cases",
+   "markdown": "\n\n* **User** sends a search request resulting in a cache hit\n* **User** sends a search request resulting in a cache miss\n* **Service** has high availability\n\n",
+   "sourceLines": [
+    15,
+    20
+   ],
+   "urls": [],
+   "images": []
+  },
+  "constraints-and-assumptions": {
+   "id": "constraints-and-assumptions",
+   "title": "Constraints and assumptions",
+   "depth": 3,
+   "level": 2,
+   "order": 4,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "state-assumptions",
+    "calculate-usage"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions"
+   ],
+   "headingMarkdown": "### Constraints and assumptions",
+   "markdown": "\n\n",
+   "sourceLines": [
+    21,
+    22
+   ],
+   "urls": [],
+   "images": []
+  },
+  "state-assumptions": {
+   "id": "state-assumptions",
+   "title": "State assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 5,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "State assumptions"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "state-assumptions"
+   ],
+   "headingMarkdown": "#### State assumptions",
+   "markdown": "\n\n* Traffic is not evenly distributed\n    * Popular queries should almost always be in the cache\n    * Need to determine how to expire/refresh\n* Serving from cache requires fast lookups\n* Low latency between machines\n* Limited memory in cache\n    * Need to determine what to keep/remove\n    * Need to cache millions of queries\n* 10 million users\n* 10 billion queries per month\n\n",
+   "sourceLines": [
+    23,
+    35
+   ],
+   "urls": [],
+   "images": []
+  },
+  "calculate-usage": {
+   "id": "calculate-usage",
+   "title": "Calculate usage",
+   "depth": 4,
+   "level": 3,
+   "order": 6,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "Calculate usage"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "calculate-usage"
+   ],
+   "headingMarkdown": "#### Calculate usage",
+   "markdown": "\n\n**Clarify with your interviewer if you should run back-of-the-envelope usage calculations.**\n\n* Cache stores ordered list of key: query, value: results\n    * `query` - 50 bytes\n    * `title` - 20 bytes\n    * `snippet` - 200 bytes\n    * Total: 270 bytes\n* 2.7 TB of cache data per month if all 10 billion queries are unique and all are stored\n    * 270 bytes per search * 10 billion searches per month\n    * Assumptions state limited memory, need to determine how to expire contents\n* 4,000 requests per second\n\nHandy conversion guide:\n\n* 2.5 million seconds per month\n* 1 request per second = 2.5 million requests per month\n* 40 requests per second = 100 million requests per month\n* 400 requests per second = 1 billion requests per month\n\n",
+   "sourceLines": [
+    36,
+    56
+   ],
+   "urls": [],
+   "images": []
+  },
+  "step-2-create-a-high-level-design": {
+   "id": "step-2-create-a-high-level-design",
+   "title": "Step 2: Create a high level design",
+   "depth": 2,
+   "level": 1,
+   "order": 7,
+   "parentId": "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 2: Create a high level design"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-2-create-a-high-level-design"
+   ],
+   "headingMarkdown": "## Step 2: Create a high level design",
+   "markdown": "\n\n> Outline a high level design with all important components.\n\n![Imgur](http://i.imgur.com/KqZ3dSx.png)\n\n",
+   "sourceLines": [
+    57,
+    62
+   ],
+   "urls": [
+    "http://i.imgur.com/KqZ3dSx.png"
+   ],
+   "images": [
+    "http://i.imgur.com/KqZ3dSx.png"
+   ]
+  },
+  "step-3-design-core-components": {
+   "id": "step-3-design-core-components",
+   "title": "Step 3: Design core components",
+   "depth": 2,
+   "level": 1,
+   "order": 8,
+   "parentId": "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+   "childIds": [
+    "use-case-user-sends-a-request-resulting-in-a-cache-hit"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 3: Design core components"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-3-design-core-components"
+   ],
+   "headingMarkdown": "## Step 3: Design core components",
+   "markdown": "\n\n> Dive into details for each core component.\n\n",
+   "sourceLines": [
+    63,
+    66
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-user-sends-a-request-resulting-in-a-cache-hit": {
+   "id": "use-case-user-sends-a-request-resulting-in-a-cache-hit",
+   "title": "Use case: User sends a request resulting in a cache hit",
+   "depth": 3,
+   "level": 2,
+   "order": 9,
+   "parentId": "step-3-design-core-components",
+   "childIds": [
+    "cache-implementation",
+    "when-to-update-the-cache"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 3: Design core components",
+    "Use case: User sends a request resulting in a cache hit"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-3-design-core-components",
+    "use-case-user-sends-a-request-resulting-in-a-cache-hit"
+   ],
+   "headingMarkdown": "### Use case: User sends a request resulting in a cache hit",
+   "markdown": "\n\nPopular queries can be served from a **Memory Cache** such as Redis or Memcached to reduce read latency and to avoid overloading the **Reverse Index Service** and **Document Service**.  Reading 1 MB sequentially from memory takes about 250 microseconds, while reading from SSD takes 4x and from disk takes 80x longer.<sup><a href=https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know>1</a></sup>\n\nSince the cache has limited capacity, we'll use a least recently used (LRU) approach to expire older entries.\n\n* The **Client** sends a request to the **Web Server**, running as a [reverse proxy](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* The **Web Server** forwards the request to the **Query API** server\n* The **Query API** server does the following:\n    * Parses the query\n        * Removes markup\n        * Breaks up the text into terms\n        * Fixes typos\n        * Normalizes capitalization\n        * Converts the query to use boolean operations\n    * Checks the **Memory Cache** for the content matching the query\n        * If there's a hit in the **Memory Cache**, the **Memory Cache** does the following:\n            * Updates the cached entry's position to the front of the LRU list\n            * Returns the cached contents\n        * Else, the **Query API** does the following:\n            * Uses the **Reverse Index Service** to find documents matching the query\n                * The **Reverse Index Service** ranks the matching results and returns the top ones\n            * Uses the **Document Service** to return titles and snippets\n            * Updates the **Memory Cache** with the contents, placing the entry at the front of the LRU list\n\n",
+   "sourceLines": [
+    67,
+    91
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server"
+   ],
+   "images": []
+  },
+  "cache-implementation": {
+   "id": "cache-implementation",
+   "title": "Cache implementation",
+   "depth": 4,
+   "level": 3,
+   "order": 10,
+   "parentId": "use-case-user-sends-a-request-resulting-in-a-cache-hit",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 3: Design core components",
+    "Use case: User sends a request resulting in a cache hit",
+    "Cache implementation"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-3-design-core-components",
+    "use-case-user-sends-a-request-resulting-in-a-cache-hit",
+    "cache-implementation"
+   ],
+   "headingMarkdown": "#### Cache implementation",
+   "markdown": "\n\nThe cache can use a doubly-linked list: new items will be added to the head while items to expire will be removed from the tail.  We'll use a hash table for fast lookups to each linked list node.\n\n**Clarify with your interviewer how much code you are expected to write**.\n\n**Query API Server** implementation:\n\n```python\nclass QueryApi(object):\n\n    def __init__(self, memory_cache, reverse_index_service):\n        self.memory_cache = memory_cache\n        self.reverse_index_service = reverse_index_service\n\n    def parse_query(self, query):\n        \"\"\"Remove markup, break text into terms, deal with typos,\n        normalize capitalization, convert to use boolean operations.\n        \"\"\"\n        ...\n\n    def process_query(self, query):\n        query = self.parse_query(query)\n        results = self.memory_cache.get(query)\n        if results is None:\n            results = self.reverse_index_service.process_search(query)\n            self.memory_cache.set(query, results)\n        return results\n```\n\n**Node** implementation:\n\n```python\nclass Node(object):\n\n    def __init__(self, query, results):\n        self.query = query\n        self.results = results\n```\n\n**LinkedList** implementation:\n\n```python\nclass LinkedList(object):\n\n    def __init__(self):\n        self.head = None\n        self.tail = None\n\n    def move_to_front(self, node):\n        ...\n\n    def append_to_front(self, node):\n        ...\n\n    def remove_from_tail(self):\n        ...\n```\n\n**Cache** implementation:\n\n```python\nclass Cache(object):\n\n    def __init__(self, MAX_SIZE):\n        self.MAX_SIZE = MAX_SIZE\n        self.size = 0\n        self.lookup = {}  # key: query, value: node\n        self.linked_list = LinkedList()\n\n    def get(self, query)\n        \"\"\"Get the stored query result from the cache.\n\n        Accessing a node updates its position to the front of the LRU list.\n        \"\"\"\n        node = self.lookup[query]\n        if node is None:\n            return None\n        self.linked_list.move_to_front(node)\n        return node.results\n\n    def set(self, results, query):\n        \"\"\"Set the result for the given query key in the cache.\n\n        When updating an entry, updates its position to the front of the LRU list.\n        If the entry is new and the cache is at capacity, removes the oldest entry\n        before the new entry is added.\n        \"\"\"\n        node = self.lookup[query]\n        if node is not None:\n            # Key exists in cache, update the value\n            node.results = results\n            self.linked_list.move_to_front(node)\n        else:\n            # Key does not exist in cache\n            if self.size == self.MAX_SIZE:\n                # Remove the oldest entry from the linked list and lookup\n                self.lookup.pop(self.linked_list.tail.query, None)\n                self.linked_list.remove_from_tail()\n            else:\n                self.size += 1\n            # Add the new key and value\n            new_node = Node(query, results)\n            self.linked_list.append_to_front(new_node)\n            self.lookup[query] = new_node\n```\n\n",
+   "sourceLines": [
+    92,
+    198
+   ],
+   "urls": [],
+   "images": []
+  },
+  "when-to-update-the-cache": {
+   "id": "when-to-update-the-cache",
+   "title": "When to update the cache",
+   "depth": 4,
+   "level": 3,
+   "order": 11,
+   "parentId": "use-case-user-sends-a-request-resulting-in-a-cache-hit",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 3: Design core components",
+    "Use case: User sends a request resulting in a cache hit",
+    "When to update the cache"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-3-design-core-components",
+    "use-case-user-sends-a-request-resulting-in-a-cache-hit",
+    "when-to-update-the-cache"
+   ],
+   "headingMarkdown": "#### When to update the cache",
+   "markdown": "\n\nThe cache should be updated when:\n\n* The page contents change\n* The page is removed or a new page is added\n* The page rank changes\n\nThe most straightforward way to handle these cases is to simply set a max time that a cached entry can stay in the cache before it is updated, usually referred to as time to live (TTL).\n\nRefer to [When to update the cache](https://github.com/donnemartin/system-design-primer#when-to-update-the-cache) for tradeoffs and alternatives.  The approach above describes [cache-aside](https://github.com/donnemartin/system-design-primer#cache-aside).\n\n",
+   "sourceLines": [
+    199,
+    210
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#when-to-update-the-cache",
+    "https://github.com/donnemartin/system-design-primer#cache-aside"
+   ],
+   "images": []
+  },
+  "step-4-scale-the-design": {
+   "id": "step-4-scale-the-design",
+   "title": "Step 4: Scale the design",
+   "depth": 2,
+   "level": 1,
+   "order": 12,
+   "parentId": "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+   "childIds": [
+    "expanding-the-memory-cache-to-many-machines"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 4: Scale the design"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-4-scale-the-design"
+   ],
+   "headingMarkdown": "## Step 4: Scale the design",
+   "markdown": "\n\n> Identify and address bottlenecks, given the constraints.\n\n![Imgur](http://i.imgur.com/4j99mhe.png)\n\n**Important: Do not simply jump right into the final design from the initial design!**\n\nState you would 1) **Benchmark/Load Test**, 2) **Profile** for bottlenecks 3) address bottlenecks while evaluating alternatives and trade-offs, and 4) repeat.  See [Design a system that scales to millions of users on AWS](../scaling_aws/README.md) as a sample on how to iteratively scale the initial design.\n\nIt's important to discuss what bottlenecks you might encounter with the initial design and how you might address each of them.  For example, what issues are addressed by adding a **Load Balancer** with multiple **Web Servers**?  **CDN**?  **Master-Slave Replicas**?  What are the alternatives and **Trade-Offs** for each?\n\nWe'll introduce some components to complete the design and to address scalability issues.  Internal load balancers are not shown to reduce clutter.\n\n*To avoid repeating discussions*, refer to the following [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) for main talking points, tradeoffs, and alternatives:\n\n* [DNS](https://github.com/donnemartin/system-design-primer#domain-name-system)\n* [Load balancer](https://github.com/donnemartin/system-design-primer#load-balancer)\n* [Horizontal scaling](https://github.com/donnemartin/system-design-primer#horizontal-scaling)\n* [Web server (reverse proxy)](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* [API server (application layer)](https://github.com/donnemartin/system-design-primer#application-layer)\n* [Cache](https://github.com/donnemartin/system-design-primer#cache)\n* [Consistency patterns](https://github.com/donnemartin/system-design-primer#consistency-patterns)\n* [Availability patterns](https://github.com/donnemartin/system-design-primer#availability-patterns)\n\n",
+   "sourceLines": [
+    211,
+    235
+   ],
+   "urls": [
+    "http://i.imgur.com/4j99mhe.png",
+    "../scaling_aws/README.md",
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics",
+    "https://github.com/donnemartin/system-design-primer#domain-name-system",
+    "https://github.com/donnemartin/system-design-primer#load-balancer",
+    "https://github.com/donnemartin/system-design-primer#horizontal-scaling",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#application-layer",
+    "https://github.com/donnemartin/system-design-primer#cache",
+    "https://github.com/donnemartin/system-design-primer#consistency-patterns",
+    "https://github.com/donnemartin/system-design-primer#availability-patterns"
+   ],
+   "images": [
+    "http://i.imgur.com/4j99mhe.png"
+   ]
+  },
+  "expanding-the-memory-cache-to-many-machines": {
+   "id": "expanding-the-memory-cache-to-many-machines",
+   "title": "Expanding the Memory Cache to many machines",
+   "depth": 3,
+   "level": 2,
+   "order": 13,
+   "parentId": "step-4-scale-the-design",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Step 4: Scale the design",
+    "Expanding the Memory Cache to many machines"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "step-4-scale-the-design",
+    "expanding-the-memory-cache-to-many-machines"
+   ],
+   "headingMarkdown": "### Expanding the Memory Cache to many machines",
+   "markdown": "\n\nTo handle the heavy request load and the large amount of memory needed, we'll scale horizontally.  We have three main options on how to store the data on our **Memory Cache** cluster:\n\n* **Each machine in the cache cluster has its own cache** - Simple, although it will likely result in a low cache hit rate.\n* **Each machine in the cache cluster has a copy of the cache** - Simple, although it is an inefficient use of memory.\n* **The cache is [sharded](https://github.com/donnemartin/system-design-primer#sharding) across all machines in the cache cluster** - More complex, although it is likely the best option.  We could use hashing to determine which machine could have the cached results of a query using `machine = hash(query)`.  We'll likely want to use [consistent hashing](https://github.com/donnemartin/system-design-primer#under-development).\n\n",
+   "sourceLines": [
+    236,
+    243
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#under-development"
+   ],
+   "images": []
+  },
+  "additional-talking-points": {
+   "id": "additional-talking-points",
+   "title": "Additional talking points",
+   "depth": 2,
+   "level": 1,
+   "order": 14,
+   "parentId": "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+   "childIds": [
+    "sql-scaling-patterns",
+    "caching",
+    "asynchronism-and-microservices",
+    "communications",
+    "security",
+    "latency-numbers",
+    "ongoing"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points"
+   ],
+   "headingMarkdown": "## Additional talking points",
+   "markdown": "\n\n> Additional topics to dive into, depending on the problem scope and time remaining.\n\n",
+   "sourceLines": [
+    244,
+    247
+   ],
+   "urls": [],
+   "images": []
+  },
+  "sql-scaling-patterns": {
+   "id": "sql-scaling-patterns",
+   "title": "SQL scaling patterns",
+   "depth": 3,
+   "level": 2,
+   "order": 15,
+   "parentId": "additional-talking-points",
+   "childIds": [
+    "nosql"
+   ],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points",
+    "SQL scaling patterns"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points",
+    "sql-scaling-patterns"
+   ],
+   "headingMarkdown": "### SQL scaling patterns",
+   "markdown": "\n\n* [Read replicas](https://github.com/donnemartin/system-design-primer#master-slave-replication)\n* [Federation](https://github.com/donnemartin/system-design-primer#federation)\n* [Sharding](https://github.com/donnemartin/system-design-primer#sharding)\n* [Denormalization](https://github.com/donnemartin/system-design-primer#denormalization)\n* [SQL Tuning](https://github.com/donnemartin/system-design-primer#sql-tuning)\n\n",
+   "sourceLines": [
+    248,
+    255
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#master-slave-replication",
+    "https://github.com/donnemartin/system-design-primer#federation",
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#denormalization",
+    "https://github.com/donnemartin/system-design-primer#sql-tuning"
+   ],
+   "images": []
+  },
+  "nosql": {
+   "id": "nosql",
+   "title": "NoSQL",
+   "depth": 4,
+   "level": 3,
+   "order": 16,
+   "parentId": "sql-scaling-patterns",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points",
+    "SQL scaling patterns",
+    "NoSQL"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points",
+    "sql-scaling-patterns",
+    "nosql"
+   ],
+   "headingMarkdown": "#### NoSQL",
+   "markdown": "\n\n* [Key-value store](https://github.com/donnemartin/system-design-primer#key-value-store)\n* [Document store](https://github.com/donnemartin/system-design-primer#document-store)\n* [Wide column store](https://github.com/donnemartin/system-design-primer#wide-column-store)\n* [Graph database](https://github.com/donnemartin/system-design-primer#graph-database)\n* [SQL vs NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql)\n\n",
+   "sourceLines": [
+    256,
+    263
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#key-value-store",
+    "https://github.com/donnemartin/system-design-primer#document-store",
+    "https://github.com/donnemartin/system-design-primer#wide-column-store",
+    "https://github.com/donnemartin/system-design-primer#graph-database",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql"
+   ],
+   "images": []
+  },
+  "caching": {
+   "id": "caching",
+   "title": "Caching",
+   "depth": 3,
+   "level": 2,
+   "order": 17,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points",
+    "Caching"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points",
+    "caching"
+   ],
+   "headingMarkdown": "### Caching",
+   "markdown": "\n\n* Where to cache\n    * [Client caching](https://github.com/donnemartin/system-design-primer#client-caching)\n    * [CDN caching](https://github.com/donnemartin/system-design-primer#cdn-caching)\n    * [Web server caching](https://github.com/donnemartin/system-design-primer#web-server-caching)\n    * [Database caching](https://github.com/donnemartin/system-design-primer#database-caching)\n    * [Application caching](https://github.com/donnemartin/system-design-primer#application-caching)\n* What to cache\n    * [Caching at the database query level](https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level)\n    * [Caching at the object level](https://github.com/donnemartin/system-design-primer#caching-at-the-object-level)\n* When to update the cache\n    * [Cache-aside](https://github.com/donnemartin/system-design-primer#cache-aside)\n    * [Write-through](https://github.com/donnemartin/system-design-primer#write-through)\n    * [Write-behind (write-back)](https://github.com/donnemartin/system-design-primer#write-behind-write-back)\n    * [Refresh ahead](https://github.com/donnemartin/system-design-primer#refresh-ahead)\n\n",
+   "sourceLines": [
+    264,
+    280
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#client-caching",
+    "https://github.com/donnemartin/system-design-primer#cdn-caching",
+    "https://github.com/donnemartin/system-design-primer#web-server-caching",
+    "https://github.com/donnemartin/system-design-primer#database-caching",
+    "https://github.com/donnemartin/system-design-primer#application-caching",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-object-level",
+    "https://github.com/donnemartin/system-design-primer#cache-aside",
+    "https://github.com/donnemartin/system-design-primer#write-through",
+    "https://github.com/donnemartin/system-design-primer#write-behind-write-back",
+    "https://github.com/donnemartin/system-design-primer#refresh-ahead"
+   ],
+   "images": []
+  },
+  "asynchronism-and-microservices": {
+   "id": "asynchronism-and-microservices",
+   "title": "Asynchronism and microservices",
+   "depth": 3,
+   "level": 2,
+   "order": 18,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points",
+    "Asynchronism and microservices"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points",
+    "asynchronism-and-microservices"
+   ],
+   "headingMarkdown": "### Asynchronism and microservices",
+   "markdown": "\n\n* [Message queues](https://github.com/donnemartin/system-design-primer#message-queues)\n* [Task queues](https://github.com/donnemartin/system-design-primer#task-queues)\n* [Back pressure](https://github.com/donnemartin/system-design-primer#back-pressure)\n* [Microservices](https://github.com/donnemartin/system-design-primer#microservices)\n\n",
+   "sourceLines": [
+    281,
+    287
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#message-queues",
+    "https://github.com/donnemartin/system-design-primer#task-queues",
+    "https://github.com/donnemartin/system-design-primer#back-pressure",
+    "https://github.com/donnemartin/system-design-primer#microservices"
+   ],
+   "images": []
+  },
+  "communications": {
+   "id": "communications",
+   "title": "Communications",
+   "depth": 3,
+   "level": 2,
+   "order": 19,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points",
+    "Communications"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points",
+    "communications"
+   ],
+   "headingMarkdown": "### Communications",
+   "markdown": "\n\n* Discuss tradeoffs:\n    * External communication with clients - [HTTP APIs following REST](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest)\n    * Internal communications - [RPC](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc)\n* [Service discovery](https://github.com/donnemartin/system-design-primer#service-discovery)\n\n",
+   "sourceLines": [
+    288,
+    294
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc",
+    "https://github.com/donnemartin/system-design-primer#service-discovery"
+   ],
+   "images": []
+  },
+  "security": {
+   "id": "security",
+   "title": "Security",
+   "depth": 3,
+   "level": 2,
+   "order": 20,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points",
+    "Security"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points",
+    "security"
+   ],
+   "headingMarkdown": "### Security",
+   "markdown": "\n\nRefer to the [security section](https://github.com/donnemartin/system-design-primer#security).\n\n",
+   "sourceLines": [
+    295,
+    298
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#security"
+   ],
+   "images": []
+  },
+  "latency-numbers": {
+   "id": "latency-numbers",
+   "title": "Latency numbers",
+   "depth": 3,
+   "level": 2,
+   "order": 21,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points",
+    "Latency numbers"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points",
+    "latency-numbers"
+   ],
+   "headingMarkdown": "### Latency numbers",
+   "markdown": "\n\nSee [Latency numbers every programmer should know](https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know).\n\n",
+   "sourceLines": [
+    299,
+    302
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know"
+   ],
+   "images": []
+  },
+  "ongoing": {
+   "id": "ongoing",
+   "title": "Ongoing",
+   "depth": 3,
+   "level": 2,
+   "order": 22,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a key-value cache to save the results of the most recent web server queries",
+    "Additional talking points",
+    "Ongoing"
+   ],
+   "pathIds": [
+    "design-a-key-value-cache-to-save-the-results-of-the-most-recent-web-server-queries",
+    "additional-talking-points",
+    "ongoing"
+   ],
+   "headingMarkdown": "### Ongoing",
+   "markdown": "\n\n* Continue benchmarking and monitoring your system to address bottlenecks as they come up\n* Scaling is an iterative process\n",
+   "sourceLines": [
+    303,
+    306
+   ],
+   "urls": [],
+   "images": []
+  }
+ },
+ "id": "query-cache",
+ "dir": "query_cache",
+ "title": "Design a key-value cache to save the results of the most recent web server queries",
+ "readmeTitle": "Design a key-value store for a search engine",
+ "readmeTopicId": "design-a-key-value-store-for-a-search-engine",
+ "steps": [
+  {
+   "step": 1,
+   "label": "Outline use cases and constraints",
+   "nodeId": "step-1-outline-use-cases-and-constraints"
+  },
+  {
+   "step": 2,
+   "label": "Create a high level design",
+   "nodeId": "step-2-create-a-high-level-design"
+  },
+  {
+   "step": 3,
+   "label": "Design core components",
+   "nodeId": "step-3-design-core-components"
+  },
+  {
+   "step": 4,
+   "label": "Scale the design",
+   "nodeId": "step-4-scale-the-design"
+  },
+  {
+   "step": 5,
+   "label": "Additional talking points",
+   "nodeId": "additional-talking-points"
+  }
+ ]
+}

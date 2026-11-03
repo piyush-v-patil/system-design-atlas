@@ -1,0 +1,789 @@
+{
+ "source": {
+  "repo": "https://github.com/donnemartin/system-design-primer",
+  "commit": "ae9bbd7b02d90b9866215de185217d33f39ab733",
+  "path": "solutions/system_design/mint/README.md"
+ },
+ "preamble": "",
+ "rootId": "design-mintcom",
+ "order": [
+  "design-mintcom",
+  "step-1-outline-use-cases-and-constraints",
+  "use-cases",
+  "well-scope-the-problem-to-handle-only-the-following-use-cases",
+  "out-of-scope",
+  "constraints-and-assumptions",
+  "state-assumptions",
+  "calculate-usage",
+  "step-2-create-a-high-level-design",
+  "step-3-design-core-components",
+  "use-case-user-connects-to-a-financial-account",
+  "use-case-service-extracts-transactions-from-the-account",
+  "category-service",
+  "use-case-service-recommends-a-budget",
+  "step-4-scale-the-design",
+  "additional-talking-points",
+  "nosql",
+  "caching",
+  "asynchronism-and-microservices",
+  "communications",
+  "security",
+  "latency-numbers",
+  "ongoing"
+ ],
+ "nodes": {
+  "design-mintcom": {
+   "id": "design-mintcom",
+   "title": "Design Mint.com",
+   "depth": 1,
+   "level": 0,
+   "order": 0,
+   "parentId": null,
+   "childIds": [
+    "step-1-outline-use-cases-and-constraints",
+    "step-2-create-a-high-level-design",
+    "step-3-design-core-components",
+    "step-4-scale-the-design",
+    "additional-talking-points"
+   ],
+   "headingPath": [
+    "Design Mint.com"
+   ],
+   "pathIds": [
+    "design-mintcom"
+   ],
+   "headingMarkdown": "# Design Mint.com",
+   "markdown": "\n\n*Note: This document links directly to relevant areas found in the [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) to avoid duplication.  Refer to the linked content for general talking points, tradeoffs, and alternatives.*\n\n",
+   "sourceLines": [
+    1,
+    4
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics"
+   ],
+   "images": []
+  },
+  "step-1-outline-use-cases-and-constraints": {
+   "id": "step-1-outline-use-cases-and-constraints",
+   "title": "Step 1: Outline use cases and constraints",
+   "depth": 2,
+   "level": 1,
+   "order": 1,
+   "parentId": "design-mintcom",
+   "childIds": [
+    "use-cases",
+    "constraints-and-assumptions"
+   ],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 1: Outline use cases and constraints"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-1-outline-use-cases-and-constraints"
+   ],
+   "headingMarkdown": "## Step 1: Outline use cases and constraints",
+   "markdown": "\n\n> Gather requirements and scope the problem.\n> Ask questions to clarify use cases and constraints.\n> Discuss assumptions.\n\nWithout an interviewer to address clarifying questions, we'll define some use cases and constraints.\n\n",
+   "sourceLines": [
+    5,
+    12
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-cases": {
+   "id": "use-cases",
+   "title": "Use cases",
+   "depth": 3,
+   "level": 2,
+   "order": 2,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "well-scope-the-problem-to-handle-only-the-following-use-cases",
+    "out-of-scope"
+   ],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 1: Outline use cases and constraints",
+    "Use cases"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases"
+   ],
+   "headingMarkdown": "### Use cases",
+   "markdown": "\n\n",
+   "sourceLines": [
+    13,
+    14
+   ],
+   "urls": [],
+   "images": []
+  },
+  "well-scope-the-problem-to-handle-only-the-following-use-cases": {
+   "id": "well-scope-the-problem-to-handle-only-the-following-use-cases",
+   "title": "We'll scope the problem to handle only the following use cases",
+   "depth": 4,
+   "level": 3,
+   "order": 3,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "We'll scope the problem to handle only the following use cases"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingMarkdown": "#### We'll scope the problem to handle only the following use cases",
+   "markdown": "\n\n* **User** connects to a financial account\n* **Service** extracts transactions from the account\n    * Updates daily\n    * Categorizes transactions\n        * Allows manual category override by the user\n        * No automatic re-categorization\n    * Analyzes monthly spending, by category\n* **Service** recommends a budget\n    * Allows users to manually set a budget\n    * Sends notifications when approaching or exceeding budget\n* **Service** has high availability\n\n",
+   "sourceLines": [
+    15,
+    28
+   ],
+   "urls": [],
+   "images": []
+  },
+  "out-of-scope": {
+   "id": "out-of-scope",
+   "title": "Out of scope",
+   "depth": 4,
+   "level": 3,
+   "order": 4,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "Out of scope"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "out-of-scope"
+   ],
+   "headingMarkdown": "#### Out of scope",
+   "markdown": "\n\n* **Service** performs additional logging and analytics\n\n",
+   "sourceLines": [
+    29,
+    32
+   ],
+   "urls": [],
+   "images": []
+  },
+  "constraints-and-assumptions": {
+   "id": "constraints-and-assumptions",
+   "title": "Constraints and assumptions",
+   "depth": 3,
+   "level": 2,
+   "order": 5,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "state-assumptions",
+    "calculate-usage"
+   ],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions"
+   ],
+   "headingMarkdown": "### Constraints and assumptions",
+   "markdown": "\n\n",
+   "sourceLines": [
+    33,
+    34
+   ],
+   "urls": [],
+   "images": []
+  },
+  "state-assumptions": {
+   "id": "state-assumptions",
+   "title": "State assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 6,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "State assumptions"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "state-assumptions"
+   ],
+   "headingMarkdown": "#### State assumptions",
+   "markdown": "\n\n* Traffic is not evenly distributed\n* Automatic daily update of accounts applies only to users active in the past 30 days\n* Adding or removing financial accounts is relatively rare\n* Budget notifications don't need to be instant\n* 10 million users\n    * 10 budget categories per user = 100 million budget items\n    * Example categories:\n        * Housing = $1,000\n        * Food = $200\n        * Gas = $100\n    * Sellers are used to determine transaction category\n        * 50,000 sellers\n* 30 million financial accounts\n* 5 billion transactions per month\n* 500 million read requests per month\n* 10:1 write to read ratio\n    * Write-heavy, users make transactions daily, but few visit the site daily\n\n",
+   "sourceLines": [
+    35,
+    54
+   ],
+   "urls": [],
+   "images": []
+  },
+  "calculate-usage": {
+   "id": "calculate-usage",
+   "title": "Calculate usage",
+   "depth": 4,
+   "level": 3,
+   "order": 7,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "Calculate usage"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "calculate-usage"
+   ],
+   "headingMarkdown": "#### Calculate usage",
+   "markdown": "\n\n**Clarify with your interviewer if you should run back-of-the-envelope usage calculations.**\n\n* Size per transaction:\n    * `user_id` - 8 bytes\n    * `created_at` - 5 bytes\n    * `seller` - 32 bytes\n    * `amount` - 5 bytes\n    * Total: ~50 bytes\n* 250 GB of new transaction content per month\n    * 50 bytes per transaction * 5 billion transactions per month\n    * 9 TB of new transaction content in 3 years\n    * Assume most are new transactions instead of updates to existing ones\n* 2,000 transactions per second on average\n* 200 read requests per second on average\n\nHandy conversion guide:\n\n* 2.5 million seconds per month\n* 1 request per second = 2.5 million requests per month\n* 40 requests per second = 100 million requests per month\n* 400 requests per second = 1 billion requests per month\n\n",
+   "sourceLines": [
+    55,
+    78
+   ],
+   "urls": [],
+   "images": []
+  },
+  "step-2-create-a-high-level-design": {
+   "id": "step-2-create-a-high-level-design",
+   "title": "Step 2: Create a high level design",
+   "depth": 2,
+   "level": 1,
+   "order": 8,
+   "parentId": "design-mintcom",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 2: Create a high level design"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-2-create-a-high-level-design"
+   ],
+   "headingMarkdown": "## Step 2: Create a high level design",
+   "markdown": "\n\n> Outline a high level design with all important components.\n\n![Imgur](http://i.imgur.com/E8klrBh.png)\n\n",
+   "sourceLines": [
+    79,
+    84
+   ],
+   "urls": [
+    "http://i.imgur.com/E8klrBh.png"
+   ],
+   "images": [
+    "http://i.imgur.com/E8klrBh.png"
+   ]
+  },
+  "step-3-design-core-components": {
+   "id": "step-3-design-core-components",
+   "title": "Step 3: Design core components",
+   "depth": 2,
+   "level": 1,
+   "order": 9,
+   "parentId": "design-mintcom",
+   "childIds": [
+    "use-case-user-connects-to-a-financial-account",
+    "use-case-service-extracts-transactions-from-the-account",
+    "use-case-service-recommends-a-budget"
+   ],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 3: Design core components"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-3-design-core-components"
+   ],
+   "headingMarkdown": "## Step 3: Design core components",
+   "markdown": "\n\n> Dive into details for each core component.\n\n",
+   "sourceLines": [
+    85,
+    88
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-user-connects-to-a-financial-account": {
+   "id": "use-case-user-connects-to-a-financial-account",
+   "title": "Use case: User connects to a financial account",
+   "depth": 3,
+   "level": 2,
+   "order": 10,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 3: Design core components",
+    "Use case: User connects to a financial account"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-3-design-core-components",
+    "use-case-user-connects-to-a-financial-account"
+   ],
+   "headingMarkdown": "### Use case: User connects to a financial account",
+   "markdown": "\n\nWe could store info on the 10 million users in a [relational database](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms).  We should discuss the [use cases and tradeoffs between choosing SQL or NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql).\n\n* The **Client** sends a request to the **Web Server**, running as a [reverse proxy](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* The **Web Server** forwards the request to the **Accounts API** server\n* The **Accounts API** server updates the **SQL Database** `accounts` table with the newly entered account info\n\n**Clarify with your interviewer how much code you are expected to write**.\n\nThe `accounts` table could have the following structure:\n\n```\nid int NOT NULL AUTO_INCREMENT\ncreated_at datetime NOT NULL\nlast_update datetime NOT NULL\naccount_url varchar(255) NOT NULL\naccount_login varchar(32) NOT NULL\naccount_password_hash char(64) NOT NULL\nuser_id int NOT NULL\nPRIMARY KEY(id)\nFOREIGN KEY(user_id) REFERENCES users(id)\n```\n\nWe'll create an [index](https://github.com/donnemartin/system-design-primer#use-good-indices) on `id`, `user_id `, and `created_at` to speed up lookups (log-time instead of scanning the entire table) and to keep the data in memory.  Reading 1 MB sequentially from memory takes about 250 microseconds, while reading from SSD takes 4x and from disk takes 80x longer.<sup><a href=https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know>1</a></sup>\n\nWe'll use a public [**REST API**](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest):\n\n```\n$ curl -X POST --data '{ \"user_id\": \"foo\", \"account_url\": \"bar\", \\\n    \"account_login\": \"baz\", \"account_password\": \"qux\" }' \\\n    https://mint.com/api/v1/account\n```\n\nFor internal communications, we could use [Remote Procedure Calls](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc).\n\nNext, the service extracts transactions from the account.\n\n",
+   "sourceLines": [
+    89,
+    126
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#use-good-indices",
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know",
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc"
+   ],
+   "images": []
+  },
+  "use-case-service-extracts-transactions-from-the-account": {
+   "id": "use-case-service-extracts-transactions-from-the-account",
+   "title": "Use case: Service extracts transactions from the account",
+   "depth": 3,
+   "level": 2,
+   "order": 11,
+   "parentId": "step-3-design-core-components",
+   "childIds": [
+    "category-service"
+   ],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 3: Design core components",
+    "Use case: Service extracts transactions from the account"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-3-design-core-components",
+    "use-case-service-extracts-transactions-from-the-account"
+   ],
+   "headingMarkdown": "### Use case: Service extracts transactions from the account",
+   "markdown": "\n\nWe'll want to extract information from an account in these cases:\n\n* The user first links the account\n* The user manually refreshes the account\n* Automatically each day for users who have been active in the past 30 days\n\nData flow:\n\n* The **Client** sends a request to the **Web Server**\n* The **Web Server** forwards the request to the **Accounts API** server\n* The **Accounts API** server places a job on a **Queue** such as [Amazon SQS](https://aws.amazon.com/sqs/) or [RabbitMQ](https://www.rabbitmq.com/)\n    * Extracting transactions could take awhile, we'd probably want to do this [asynchronously with a queue](https://github.com/donnemartin/system-design-primer#asynchronism), although this introduces additional complexity\n* The **Transaction Extraction Service** does the following:\n    * Pulls from the **Queue** and extracts transactions for the given account from the financial institution, storing the results as raw log files in the **Object Store**\n    * Uses the **Category Service** to categorize each transaction\n    * Uses the **Budget Service** to calculate aggregate monthly spending by category\n        * The **Budget Service** uses the **Notification Service** to let users know if they are nearing or have exceeded their budget\n    * Updates the **SQL Database** `transactions` table with categorized transactions\n    * Updates the **SQL Database** `monthly_spending` table with aggregate monthly spending by category\n    * Notifies the user the transactions have completed through the **Notification Service**:\n        * Uses a **Queue** (not pictured) to asynchronously send out notifications\n\nThe `transactions` table could have the following structure:\n\n```\nid int NOT NULL AUTO_INCREMENT\ncreated_at datetime NOT NULL\nseller varchar(32) NOT NULL\namount decimal NOT NULL\nuser_id int NOT NULL\nPRIMARY KEY(id)\nFOREIGN KEY(user_id) REFERENCES users(id)\n```\n\nWe'll create an [index](https://github.com/donnemartin/system-design-primer#use-good-indices) on `id`, `user_id `, and `created_at`.\n\nThe `monthly_spending` table could have the following structure:\n\n```\nid int NOT NULL AUTO_INCREMENT\nmonth_year date NOT NULL\ncategory varchar(32)\namount decimal NOT NULL\nuser_id int NOT NULL\nPRIMARY KEY(id)\nFOREIGN KEY(user_id) REFERENCES users(id)\n```\n\nWe'll create an [index](https://github.com/donnemartin/system-design-primer#use-good-indices) on `id` and `user_id `.\n\n",
+   "sourceLines": [
+    127,
+    178
+   ],
+   "urls": [
+    "https://aws.amazon.com/sqs/",
+    "https://www.rabbitmq.com/",
+    "https://github.com/donnemartin/system-design-primer#asynchronism",
+    "https://github.com/donnemartin/system-design-primer#use-good-indices"
+   ],
+   "images": []
+  },
+  "category-service": {
+   "id": "category-service",
+   "title": "Category service",
+   "depth": 4,
+   "level": 3,
+   "order": 12,
+   "parentId": "use-case-service-extracts-transactions-from-the-account",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 3: Design core components",
+    "Use case: Service extracts transactions from the account",
+    "Category service"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-3-design-core-components",
+    "use-case-service-extracts-transactions-from-the-account",
+    "category-service"
+   ],
+   "headingMarkdown": "#### Category service",
+   "markdown": "\n\nFor the **Category Service**, we can seed a seller-to-category dictionary with the most popular sellers.  If we estimate 50,000 sellers and estimate each entry to take less than 255 bytes, the dictionary would only take about 12 MB of memory.\n\n**Clarify with your interviewer how much code you are expected to write**.\n\n```python\nclass DefaultCategories(Enum):\n\n    HOUSING = 0\n    FOOD = 1\n    GAS = 2\n    SHOPPING = 3\n    ...\n\nseller_category_map = {}\nseller_category_map['Exxon'] = DefaultCategories.GAS\nseller_category_map['Target'] = DefaultCategories.SHOPPING\n...\n```\n\nFor sellers not initially seeded in the map, we could use a crowdsourcing effort by evaluating the manual category overrides our users provide.  We could use a heap to quickly lookup the top manual override per seller in O(1) time.\n\n```python\nclass Categorizer(object):\n\n    def __init__(self, seller_category_map, seller_category_crowd_overrides_map):\n        self.seller_category_map = seller_category_map\n        self.seller_category_crowd_overrides_map = \\\n            seller_category_crowd_overrides_map\n\n    def categorize(self, transaction):\n        if transaction.seller in self.seller_category_map:\n            return self.seller_category_map[transaction.seller]\n        elif transaction.seller in self.seller_category_crowd_overrides_map:\n            self.seller_category_map[transaction.seller] = \\\n                self.seller_category_crowd_overrides_map[transaction.seller].peek_min()\n            return self.seller_category_map[transaction.seller]\n        return None\n```\n\nTransaction implementation:\n\n```python\nclass Transaction(object):\n\n    def __init__(self, created_at, seller, amount):\n        self.created_at = created_at\n        self.seller = seller\n        self.amount = amount\n```\n\n",
+   "sourceLines": [
+    179,
+    230
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-service-recommends-a-budget": {
+   "id": "use-case-service-recommends-a-budget",
+   "title": "Use case: Service recommends a budget",
+   "depth": 3,
+   "level": 2,
+   "order": 13,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 3: Design core components",
+    "Use case: Service recommends a budget"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-3-design-core-components",
+    "use-case-service-recommends-a-budget"
+   ],
+   "headingMarkdown": "### Use case: Service recommends a budget",
+   "markdown": "\n\nTo start, we could use a generic budget template that allocates category amounts based on income tiers.  Using this approach, we would not have to store the 100 million budget items identified in the constraints, only those that the user overrides.  If a user overrides a budget category, which we could store the override in the `TABLE budget_overrides`.\n\n```python\nclass Budget(object):\n\n    def __init__(self, income):\n        self.income = income\n        self.categories_to_budget_map = self.create_budget_template()\n\n    def create_budget_template(self):\n        return {\n            DefaultCategories.HOUSING: self.income * .4,\n            DefaultCategories.FOOD: self.income * .2,\n            DefaultCategories.GAS: self.income * .1,\n            DefaultCategories.SHOPPING: self.income * .2,\n            ...\n        }\n\n    def override_category_budget(self, category, amount):\n        self.categories_to_budget_map[category] = amount\n```\n\nFor the **Budget Service**, we can potentially run SQL queries on the `transactions` table to generate the `monthly_spending` aggregate table.  The `monthly_spending` table would likely have much fewer rows than the total 5 billion transactions, since users typically have many transactions per month.\n\nAs an alternative, we can run **MapReduce** jobs on the raw transaction files to:\n\n* Categorize each transaction\n* Generate aggregate monthly spending by category\n\nRunning analyses on the transaction files could significantly reduce the load on the database.\n\nWe could call the **Budget Service** to re-run the analysis if the user updates a category.\n\n**Clarify with your interviewer how much code you are expected to write**.\n\nSample log file format, tab delimited:\n\n```\nuser_id   timestamp   seller  amount\n```\n\n**MapReduce** implementation:\n\n```python\nclass SpendingByCategory(MRJob):\n\n    def __init__(self, categorizer):\n        self.categorizer = categorizer\n        self.current_year_month = calc_current_year_month()\n        ...\n\n    def calc_current_year_month(self):\n        \"\"\"Return the current year and month.\"\"\"\n        ...\n\n    def extract_year_month(self, timestamp):\n        \"\"\"Return the year and month portions of the timestamp.\"\"\"\n        ...\n\n    def handle_budget_notifications(self, key, total):\n        \"\"\"Call notification API if nearing or exceeded budget.\"\"\"\n        ...\n\n    def mapper(self, _, line):\n        \"\"\"Parse each log line, extract and transform relevant lines.\n\n        Argument line will be of the form:\n\n        user_id   timestamp   seller  amount\n\n        Using the categorizer to convert seller to category,\n        emit key value pairs of the form:\n\n        (user_id, 2016-01, shopping), 25\n        (user_id, 2016-01, shopping), 100\n        (user_id, 2016-01, gas), 50\n        \"\"\"\n        user_id, timestamp, seller, amount = line.split('\\t')\n        category = self.categorizer.categorize(seller)\n        period = self.extract_year_month(timestamp)\n        if period == self.current_year_month:\n            yield (user_id, period, category), amount\n\n    def reducer(self, key, value):\n        \"\"\"Sum values for each key.\n\n        (user_id, 2016-01, shopping), 125\n        (user_id, 2016-01, gas), 50\n        \"\"\"\n        total = sum(values)\n        yield key, sum(values)\n```\n\n",
+   "sourceLines": [
+    231,
+    325
+   ],
+   "urls": [],
+   "images": []
+  },
+  "step-4-scale-the-design": {
+   "id": "step-4-scale-the-design",
+   "title": "Step 4: Scale the design",
+   "depth": 2,
+   "level": 1,
+   "order": 14,
+   "parentId": "design-mintcom",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Step 4: Scale the design"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "step-4-scale-the-design"
+   ],
+   "headingMarkdown": "## Step 4: Scale the design",
+   "markdown": "\n\n> Identify and address bottlenecks, given the constraints.\n\n![Imgur](http://i.imgur.com/V5q57vU.png)\n\n**Important: Do not simply jump right into the final design from the initial design!**\n\nState you would 1) **Benchmark/Load Test**, 2) **Profile** for bottlenecks 3) address bottlenecks while evaluating alternatives and trade-offs, and 4) repeat.  See [Design a system that scales to millions of users on AWS](../scaling_aws/README.md) as a sample on how to iteratively scale the initial design.\n\nIt's important to discuss what bottlenecks you might encounter with the initial design and how you might address each of them.  For example, what issues are addressed by adding a **Load Balancer** with multiple **Web Servers**?  **CDN**?  **Master-Slave Replicas**?  What are the alternatives and **Trade-Offs** for each?\n\nWe'll introduce some components to complete the design and to address scalability issues.  Internal load balancers are not shown to reduce clutter.\n\n*To avoid repeating discussions*, refer to the following [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) for main talking points, tradeoffs, and alternatives:\n\n* [DNS](https://github.com/donnemartin/system-design-primer#domain-name-system)\n* [CDN](https://github.com/donnemartin/system-design-primer#content-delivery-network)\n* [Load balancer](https://github.com/donnemartin/system-design-primer#load-balancer)\n* [Horizontal scaling](https://github.com/donnemartin/system-design-primer#horizontal-scaling)\n* [Web server (reverse proxy)](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* [API server (application layer)](https://github.com/donnemartin/system-design-primer#application-layer)\n* [Cache](https://github.com/donnemartin/system-design-primer#cache)\n* [Relational database management system (RDBMS)](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms)\n* [SQL write master-slave failover](https://github.com/donnemartin/system-design-primer#fail-over)\n* [Master-slave replication](https://github.com/donnemartin/system-design-primer#master-slave-replication)\n* [Asynchronism](https://github.com/donnemartin/system-design-primer#asynchronism)\n* [Consistency patterns](https://github.com/donnemartin/system-design-primer#consistency-patterns)\n* [Availability patterns](https://github.com/donnemartin/system-design-primer#availability-patterns)\n\nWe'll add an additional use case: **User** accesses summaries and transactions.\n\nUser sessions, aggregate stats by category, and recent transactions could be placed in a **Memory Cache** such as Redis or Memcached.\n\n* The **Client** sends a read request to the **Web Server**\n* The **Web Server** forwards the request to the **Read API** server\n    * Static content can be served from the **Object Store** such as S3, which is cached on the **CDN**\n* The **Read API** server does the following:\n    * Checks the **Memory Cache** for the content\n        * If the url is in the **Memory Cache**, returns the cached contents\n        * Else\n            * If the url is in the **SQL Database**, fetches the contents\n                * Updates the **Memory Cache** with the contents\n\nRefer to [When to update the cache](https://github.com/donnemartin/system-design-primer#when-to-update-the-cache) for tradeoffs and alternatives.  The approach above describes [cache-aside](https://github.com/donnemartin/system-design-primer#cache-aside).\n\nInstead of keeping the `monthly_spending` aggregate table in the **SQL Database**, we could create a separate **Analytics Database** using a data warehousing solution such as Amazon Redshift or Google BigQuery.\n\nWe might only want to store a month of `transactions` data in the database, while storing the rest in a data warehouse or in an **Object Store**.  An **Object Store** such as Amazon S3 can comfortably handle the constraint of 250 GB of new content per month.\n\nTo address the 200 *average* read requests per second (higher at peak), traffic for popular content should be handled by the **Memory Cache** instead of the database.  The **Memory Cache** is also useful for handling the unevenly distributed traffic and traffic spikes.  The **SQL Read Replicas** should be able to handle the cache misses, as long as the replicas are not bogged down with replicating writes.\n\n2,000 *average* transaction writes per second (higher at peak) might be tough for a single **SQL Write Master-Slave**.  We might need to employ additional SQL scaling patterns:\n\n* [Federation](https://github.com/donnemartin/system-design-primer#federation)\n* [Sharding](https://github.com/donnemartin/system-design-primer#sharding)\n* [Denormalization](https://github.com/donnemartin/system-design-primer#denormalization)\n* [SQL Tuning](https://github.com/donnemartin/system-design-primer#sql-tuning)\n\nWe should also consider moving some data to a **NoSQL Database**.\n\n",
+   "sourceLines": [
+    326,
+    386
+   ],
+   "urls": [
+    "http://i.imgur.com/V5q57vU.png",
+    "../scaling_aws/README.md",
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics",
+    "https://github.com/donnemartin/system-design-primer#domain-name-system",
+    "https://github.com/donnemartin/system-design-primer#content-delivery-network",
+    "https://github.com/donnemartin/system-design-primer#load-balancer",
+    "https://github.com/donnemartin/system-design-primer#horizontal-scaling",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#application-layer",
+    "https://github.com/donnemartin/system-design-primer#cache",
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms",
+    "https://github.com/donnemartin/system-design-primer#fail-over",
+    "https://github.com/donnemartin/system-design-primer#master-slave-replication",
+    "https://github.com/donnemartin/system-design-primer#asynchronism",
+    "https://github.com/donnemartin/system-design-primer#consistency-patterns",
+    "https://github.com/donnemartin/system-design-primer#availability-patterns",
+    "https://github.com/donnemartin/system-design-primer#when-to-update-the-cache",
+    "https://github.com/donnemartin/system-design-primer#cache-aside",
+    "https://github.com/donnemartin/system-design-primer#federation",
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#denormalization",
+    "https://github.com/donnemartin/system-design-primer#sql-tuning"
+   ],
+   "images": [
+    "http://i.imgur.com/V5q57vU.png"
+   ]
+  },
+  "additional-talking-points": {
+   "id": "additional-talking-points",
+   "title": "Additional talking points",
+   "depth": 2,
+   "level": 1,
+   "order": 15,
+   "parentId": "design-mintcom",
+   "childIds": [
+    "nosql",
+    "caching",
+    "asynchronism-and-microservices",
+    "communications",
+    "security",
+    "latency-numbers",
+    "ongoing"
+   ],
+   "headingPath": [
+    "Design Mint.com",
+    "Additional talking points"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "additional-talking-points"
+   ],
+   "headingMarkdown": "## Additional talking points",
+   "markdown": "\n\n> Additional topics to dive into, depending on the problem scope and time remaining.\n\n",
+   "sourceLines": [
+    387,
+    390
+   ],
+   "urls": [],
+   "images": []
+  },
+  "nosql": {
+   "id": "nosql",
+   "title": "NoSQL",
+   "depth": 4,
+   "level": 2,
+   "order": 16,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Additional talking points",
+    "NoSQL"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "additional-talking-points",
+    "nosql"
+   ],
+   "headingMarkdown": "#### NoSQL",
+   "markdown": "\n\n* [Key-value store](https://github.com/donnemartin/system-design-primer#key-value-store)\n* [Document store](https://github.com/donnemartin/system-design-primer#document-store)\n* [Wide column store](https://github.com/donnemartin/system-design-primer#wide-column-store)\n* [Graph database](https://github.com/donnemartin/system-design-primer#graph-database)\n* [SQL vs NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql)\n\n",
+   "sourceLines": [
+    391,
+    398
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#key-value-store",
+    "https://github.com/donnemartin/system-design-primer#document-store",
+    "https://github.com/donnemartin/system-design-primer#wide-column-store",
+    "https://github.com/donnemartin/system-design-primer#graph-database",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql"
+   ],
+   "images": []
+  },
+  "caching": {
+   "id": "caching",
+   "title": "Caching",
+   "depth": 3,
+   "level": 2,
+   "order": 17,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Additional talking points",
+    "Caching"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "additional-talking-points",
+    "caching"
+   ],
+   "headingMarkdown": "### Caching",
+   "markdown": "\n\n* Where to cache\n    * [Client caching](https://github.com/donnemartin/system-design-primer#client-caching)\n    * [CDN caching](https://github.com/donnemartin/system-design-primer#cdn-caching)\n    * [Web server caching](https://github.com/donnemartin/system-design-primer#web-server-caching)\n    * [Database caching](https://github.com/donnemartin/system-design-primer#database-caching)\n    * [Application caching](https://github.com/donnemartin/system-design-primer#application-caching)\n* What to cache\n    * [Caching at the database query level](https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level)\n    * [Caching at the object level](https://github.com/donnemartin/system-design-primer#caching-at-the-object-level)\n* When to update the cache\n    * [Cache-aside](https://github.com/donnemartin/system-design-primer#cache-aside)\n    * [Write-through](https://github.com/donnemartin/system-design-primer#write-through)\n    * [Write-behind (write-back)](https://github.com/donnemartin/system-design-primer#write-behind-write-back)\n    * [Refresh ahead](https://github.com/donnemartin/system-design-primer#refresh-ahead)\n\n",
+   "sourceLines": [
+    399,
+    415
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#client-caching",
+    "https://github.com/donnemartin/system-design-primer#cdn-caching",
+    "https://github.com/donnemartin/system-design-primer#web-server-caching",
+    "https://github.com/donnemartin/system-design-primer#database-caching",
+    "https://github.com/donnemartin/system-design-primer#application-caching",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-object-level",
+    "https://github.com/donnemartin/system-design-primer#cache-aside",
+    "https://github.com/donnemartin/system-design-primer#write-through",
+    "https://github.com/donnemartin/system-design-primer#write-behind-write-back",
+    "https://github.com/donnemartin/system-design-primer#refresh-ahead"
+   ],
+   "images": []
+  },
+  "asynchronism-and-microservices": {
+   "id": "asynchronism-and-microservices",
+   "title": "Asynchronism and microservices",
+   "depth": 3,
+   "level": 2,
+   "order": 18,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Additional talking points",
+    "Asynchronism and microservices"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "additional-talking-points",
+    "asynchronism-and-microservices"
+   ],
+   "headingMarkdown": "### Asynchronism and microservices",
+   "markdown": "\n\n* [Message queues](https://github.com/donnemartin/system-design-primer#message-queues)\n* [Task queues](https://github.com/donnemartin/system-design-primer#task-queues)\n* [Back pressure](https://github.com/donnemartin/system-design-primer#back-pressure)\n* [Microservices](https://github.com/donnemartin/system-design-primer#microservices)\n\n",
+   "sourceLines": [
+    416,
+    422
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#message-queues",
+    "https://github.com/donnemartin/system-design-primer#task-queues",
+    "https://github.com/donnemartin/system-design-primer#back-pressure",
+    "https://github.com/donnemartin/system-design-primer#microservices"
+   ],
+   "images": []
+  },
+  "communications": {
+   "id": "communications",
+   "title": "Communications",
+   "depth": 3,
+   "level": 2,
+   "order": 19,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Additional talking points",
+    "Communications"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "additional-talking-points",
+    "communications"
+   ],
+   "headingMarkdown": "### Communications",
+   "markdown": "\n\n* Discuss tradeoffs:\n    * External communication with clients - [HTTP APIs following REST](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest)\n    * Internal communications - [RPC](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc)\n* [Service discovery](https://github.com/donnemartin/system-design-primer#service-discovery)\n\n",
+   "sourceLines": [
+    423,
+    429
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc",
+    "https://github.com/donnemartin/system-design-primer#service-discovery"
+   ],
+   "images": []
+  },
+  "security": {
+   "id": "security",
+   "title": "Security",
+   "depth": 3,
+   "level": 2,
+   "order": 20,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Additional talking points",
+    "Security"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "additional-talking-points",
+    "security"
+   ],
+   "headingMarkdown": "### Security",
+   "markdown": "\n\nRefer to the [security section](https://github.com/donnemartin/system-design-primer#security).\n\n",
+   "sourceLines": [
+    430,
+    433
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#security"
+   ],
+   "images": []
+  },
+  "latency-numbers": {
+   "id": "latency-numbers",
+   "title": "Latency numbers",
+   "depth": 3,
+   "level": 2,
+   "order": 21,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Additional talking points",
+    "Latency numbers"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "additional-talking-points",
+    "latency-numbers"
+   ],
+   "headingMarkdown": "### Latency numbers",
+   "markdown": "\n\nSee [Latency numbers every programmer should know](https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know).\n\n",
+   "sourceLines": [
+    434,
+    437
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know"
+   ],
+   "images": []
+  },
+  "ongoing": {
+   "id": "ongoing",
+   "title": "Ongoing",
+   "depth": 3,
+   "level": 2,
+   "order": 22,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Mint.com",
+    "Additional talking points",
+    "Ongoing"
+   ],
+   "pathIds": [
+    "design-mintcom",
+    "additional-talking-points",
+    "ongoing"
+   ],
+   "headingMarkdown": "### Ongoing",
+   "markdown": "\n\n* Continue benchmarking and monitoring your system to address bottlenecks as they come up\n* Scaling is an iterative process\n",
+   "sourceLines": [
+    438,
+    441
+   ],
+   "urls": [],
+   "images": []
+  }
+ },
+ "id": "mint",
+ "dir": "mint",
+ "title": "Design Mint.com",
+ "readmeTitle": "Design Mint.com",
+ "readmeTopicId": "design-mintcom",
+ "steps": [
+  {
+   "step": 1,
+   "label": "Outline use cases and constraints",
+   "nodeId": "step-1-outline-use-cases-and-constraints"
+  },
+  {
+   "step": 2,
+   "label": "Create a high level design",
+   "nodeId": "step-2-create-a-high-level-design"
+  },
+  {
+   "step": 3,
+   "label": "Design core components",
+   "nodeId": "step-3-design-core-components"
+  },
+  {
+   "step": 4,
+   "label": "Scale the design",
+   "nodeId": "step-4-scale-the-design"
+  },
+  {
+   "step": 5,
+   "label": "Additional talking points",
+   "nodeId": "additional-talking-points"
+  }
+ ]
+}

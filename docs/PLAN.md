@@ -1,6 +1,6 @@
 # System Design Atlas: Step 0 plan
 
-Status: **awaiting approval**. No app code has been written yet.
+Status: **approved** (D1–D5 as recommended). Phase 1 complete; see the Phase log at the end.
 
 Source: `./source` is a fresh clone of `donnemartin/system-design-primer` at commit
 `ae9bbd7` ("Fix link for UDP vs TCP (#1153)"). This fork's root is at the same commit.
@@ -612,3 +612,30 @@ source file and line, image refs, routes).
 
 Once you approve (and answer D1–D5), I'll start **Phase 1**: pipeline, coverage test,
 map, and a generic card with the Original layer only.
+
+---
+
+## Phase log
+
+### Phase 1: pipeline, coverage test, map, generic card
+
+- **Repo layout (D1):** the forked Primer files were removed from the root. The Primer lives only in `./source`
+  as a submodule at `ae9bbd7`. The `.gitignore` was replaced.
+- **Versions:** latest stable at build time: React 19 (the plan said 18), Vite 8, Vitest 5, TypeScript 7,
+  Tailwind 4, react-router 7.
+- **Map:** a radial dendrogram. Leaves sit on one outer ring and internal nodes on rings by level. H2 names and
+  area bands sit on the rim. Leaf labels appear when you zoom in; internal labels appear when you zoom in
+  further, or when the node is on the hovered or selected path. Outline view is the keyboard and screen-reader
+  equivalent.
+- **Coverage:** 172/172 headings, 203/203 solution headings, 583/583 URL checks (573 unique: external URLs,
+  anchors, relative links, image paths and URLs inside code), 57/57 images with credits, and 14/14 pages.
+  A mutation check (deleting a heading, an image and a URL from the generated content) made the test fail with
+  the expected list.
+- **F11 (new, rendering):** three inline links are written as `<sup><a href=URL>1</a></sup>` with an unquoted
+  `href` (README lines 414 and 787, plus a line in each solution). GitHub renders them, but micromark does not
+  treat them as inline HTML, so they showed as literal text. The coverage test caught this. They are fixed at
+  render time by quoting the attribute (`src/lib/markdown-fixups.ts`). The stored source is unchanged.
+- **Code highlighting:** only `python` fences are highlighted, at build time with Shiki. Unlabelled fences stay
+  plain because the source doesn't state their language.
+- **Bundle:** the content JSON is bundled eagerly (about 345 KB gzipped in total). It will be code-split in
+  Phase 5.

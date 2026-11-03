@@ -1,0 +1,783 @@
+{
+ "source": {
+  "repo": "https://github.com/donnemartin/system-design-primer",
+  "commit": "ae9bbd7b02d90b9866215de185217d33f39ab733",
+  "path": "solutions/system_design/pastebin/README.md"
+ },
+ "preamble": "",
+ "rootId": "design-pastebincom-or-bitly",
+ "order": [
+  "design-pastebincom-or-bitly",
+  "step-1-outline-use-cases-and-constraints",
+  "use-cases",
+  "well-scope-the-problem-to-handle-only-the-following-use-cases",
+  "out-of-scope",
+  "constraints-and-assumptions",
+  "state-assumptions",
+  "calculate-usage",
+  "step-2-create-a-high-level-design",
+  "step-3-design-core-components",
+  "use-case-user-enters-a-block-of-text-and-gets-a-randomly-generated-link",
+  "use-case-user-enters-a-pastes-url-and-views-the-contents",
+  "use-case-service-tracks-analytics-of-pages",
+  "use-case-service-deletes-expired-pastes",
+  "step-4-scale-the-design",
+  "additional-talking-points",
+  "nosql",
+  "caching",
+  "asynchronism-and-microservices",
+  "communications",
+  "security",
+  "latency-numbers",
+  "ongoing"
+ ],
+ "nodes": {
+  "design-pastebincom-or-bitly": {
+   "id": "design-pastebincom-or-bitly",
+   "title": "Design Pastebin.com (or Bit.ly)",
+   "depth": 1,
+   "level": 0,
+   "order": 0,
+   "parentId": null,
+   "childIds": [
+    "step-1-outline-use-cases-and-constraints",
+    "step-2-create-a-high-level-design",
+    "step-3-design-core-components",
+    "step-4-scale-the-design",
+    "additional-talking-points"
+   ],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly"
+   ],
+   "headingMarkdown": "# Design Pastebin.com (or Bit.ly)",
+   "markdown": "\n\n*Note: This document links directly to relevant areas found in the [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) to avoid duplication.  Refer to the linked content for general talking points, tradeoffs, and alternatives.*\n\n**Design Bit.ly** - is a similar question, except pastebin requires storing the paste contents instead of the original unshortened url.\n\n",
+   "sourceLines": [
+    1,
+    6
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics"
+   ],
+   "images": []
+  },
+  "step-1-outline-use-cases-and-constraints": {
+   "id": "step-1-outline-use-cases-and-constraints",
+   "title": "Step 1: Outline use cases and constraints",
+   "depth": 2,
+   "level": 1,
+   "order": 1,
+   "parentId": "design-pastebincom-or-bitly",
+   "childIds": [
+    "use-cases",
+    "constraints-and-assumptions"
+   ],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 1: Outline use cases and constraints"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-1-outline-use-cases-and-constraints"
+   ],
+   "headingMarkdown": "## Step 1: Outline use cases and constraints",
+   "markdown": "\n\n> Gather requirements and scope the problem.\n> Ask questions to clarify use cases and constraints.\n> Discuss assumptions.\n\nWithout an interviewer to address clarifying questions, we'll define some use cases and constraints.\n\n",
+   "sourceLines": [
+    7,
+    14
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-cases": {
+   "id": "use-cases",
+   "title": "Use cases",
+   "depth": 3,
+   "level": 2,
+   "order": 2,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "well-scope-the-problem-to-handle-only-the-following-use-cases",
+    "out-of-scope"
+   ],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 1: Outline use cases and constraints",
+    "Use cases"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases"
+   ],
+   "headingMarkdown": "### Use cases",
+   "markdown": "\n\n",
+   "sourceLines": [
+    15,
+    16
+   ],
+   "urls": [],
+   "images": []
+  },
+  "well-scope-the-problem-to-handle-only-the-following-use-cases": {
+   "id": "well-scope-the-problem-to-handle-only-the-following-use-cases",
+   "title": "We'll scope the problem to handle only the following use cases",
+   "depth": 4,
+   "level": 3,
+   "order": 3,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "We'll scope the problem to handle only the following use cases"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingMarkdown": "#### We'll scope the problem to handle only the following use cases",
+   "markdown": "\n\n* **User** enters a block of text and gets a randomly generated link\n    * Expiration\n        * Default setting does not expire\n        * Can optionally set a timed expiration\n* **User** enters a paste's url and views the contents\n* **User** is anonymous\n* **Service** tracks analytics of pages\n    * Monthly visit stats\n* **Service** deletes expired pastes\n* **Service** has high availability\n\n",
+   "sourceLines": [
+    17,
+    29
+   ],
+   "urls": [],
+   "images": []
+  },
+  "out-of-scope": {
+   "id": "out-of-scope",
+   "title": "Out of scope",
+   "depth": 4,
+   "level": 3,
+   "order": 4,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "Out of scope"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "out-of-scope"
+   ],
+   "headingMarkdown": "#### Out of scope",
+   "markdown": "\n\n* **User** registers for an account\n    * **User** verifies email\n* **User** logs into a registered account\n    * **User** edits the document\n* **User** can set visibility\n* **User** can set the shortlink\n\n",
+   "sourceLines": [
+    30,
+    38
+   ],
+   "urls": [],
+   "images": []
+  },
+  "constraints-and-assumptions": {
+   "id": "constraints-and-assumptions",
+   "title": "Constraints and assumptions",
+   "depth": 3,
+   "level": 2,
+   "order": 5,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "state-assumptions",
+    "calculate-usage"
+   ],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions"
+   ],
+   "headingMarkdown": "### Constraints and assumptions",
+   "markdown": "\n\n",
+   "sourceLines": [
+    39,
+    40
+   ],
+   "urls": [],
+   "images": []
+  },
+  "state-assumptions": {
+   "id": "state-assumptions",
+   "title": "State assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 6,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "State assumptions"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "state-assumptions"
+   ],
+   "headingMarkdown": "#### State assumptions",
+   "markdown": "\n\n* Traffic is not evenly distributed\n* Following a short link should be fast\n* Pastes are text only\n* Page view analytics do not need to be realtime\n* 10 million users\n* 10 million paste writes per month\n* 100 million paste reads per month\n* 10:1 read to write ratio\n\n",
+   "sourceLines": [
+    41,
+    51
+   ],
+   "urls": [],
+   "images": []
+  },
+  "calculate-usage": {
+   "id": "calculate-usage",
+   "title": "Calculate usage",
+   "depth": 4,
+   "level": 3,
+   "order": 7,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "Calculate usage"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "calculate-usage"
+   ],
+   "headingMarkdown": "#### Calculate usage",
+   "markdown": "\n\n**Clarify with your interviewer if you should run back-of-the-envelope usage calculations.**\n\n* Size per paste\n    * 1 KB content per paste\n    * `shortlink` - 7 bytes\n    * `expiration_length_in_minutes` - 4 bytes\n    * `created_at` - 5 bytes\n    * `paste_path` - 255 bytes\n    * total = ~1.27 KB\n* 12.7 GB of new paste content per month\n    * 1.27 KB per paste * 10 million pastes per month\n    * ~450 GB of new paste content in 3 years\n    * 360 million shortlinks in 3 years\n    * Assume most are new pastes instead of updates to existing ones\n* 4 paste writes per second on average\n* 40 read requests per second on average\n\nHandy conversion guide:\n\n* 2.5 million seconds per month\n* 1 request per second = 2.5 million requests per month\n* 40 requests per second = 100 million requests per month\n* 400 requests per second = 1 billion requests per month\n\n",
+   "sourceLines": [
+    52,
+    77
+   ],
+   "urls": [],
+   "images": []
+  },
+  "step-2-create-a-high-level-design": {
+   "id": "step-2-create-a-high-level-design",
+   "title": "Step 2: Create a high level design",
+   "depth": 2,
+   "level": 1,
+   "order": 8,
+   "parentId": "design-pastebincom-or-bitly",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 2: Create a high level design"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-2-create-a-high-level-design"
+   ],
+   "headingMarkdown": "## Step 2: Create a high level design",
+   "markdown": "\n\n> Outline a high level design with all important components.\n\n![Imgur](http://i.imgur.com/BKsBnmG.png)\n\n",
+   "sourceLines": [
+    78,
+    83
+   ],
+   "urls": [
+    "http://i.imgur.com/BKsBnmG.png"
+   ],
+   "images": [
+    "http://i.imgur.com/BKsBnmG.png"
+   ]
+  },
+  "step-3-design-core-components": {
+   "id": "step-3-design-core-components",
+   "title": "Step 3: Design core components",
+   "depth": 2,
+   "level": 1,
+   "order": 9,
+   "parentId": "design-pastebincom-or-bitly",
+   "childIds": [
+    "use-case-user-enters-a-block-of-text-and-gets-a-randomly-generated-link",
+    "use-case-user-enters-a-pastes-url-and-views-the-contents",
+    "use-case-service-tracks-analytics-of-pages",
+    "use-case-service-deletes-expired-pastes"
+   ],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 3: Design core components"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-3-design-core-components"
+   ],
+   "headingMarkdown": "## Step 3: Design core components",
+   "markdown": "\n\n> Dive into details for each core component.\n\n",
+   "sourceLines": [
+    84,
+    87
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-user-enters-a-block-of-text-and-gets-a-randomly-generated-link": {
+   "id": "use-case-user-enters-a-block-of-text-and-gets-a-randomly-generated-link",
+   "title": "Use case: User enters a block of text and gets a randomly generated link",
+   "depth": 3,
+   "level": 2,
+   "order": 10,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 3: Design core components",
+    "Use case: User enters a block of text and gets a randomly generated link"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-3-design-core-components",
+    "use-case-user-enters-a-block-of-text-and-gets-a-randomly-generated-link"
+   ],
+   "headingMarkdown": "### Use case: User enters a block of text and gets a randomly generated link",
+   "markdown": "\n\nWe could use a [relational database](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms) as a large hash table, mapping the generated url to a file server and path containing the paste file.\n\nInstead of managing a file server, we could use a managed **Object Store** such as Amazon S3 or a [NoSQL document store](https://github.com/donnemartin/system-design-primer#document-store).\n\nAn alternative to a relational database acting as a large hash table, we could use a [NoSQL key-value store](https://github.com/donnemartin/system-design-primer#key-value-store).  We should discuss the [tradeoffs between choosing SQL or NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql).  The following discussion uses the relational database approach.\n\n* The **Client** sends a create paste request to the **Web Server**, running as a [reverse proxy](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* The **Web Server** forwards the request to the **Write API** server\n* The **Write API** server does the following:\n    * Generates a unique url\n        * Checks if the url is unique by looking at the **SQL Database** for a duplicate\n        * If the url is not unique, it generates another url\n        * If we supported a custom url, we could use the user-supplied (also check for a duplicate)\n    * Saves to the **SQL Database** `pastes` table\n    * Saves the paste data to the **Object Store**\n    * Returns the url\n\n**Clarify with your interviewer how much code you are expected to write**.\n\nThe `pastes` table could have the following structure:\n\n```\nshortlink char(7) NOT NULL\nexpiration_length_in_minutes int NOT NULL\ncreated_at datetime NOT NULL\npaste_path varchar(255) NOT NULL\nPRIMARY KEY(shortlink)\n```\n\nSetting the primary key to be based on the `shortlink` column creates an [index](https://github.com/donnemartin/system-design-primer#use-good-indices) that the database uses to enforce uniqueness. We'll create an additional index on `created_at` to speed up lookups (log-time instead of scanning the entire table) and to keep the data in memory.  Reading 1 MB sequentially from memory takes about 250 microseconds, while reading from SSD takes 4x and from disk takes 80x longer.<sup><a href=https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know>1</a></sup>\n\nTo generate the unique url, we could:\n\n* Take the [**MD5**](https://en.wikipedia.org/wiki/MD5) hash of the user's ip_address + timestamp\n    * MD5 is a widely used hashing function that produces a 128-bit hash value\n    * MD5 is uniformly distributed\n    * Alternatively, we could also take the MD5 hash of randomly-generated data\n* [**Base 62**](https://www.kerstner.at/2012/07/shortening-strings-using-base-62-encoding/) encode the MD5 hash\n    * Base 62 encodes to `[a-zA-Z0-9]` which works well for urls, eliminating the need for escaping special characters\n    * There is only one hash result for the original input and Base 62 is deterministic (no randomness involved)\n    * Base 64 is another popular encoding but provides issues for urls because of the additional `+` and `/` characters\n    * The following [Base 62 pseudocode](http://stackoverflow.com/questions/742013/how-to-code-a-url-shortener) runs in O(k) time where k is the number of digits = 7:\n\n```python\ndef base_encode(num, base=62):\n    digits = []\n    while num > 0\n      remainder = modulo(num, base)\n      digits.push(remainder)\n      num = divide(num, base)\n    digits = digits.reverse\n```\n\n* Take the first 7 characters of the output, which results in 62^7 possible values and should be sufficient to handle our constraint of 360 million shortlinks in 3 years:\n\n```python\nurl = base_encode(md5(ip_address+timestamp))[:URL_LENGTH]\n```\n\nWe'll use a public [**REST API**](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest):\n\n```\n$ curl -X POST --data '{ \"expiration_length_in_minutes\": \"60\", \\\n    \"paste_contents\": \"Hello World!\" }' https://pastebin.com/api/v1/paste\n```\n\nResponse:\n\n```\n{\n    \"shortlink\": \"foobar\"\n}\n```\n\nFor internal communications, we could use [Remote Procedure Calls](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc).\n\n",
+   "sourceLines": [
+    88,
+    165
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms",
+    "https://github.com/donnemartin/system-design-primer#document-store",
+    "https://github.com/donnemartin/system-design-primer#key-value-store",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#use-good-indices",
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know",
+    "https://en.wikipedia.org/wiki/MD5",
+    "https://www.kerstner.at/2012/07/shortening-strings-using-base-62-encoding/",
+    "http://stackoverflow.com/questions/742013/how-to-code-a-url-shortener",
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc"
+   ],
+   "images": []
+  },
+  "use-case-user-enters-a-pastes-url-and-views-the-contents": {
+   "id": "use-case-user-enters-a-pastes-url-and-views-the-contents",
+   "title": "Use case: User enters a paste's url and views the contents",
+   "depth": 3,
+   "level": 2,
+   "order": 11,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 3: Design core components",
+    "Use case: User enters a paste's url and views the contents"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-3-design-core-components",
+    "use-case-user-enters-a-pastes-url-and-views-the-contents"
+   ],
+   "headingMarkdown": "### Use case: User enters a paste's url and views the contents",
+   "markdown": "\n\n* The **Client** sends a get paste request to the **Web Server**\n* The **Web Server** forwards the request to the **Read API** server\n* The **Read API** server does the following:\n    * Checks the **SQL Database** for the generated url\n        * If the url is in the **SQL Database**, fetch the paste contents from the **Object Store**\n        * Else, return an error message for the user\n\nREST API:\n\n```\n$ curl https://pastebin.com/api/v1/paste?shortlink=foobar\n```\n\nResponse:\n\n```\n{\n    \"paste_contents\": \"Hello World\"\n    \"created_at\": \"YYYY-MM-DD HH:MM:SS\"\n    \"expiration_length_in_minutes\": \"60\"\n}\n```\n\n",
+   "sourceLines": [
+    166,
+    190
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-service-tracks-analytics-of-pages": {
+   "id": "use-case-service-tracks-analytics-of-pages",
+   "title": "Use case: Service tracks analytics of pages",
+   "depth": 3,
+   "level": 2,
+   "order": 12,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 3: Design core components",
+    "Use case: Service tracks analytics of pages"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-3-design-core-components",
+    "use-case-service-tracks-analytics-of-pages"
+   ],
+   "headingMarkdown": "### Use case: Service tracks analytics of pages",
+   "markdown": "\n\nSince realtime analytics are not a requirement, we could simply **MapReduce** the **Web Server** logs to generate hit counts.\n\n**Clarify with your interviewer how much code you are expected to write**.\n\n```python\nclass HitCounts(MRJob):\n\n    def extract_url(self, line):\n        \"\"\"Extract the generated url from the log line.\"\"\"\n        ...\n\n    def extract_year_month(self, line):\n        \"\"\"Return the year and month portions of the timestamp.\"\"\"\n        ...\n\n    def mapper(self, _, line):\n        \"\"\"Parse each log line, extract and transform relevant lines.\n\n        Emit key value pairs of the form:\n\n        (2016-01, url0), 1\n        (2016-01, url0), 1\n        (2016-01, url1), 1\n        \"\"\"\n        url = self.extract_url(line)\n        period = self.extract_year_month(line)\n        yield (period, url), 1\n\n    def reducer(self, key, values):\n        \"\"\"Sum values for each key.\n\n        (2016-01, url0), 2\n        (2016-01, url1), 1\n        \"\"\"\n        yield key, sum(values)\n```\n\n",
+   "sourceLines": [
+    191,
+    229
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-service-deletes-expired-pastes": {
+   "id": "use-case-service-deletes-expired-pastes",
+   "title": "Use case: Service deletes expired pastes",
+   "depth": 3,
+   "level": 2,
+   "order": 13,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 3: Design core components",
+    "Use case: Service deletes expired pastes"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-3-design-core-components",
+    "use-case-service-deletes-expired-pastes"
+   ],
+   "headingMarkdown": "### Use case: Service deletes expired pastes",
+   "markdown": "\n\nTo delete expired pastes, we could just scan the **SQL Database** for all entries whose expiration timestamp are older than the current timestamp.  All expired entries would then be deleted (or  marked as expired) from the table.\n\n",
+   "sourceLines": [
+    230,
+    233
+   ],
+   "urls": [],
+   "images": []
+  },
+  "step-4-scale-the-design": {
+   "id": "step-4-scale-the-design",
+   "title": "Step 4: Scale the design",
+   "depth": 2,
+   "level": 1,
+   "order": 14,
+   "parentId": "design-pastebincom-or-bitly",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Step 4: Scale the design"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "step-4-scale-the-design"
+   ],
+   "headingMarkdown": "## Step 4: Scale the design",
+   "markdown": "\n\n> Identify and address bottlenecks, given the constraints.\n\n![Imgur](http://i.imgur.com/4edXG0T.png)\n\n**Important: Do not simply jump right into the final design from the initial design!**\n\nState you would do this iteratively: 1) **Benchmark/Load Test**, 2) **Profile** for bottlenecks 3) address bottlenecks while evaluating alternatives and trade-offs, and 4) repeat.  See [Design a system that scales to millions of users on AWS](../scaling_aws/README.md) as a sample on how to iteratively scale the initial design.\n\nIt's important to discuss what bottlenecks you might encounter with the initial design and how you might address each of them.  For example, what issues are addressed by adding a **Load Balancer** with multiple **Web Servers**?  **CDN**?  **Master-Slave Replicas**?  What are the alternatives and **Trade-Offs** for each?\n\nWe'll introduce some components to complete the design and to address scalability issues.  Internal load balancers are not shown to reduce clutter.\n\n*To avoid repeating discussions*, refer to the following [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) for main talking points, tradeoffs, and alternatives:\n\n* [DNS](https://github.com/donnemartin/system-design-primer#domain-name-system)\n* [CDN](https://github.com/donnemartin/system-design-primer#content-delivery-network)\n* [Load balancer](https://github.com/donnemartin/system-design-primer#load-balancer)\n* [Horizontal scaling](https://github.com/donnemartin/system-design-primer#horizontal-scaling)\n* [Web server (reverse proxy)](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* [API server (application layer)](https://github.com/donnemartin/system-design-primer#application-layer)\n* [Cache](https://github.com/donnemartin/system-design-primer#cache)\n* [Relational database management system (RDBMS)](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms)\n* [SQL write master-slave failover](https://github.com/donnemartin/system-design-primer#fail-over)\n* [Master-slave replication](https://github.com/donnemartin/system-design-primer#master-slave-replication)\n* [Consistency patterns](https://github.com/donnemartin/system-design-primer#consistency-patterns)\n* [Availability patterns](https://github.com/donnemartin/system-design-primer#availability-patterns)\n\nThe **Analytics Database** could use a data warehousing solution such as Amazon Redshift or Google BigQuery.\n\nAn **Object Store** such as Amazon S3 can comfortably handle the constraint of 12.7 GB of new content per month.\n\nTo address the 40 *average* read requests per second (higher at peak), traffic for popular content should be handled by the **Memory Cache** instead of the database.  The **Memory Cache** is also useful for handling the unevenly distributed traffic and traffic spikes.  The **SQL Read Replicas** should be able to handle the cache misses, as long as the replicas are not bogged down with replicating writes.\n\n4 *average* paste writes per second (with higher at peak) should be do-able for a single **SQL Write Master-Slave**.  Otherwise, we'll need to employ additional SQL scaling patterns:\n\n* [Federation](https://github.com/donnemartin/system-design-primer#federation)\n* [Sharding](https://github.com/donnemartin/system-design-primer#sharding)\n* [Denormalization](https://github.com/donnemartin/system-design-primer#denormalization)\n* [SQL Tuning](https://github.com/donnemartin/system-design-primer#sql-tuning)\n\nWe should also consider moving some data to a **NoSQL Database**.\n\n",
+   "sourceLines": [
+    234,
+    277
+   ],
+   "urls": [
+    "http://i.imgur.com/4edXG0T.png",
+    "../scaling_aws/README.md",
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics",
+    "https://github.com/donnemartin/system-design-primer#domain-name-system",
+    "https://github.com/donnemartin/system-design-primer#content-delivery-network",
+    "https://github.com/donnemartin/system-design-primer#load-balancer",
+    "https://github.com/donnemartin/system-design-primer#horizontal-scaling",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#application-layer",
+    "https://github.com/donnemartin/system-design-primer#cache",
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms",
+    "https://github.com/donnemartin/system-design-primer#fail-over",
+    "https://github.com/donnemartin/system-design-primer#master-slave-replication",
+    "https://github.com/donnemartin/system-design-primer#consistency-patterns",
+    "https://github.com/donnemartin/system-design-primer#availability-patterns",
+    "https://github.com/donnemartin/system-design-primer#federation",
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#denormalization",
+    "https://github.com/donnemartin/system-design-primer#sql-tuning"
+   ],
+   "images": [
+    "http://i.imgur.com/4edXG0T.png"
+   ]
+  },
+  "additional-talking-points": {
+   "id": "additional-talking-points",
+   "title": "Additional talking points",
+   "depth": 2,
+   "level": 1,
+   "order": 15,
+   "parentId": "design-pastebincom-or-bitly",
+   "childIds": [
+    "nosql",
+    "caching",
+    "asynchronism-and-microservices",
+    "communications",
+    "security",
+    "latency-numbers",
+    "ongoing"
+   ],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Additional talking points"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "additional-talking-points"
+   ],
+   "headingMarkdown": "## Additional talking points",
+   "markdown": "\n\n> Additional topics to dive into, depending on the problem scope and time remaining.\n\n",
+   "sourceLines": [
+    278,
+    281
+   ],
+   "urls": [],
+   "images": []
+  },
+  "nosql": {
+   "id": "nosql",
+   "title": "NoSQL",
+   "depth": 4,
+   "level": 2,
+   "order": 16,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Additional talking points",
+    "NoSQL"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "additional-talking-points",
+    "nosql"
+   ],
+   "headingMarkdown": "#### NoSQL",
+   "markdown": "\n\n* [Key-value store](https://github.com/donnemartin/system-design-primer#key-value-store)\n* [Document store](https://github.com/donnemartin/system-design-primer#document-store)\n* [Wide column store](https://github.com/donnemartin/system-design-primer#wide-column-store)\n* [Graph database](https://github.com/donnemartin/system-design-primer#graph-database)\n* [SQL vs NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql)\n\n",
+   "sourceLines": [
+    282,
+    289
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#key-value-store",
+    "https://github.com/donnemartin/system-design-primer#document-store",
+    "https://github.com/donnemartin/system-design-primer#wide-column-store",
+    "https://github.com/donnemartin/system-design-primer#graph-database",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql"
+   ],
+   "images": []
+  },
+  "caching": {
+   "id": "caching",
+   "title": "Caching",
+   "depth": 3,
+   "level": 2,
+   "order": 17,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Additional talking points",
+    "Caching"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "additional-talking-points",
+    "caching"
+   ],
+   "headingMarkdown": "### Caching",
+   "markdown": "\n\n* Where to cache\n    * [Client caching](https://github.com/donnemartin/system-design-primer#client-caching)\n    * [CDN caching](https://github.com/donnemartin/system-design-primer#cdn-caching)\n    * [Web server caching](https://github.com/donnemartin/system-design-primer#web-server-caching)\n    * [Database caching](https://github.com/donnemartin/system-design-primer#database-caching)\n    * [Application caching](https://github.com/donnemartin/system-design-primer#application-caching)\n* What to cache\n    * [Caching at the database query level](https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level)\n    * [Caching at the object level](https://github.com/donnemartin/system-design-primer#caching-at-the-object-level)\n* When to update the cache\n    * [Cache-aside](https://github.com/donnemartin/system-design-primer#cache-aside)\n    * [Write-through](https://github.com/donnemartin/system-design-primer#write-through)\n    * [Write-behind (write-back)](https://github.com/donnemartin/system-design-primer#write-behind-write-back)\n    * [Refresh ahead](https://github.com/donnemartin/system-design-primer#refresh-ahead)\n\n",
+   "sourceLines": [
+    290,
+    306
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#client-caching",
+    "https://github.com/donnemartin/system-design-primer#cdn-caching",
+    "https://github.com/donnemartin/system-design-primer#web-server-caching",
+    "https://github.com/donnemartin/system-design-primer#database-caching",
+    "https://github.com/donnemartin/system-design-primer#application-caching",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-object-level",
+    "https://github.com/donnemartin/system-design-primer#cache-aside",
+    "https://github.com/donnemartin/system-design-primer#write-through",
+    "https://github.com/donnemartin/system-design-primer#write-behind-write-back",
+    "https://github.com/donnemartin/system-design-primer#refresh-ahead"
+   ],
+   "images": []
+  },
+  "asynchronism-and-microservices": {
+   "id": "asynchronism-and-microservices",
+   "title": "Asynchronism and microservices",
+   "depth": 3,
+   "level": 2,
+   "order": 18,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Additional talking points",
+    "Asynchronism and microservices"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "additional-talking-points",
+    "asynchronism-and-microservices"
+   ],
+   "headingMarkdown": "### Asynchronism and microservices",
+   "markdown": "\n\n* [Message queues](https://github.com/donnemartin/system-design-primer#message-queues)\n* [Task queues](https://github.com/donnemartin/system-design-primer#task-queues)\n* [Back pressure](https://github.com/donnemartin/system-design-primer#back-pressure)\n* [Microservices](https://github.com/donnemartin/system-design-primer#microservices)\n\n",
+   "sourceLines": [
+    307,
+    313
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#message-queues",
+    "https://github.com/donnemartin/system-design-primer#task-queues",
+    "https://github.com/donnemartin/system-design-primer#back-pressure",
+    "https://github.com/donnemartin/system-design-primer#microservices"
+   ],
+   "images": []
+  },
+  "communications": {
+   "id": "communications",
+   "title": "Communications",
+   "depth": 3,
+   "level": 2,
+   "order": 19,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Additional talking points",
+    "Communications"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "additional-talking-points",
+    "communications"
+   ],
+   "headingMarkdown": "### Communications",
+   "markdown": "\n\n* Discuss tradeoffs:\n    * External communication with clients - [HTTP APIs following REST](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest)\n    * Internal communications - [RPC](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc)\n* [Service discovery](https://github.com/donnemartin/system-design-primer#service-discovery)\n\n",
+   "sourceLines": [
+    314,
+    320
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc",
+    "https://github.com/donnemartin/system-design-primer#service-discovery"
+   ],
+   "images": []
+  },
+  "security": {
+   "id": "security",
+   "title": "Security",
+   "depth": 3,
+   "level": 2,
+   "order": 20,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Additional talking points",
+    "Security"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "additional-talking-points",
+    "security"
+   ],
+   "headingMarkdown": "### Security",
+   "markdown": "\n\nRefer to the [security section](https://github.com/donnemartin/system-design-primer#security).\n\n",
+   "sourceLines": [
+    321,
+    324
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#security"
+   ],
+   "images": []
+  },
+  "latency-numbers": {
+   "id": "latency-numbers",
+   "title": "Latency numbers",
+   "depth": 3,
+   "level": 2,
+   "order": 21,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Additional talking points",
+    "Latency numbers"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "additional-talking-points",
+    "latency-numbers"
+   ],
+   "headingMarkdown": "### Latency numbers",
+   "markdown": "\n\nSee [Latency numbers every programmer should know](https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know).\n\n",
+   "sourceLines": [
+    325,
+    328
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know"
+   ],
+   "images": []
+  },
+  "ongoing": {
+   "id": "ongoing",
+   "title": "Ongoing",
+   "depth": 3,
+   "level": 2,
+   "order": 22,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design Pastebin.com (or Bit.ly)",
+    "Additional talking points",
+    "Ongoing"
+   ],
+   "pathIds": [
+    "design-pastebincom-or-bitly",
+    "additional-talking-points",
+    "ongoing"
+   ],
+   "headingMarkdown": "### Ongoing",
+   "markdown": "\n\n* Continue benchmarking and monitoring your system to address bottlenecks as they come up\n* Scaling is an iterative process\n",
+   "sourceLines": [
+    329,
+    332
+   ],
+   "urls": [],
+   "images": []
+  }
+ },
+ "id": "pastebin",
+ "dir": "pastebin",
+ "title": "Design Pastebin.com (or Bit.ly)",
+ "readmeTitle": "Design Pastebin.com (or Bit.ly)",
+ "readmeTopicId": "step-3-design-core-components",
+ "steps": [
+  {
+   "step": 1,
+   "label": "Outline use cases and constraints",
+   "nodeId": "step-1-outline-use-cases-and-constraints"
+  },
+  {
+   "step": 2,
+   "label": "Create a high level design",
+   "nodeId": "step-2-create-a-high-level-design"
+  },
+  {
+   "step": 3,
+   "label": "Design core components",
+   "nodeId": "step-3-design-core-components"
+  },
+  {
+   "step": 4,
+   "label": "Scale the design",
+   "nodeId": "step-4-scale-the-design"
+  },
+  {
+   "step": 5,
+   "label": "Additional talking points",
+   "nodeId": "additional-talking-points"
+  }
+ ]
+}

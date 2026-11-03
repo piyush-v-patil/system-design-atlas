@@ -1,0 +1,1526 @@
+{
+ "source": {
+  "repo": "https://github.com/donnemartin/system-design-primer",
+  "commit": "ae9bbd7b02d90b9866215de185217d33f39ab733",
+  "path": "solutions/system_design/scaling_aws/README.md"
+ },
+ "preamble": "",
+ "rootId": "design-a-system-that-scales-to-millions-of-users-on-aws",
+ "order": [
+  "design-a-system-that-scales-to-millions-of-users-on-aws",
+  "step-1-outline-use-cases-and-constraints",
+  "use-cases",
+  "well-scope-the-problem-to-handle-only-the-following-use-cases",
+  "constraints-and-assumptions",
+  "state-assumptions",
+  "calculate-usage",
+  "step-2-create-a-high-level-design",
+  "step-3-design-core-components",
+  "use-case-user-makes-a-read-or-write-request",
+  "goals",
+  "start-with-a-single-box",
+  "start-with-sql-consider-nosql",
+  "assign-a-public-static-ip",
+  "use-a-dns",
+  "secure-the-web-server",
+  "step-4-scale-the-design",
+  "users",
+  "assumptions",
+  "goals-1",
+  "store-static-content-separately",
+  "move-the-mysql-database-to-a-separate-box",
+  "secure-the-system",
+  "users-1",
+  "assumptions-1",
+  "goals-2",
+  "users-2",
+  "assumptions-2",
+  "goals-3",
+  "add-mysql-read-replicas",
+  "users-3",
+  "assumptions-3",
+  "goals-4",
+  "add-autoscaling",
+  "users-4",
+  "assumptions-4",
+  "goals-5",
+  "additional-talking-points",
+  "sql-scaling-patterns",
+  "nosql",
+  "caching",
+  "asynchronism-and-microservices",
+  "communications",
+  "security",
+  "latency-numbers",
+  "ongoing"
+ ],
+ "nodes": {
+  "design-a-system-that-scales-to-millions-of-users-on-aws": {
+   "id": "design-a-system-that-scales-to-millions-of-users-on-aws",
+   "title": "Design a system that scales to millions of users on AWS",
+   "depth": 1,
+   "level": 0,
+   "order": 0,
+   "parentId": null,
+   "childIds": [
+    "step-1-outline-use-cases-and-constraints",
+    "step-2-create-a-high-level-design",
+    "step-3-design-core-components",
+    "step-4-scale-the-design",
+    "additional-talking-points"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws"
+   ],
+   "headingMarkdown": "# Design a system that scales to millions of users on AWS",
+   "markdown": "\n\n*Note: This document links directly to relevant areas found in the [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) to avoid duplication.  Refer to the linked content for general talking points, tradeoffs, and alternatives.*\n\n",
+   "sourceLines": [
+    1,
+    4
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics"
+   ],
+   "images": []
+  },
+  "step-1-outline-use-cases-and-constraints": {
+   "id": "step-1-outline-use-cases-and-constraints",
+   "title": "Step 1: Outline use cases and constraints",
+   "depth": 2,
+   "level": 1,
+   "order": 1,
+   "parentId": "design-a-system-that-scales-to-millions-of-users-on-aws",
+   "childIds": [
+    "use-cases",
+    "constraints-and-assumptions"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 1: Outline use cases and constraints"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-1-outline-use-cases-and-constraints"
+   ],
+   "headingMarkdown": "## Step 1: Outline use cases and constraints",
+   "markdown": "\n\n> Gather requirements and scope the problem.\n> Ask questions to clarify use cases and constraints.\n> Discuss assumptions.\n\nWithout an interviewer to address clarifying questions, we'll define some use cases and constraints.\n\n",
+   "sourceLines": [
+    5,
+    12
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-cases": {
+   "id": "use-cases",
+   "title": "Use cases",
+   "depth": 3,
+   "level": 2,
+   "order": 2,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 1: Outline use cases and constraints",
+    "Use cases"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases"
+   ],
+   "headingMarkdown": "### Use cases",
+   "markdown": "\n\nSolving this problem takes an iterative approach of: 1) **Benchmark/Load Test**, 2) **Profile** for bottlenecks 3) address bottlenecks while evaluating alternatives and trade-offs, and 4) repeat, which is good pattern for evolving basic designs to scalable designs.\n\nUnless you have a background in AWS or are applying for a position that requires AWS knowledge, AWS-specific details are not a requirement.  However, **much of the principles discussed in this exercise can apply more generally outside of the AWS ecosystem.**\n\n",
+   "sourceLines": [
+    13,
+    18
+   ],
+   "urls": [],
+   "images": []
+  },
+  "well-scope-the-problem-to-handle-only-the-following-use-cases": {
+   "id": "well-scope-the-problem-to-handle-only-the-following-use-cases",
+   "title": "We'll scope the problem to handle only the following use cases",
+   "depth": 4,
+   "level": 3,
+   "order": 3,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "We'll scope the problem to handle only the following use cases"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingMarkdown": "#### We'll scope the problem to handle only the following use cases",
+   "markdown": "\n\n* **User** makes a read or write request\n    * **Service** does processing, stores user data, then returns the results\n* **Service** needs to evolve from serving a small amount of users to millions of users\n    * Discuss general scaling patterns as we evolve an architecture to handle a large number of users and requests\n* **Service** has high availability\n\n",
+   "sourceLines": [
+    19,
+    26
+   ],
+   "urls": [],
+   "images": []
+  },
+  "constraints-and-assumptions": {
+   "id": "constraints-and-assumptions",
+   "title": "Constraints and assumptions",
+   "depth": 3,
+   "level": 2,
+   "order": 4,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "state-assumptions",
+    "calculate-usage"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions"
+   ],
+   "headingMarkdown": "### Constraints and assumptions",
+   "markdown": "\n\n",
+   "sourceLines": [
+    27,
+    28
+   ],
+   "urls": [],
+   "images": []
+  },
+  "state-assumptions": {
+   "id": "state-assumptions",
+   "title": "State assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 5,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "State assumptions"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "state-assumptions"
+   ],
+   "headingMarkdown": "#### State assumptions",
+   "markdown": "\n\n* Traffic is not evenly distributed\n* Need for relational data\n* Scale from 1 user to tens of millions of users\n    * Denote increase of users as:\n        * Users+\n        * Users++\n        * Users+++\n        * ...\n    * 10 million users\n    * 1 billion writes per month\n    * 100 billion reads per month\n    * 100:1 read to write ratio\n    * 1 KB content per write\n\n",
+   "sourceLines": [
+    29,
+    44
+   ],
+   "urls": [],
+   "images": []
+  },
+  "calculate-usage": {
+   "id": "calculate-usage",
+   "title": "Calculate usage",
+   "depth": 4,
+   "level": 3,
+   "order": 6,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "Calculate usage"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "calculate-usage"
+   ],
+   "headingMarkdown": "#### Calculate usage",
+   "markdown": "\n\n**Clarify with your interviewer if you should run back-of-the-envelope usage calculations.**\n\n* 1 TB of new content per month\n    * 1 KB per write * 1 billion writes per month\n    * 36 TB of new content in 3 years\n    * Assume most writes are from new content instead of updates to existing ones\n* 400 writes per second on average\n* 40,000 reads per second on average\n\nHandy conversion guide:\n\n* 2.5 million seconds per month\n* 1 request per second = 2.5 million requests per month\n* 40 requests per second = 100 million requests per month\n* 400 requests per second = 1 billion requests per month\n\n",
+   "sourceLines": [
+    45,
+    62
+   ],
+   "urls": [],
+   "images": []
+  },
+  "step-2-create-a-high-level-design": {
+   "id": "step-2-create-a-high-level-design",
+   "title": "Step 2: Create a high level design",
+   "depth": 2,
+   "level": 1,
+   "order": 7,
+   "parentId": "design-a-system-that-scales-to-millions-of-users-on-aws",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 2: Create a high level design"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-2-create-a-high-level-design"
+   ],
+   "headingMarkdown": "## Step 2: Create a high level design",
+   "markdown": "\n\n> Outline a high level design with all important components.\n\n![Imgur](http://i.imgur.com/B8LDKD7.png)\n\n",
+   "sourceLines": [
+    63,
+    68
+   ],
+   "urls": [
+    "http://i.imgur.com/B8LDKD7.png"
+   ],
+   "images": [
+    "http://i.imgur.com/B8LDKD7.png"
+   ]
+  },
+  "step-3-design-core-components": {
+   "id": "step-3-design-core-components",
+   "title": "Step 3: Design core components",
+   "depth": 2,
+   "level": 1,
+   "order": 8,
+   "parentId": "design-a-system-that-scales-to-millions-of-users-on-aws",
+   "childIds": [
+    "use-case-user-makes-a-read-or-write-request"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 3: Design core components"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-3-design-core-components"
+   ],
+   "headingMarkdown": "## Step 3: Design core components",
+   "markdown": "\n\n> Dive into details for each core component.\n\n",
+   "sourceLines": [
+    69,
+    72
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-user-makes-a-read-or-write-request": {
+   "id": "use-case-user-makes-a-read-or-write-request",
+   "title": "Use case: User makes a read or write request",
+   "depth": 3,
+   "level": 2,
+   "order": 9,
+   "parentId": "step-3-design-core-components",
+   "childIds": [
+    "goals",
+    "start-with-a-single-box",
+    "start-with-sql-consider-nosql",
+    "assign-a-public-static-ip",
+    "use-a-dns",
+    "secure-the-web-server"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 3: Design core components",
+    "Use case: User makes a read or write request"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-3-design-core-components",
+    "use-case-user-makes-a-read-or-write-request"
+   ],
+   "headingMarkdown": "### Use case: User makes a read or write request",
+   "markdown": "\n\n",
+   "sourceLines": [
+    73,
+    74
+   ],
+   "urls": [],
+   "images": []
+  },
+  "goals": {
+   "id": "goals",
+   "title": "Goals",
+   "depth": 4,
+   "level": 3,
+   "order": 10,
+   "parentId": "use-case-user-makes-a-read-or-write-request",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 3: Design core components",
+    "Use case: User makes a read or write request",
+    "Goals"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-3-design-core-components",
+    "use-case-user-makes-a-read-or-write-request",
+    "goals"
+   ],
+   "headingMarkdown": "#### Goals",
+   "markdown": "\n\n* With only 1-2 users, you only need a basic setup\n    * Single box for simplicity\n    * Vertical scaling when needed\n    * Monitor to determine bottlenecks\n\n",
+   "sourceLines": [
+    75,
+    81
+   ],
+   "urls": [],
+   "images": []
+  },
+  "start-with-a-single-box": {
+   "id": "start-with-a-single-box",
+   "title": "Start with a single box",
+   "depth": 4,
+   "level": 3,
+   "order": 11,
+   "parentId": "use-case-user-makes-a-read-or-write-request",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 3: Design core components",
+    "Use case: User makes a read or write request",
+    "Start with a single box"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-3-design-core-components",
+    "use-case-user-makes-a-read-or-write-request",
+    "start-with-a-single-box"
+   ],
+   "headingMarkdown": "#### Start with a single box",
+   "markdown": "\n\n* **Web server** on EC2\n    * Storage for user data\n    * [**MySQL Database**](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms)\n\nUse **Vertical Scaling**:\n\n* Simply choose a bigger box\n* Keep an eye on metrics to determine how to scale up\n    * Use basic monitoring to determine bottlenecks: CPU, memory, IO, network, etc\n    * CloudWatch, top, nagios, statsd, graphite, etc\n* Scaling vertically can get very expensive\n* No redundancy/failover\n\n*Trade-offs, alternatives, and additional details:*\n\n* The alternative to **Vertical Scaling** is [**Horizontal scaling**](https://github.com/donnemartin/system-design-primer#horizontal-scaling)\n\n",
+   "sourceLines": [
+    82,
+    100
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms",
+    "https://github.com/donnemartin/system-design-primer#horizontal-scaling"
+   ],
+   "images": []
+  },
+  "start-with-sql-consider-nosql": {
+   "id": "start-with-sql-consider-nosql",
+   "title": "Start with SQL, consider NoSQL",
+   "depth": 4,
+   "level": 3,
+   "order": 12,
+   "parentId": "use-case-user-makes-a-read-or-write-request",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 3: Design core components",
+    "Use case: User makes a read or write request",
+    "Start with SQL, consider NoSQL"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-3-design-core-components",
+    "use-case-user-makes-a-read-or-write-request",
+    "start-with-sql-consider-nosql"
+   ],
+   "headingMarkdown": "#### Start with SQL, consider NoSQL",
+   "markdown": "\n\nThe constraints assume there is a need for relational data.  We can start off using a **MySQL Database** on the single box.\n\n*Trade-offs, alternatives, and additional details:*\n\n* See the [Relational database management system (RDBMS)](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms) section\n* Discuss reasons to use [SQL or NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql)\n\n",
+   "sourceLines": [
+    101,
+    109
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql"
+   ],
+   "images": []
+  },
+  "assign-a-public-static-ip": {
+   "id": "assign-a-public-static-ip",
+   "title": "Assign a public static IP",
+   "depth": 4,
+   "level": 3,
+   "order": 13,
+   "parentId": "use-case-user-makes-a-read-or-write-request",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 3: Design core components",
+    "Use case: User makes a read or write request",
+    "Assign a public static IP"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-3-design-core-components",
+    "use-case-user-makes-a-read-or-write-request",
+    "assign-a-public-static-ip"
+   ],
+   "headingMarkdown": "#### Assign a public static IP",
+   "markdown": "\n\n* Elastic IPs provide a public endpoint whose IP doesn't change on reboot\n* Helps with failover, just point the domain to a new IP\n\n",
+   "sourceLines": [
+    110,
+    114
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-a-dns": {
+   "id": "use-a-dns",
+   "title": "Use a DNS",
+   "depth": 4,
+   "level": 3,
+   "order": 14,
+   "parentId": "use-case-user-makes-a-read-or-write-request",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 3: Design core components",
+    "Use case: User makes a read or write request",
+    "Use a DNS"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-3-design-core-components",
+    "use-case-user-makes-a-read-or-write-request",
+    "use-a-dns"
+   ],
+   "headingMarkdown": "#### Use a DNS",
+   "markdown": "\n\nAdd a **DNS** such as Route 53 to map the domain to the instance's public IP.\n\n*Trade-offs, alternatives, and additional details:*\n\n* See the [Domain name system](https://github.com/donnemartin/system-design-primer#domain-name-system) section\n\n",
+   "sourceLines": [
+    115,
+    122
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#domain-name-system"
+   ],
+   "images": []
+  },
+  "secure-the-web-server": {
+   "id": "secure-the-web-server",
+   "title": "Secure the web server",
+   "depth": 4,
+   "level": 3,
+   "order": 15,
+   "parentId": "use-case-user-makes-a-read-or-write-request",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 3: Design core components",
+    "Use case: User makes a read or write request",
+    "Secure the web server"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-3-design-core-components",
+    "use-case-user-makes-a-read-or-write-request",
+    "secure-the-web-server"
+   ],
+   "headingMarkdown": "#### Secure the web server",
+   "markdown": "\n\n* Open up only necessary ports\n    * Allow the web server to respond to incoming requests from:\n        * 80 for HTTP\n        * 443 for HTTPS\n        * 22 for SSH to only whitelisted IPs\n    * Prevent the web server from initiating outbound connections\n\n*Trade-offs, alternatives, and additional details:*\n\n* See the [Security](https://github.com/donnemartin/system-design-primer#security) section\n\n",
+   "sourceLines": [
+    123,
+    135
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#security"
+   ],
+   "images": []
+  },
+  "step-4-scale-the-design": {
+   "id": "step-4-scale-the-design",
+   "title": "Step 4: Scale the design",
+   "depth": 2,
+   "level": 1,
+   "order": 16,
+   "parentId": "design-a-system-that-scales-to-millions-of-users-on-aws",
+   "childIds": [
+    "users",
+    "users-1",
+    "users-2",
+    "users-3",
+    "users-4"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design"
+   ],
+   "headingMarkdown": "## Step 4: Scale the design",
+   "markdown": "\n\n> Identify and address bottlenecks, given the constraints.\n\n",
+   "sourceLines": [
+    136,
+    139
+   ],
+   "urls": [],
+   "images": []
+  },
+  "users": {
+   "id": "users",
+   "title": "Users+",
+   "depth": 3,
+   "level": 2,
+   "order": 17,
+   "parentId": "step-4-scale-the-design",
+   "childIds": [
+    "assumptions",
+    "goals-1",
+    "store-static-content-separately",
+    "move-the-mysql-database-to-a-separate-box",
+    "secure-the-system"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users"
+   ],
+   "headingMarkdown": "### Users+",
+   "markdown": "\n\n![Imgur](http://i.imgur.com/rrfjMXB.png)\n\n",
+   "sourceLines": [
+    140,
+    143
+   ],
+   "urls": [
+    "http://i.imgur.com/rrfjMXB.png"
+   ],
+   "images": [
+    "http://i.imgur.com/rrfjMXB.png"
+   ]
+  },
+  "assumptions": {
+   "id": "assumptions",
+   "title": "Assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 18,
+   "parentId": "users",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+",
+    "Assumptions"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users",
+    "assumptions"
+   ],
+   "headingMarkdown": "#### Assumptions",
+   "markdown": "\n\nOur user count is starting to pick up and the load is increasing on our single box.  Our **Benchmarks/Load Tests** and **Profiling** are pointing to the **MySQL Database** taking up more and more memory and CPU resources, while the user content is filling up disk space.\n\nWe've been able to address these issues with **Vertical Scaling** so far.  Unfortunately, this has become quite expensive and it doesn't allow for independent scaling of the **MySQL Database** and **Web Server**.\n\n",
+   "sourceLines": [
+    144,
+    149
+   ],
+   "urls": [],
+   "images": []
+  },
+  "goals-1": {
+   "id": "goals-1",
+   "title": "Goals",
+   "depth": 4,
+   "level": 3,
+   "order": 19,
+   "parentId": "users",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+",
+    "Goals"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users",
+    "goals-1"
+   ],
+   "headingMarkdown": "#### Goals",
+   "markdown": "\n\n* Lighten load on the single box and allow for independent scaling\n    * Store static content separately in an **Object Store**\n    * Move the **MySQL Database** to a separate box\n* Disadvantages\n    * These changes would increase complexity and would require changes to the **Web Server** to point to the **Object Store** and the **MySQL Database**\n    * Additional security measures must be taken to secure the new components\n    * AWS costs could also increase, but should be weighed with the costs of managing similar systems on your own\n\n",
+   "sourceLines": [
+    150,
+    159
+   ],
+   "urls": [],
+   "images": []
+  },
+  "store-static-content-separately": {
+   "id": "store-static-content-separately",
+   "title": "Store static content separately",
+   "depth": 4,
+   "level": 3,
+   "order": 20,
+   "parentId": "users",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+",
+    "Store static content separately"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users",
+    "store-static-content-separately"
+   ],
+   "headingMarkdown": "#### Store static content separately",
+   "markdown": "\n\n* Consider using a managed **Object Store** like S3 to store static content\n    * Highly scalable and reliable\n    * Server side encryption\n* Move static content to S3\n    * User files\n    * JS\n    * CSS\n    * Images\n    * Videos\n\n",
+   "sourceLines": [
+    160,
+    171
+   ],
+   "urls": [],
+   "images": []
+  },
+  "move-the-mysql-database-to-a-separate-box": {
+   "id": "move-the-mysql-database-to-a-separate-box",
+   "title": "Move the MySQL database to a separate box",
+   "depth": 4,
+   "level": 3,
+   "order": 21,
+   "parentId": "users",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+",
+    "Move the MySQL database to a separate box"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users",
+    "move-the-mysql-database-to-a-separate-box"
+   ],
+   "headingMarkdown": "#### Move the MySQL database to a separate box",
+   "markdown": "\n\n* Consider using a service like RDS to manage the **MySQL Database**\n    * Simple to administer, scale\n    * Multiple availability zones\n    * Encryption at rest\n\n",
+   "sourceLines": [
+    172,
+    178
+   ],
+   "urls": [],
+   "images": []
+  },
+  "secure-the-system": {
+   "id": "secure-the-system",
+   "title": "Secure the system",
+   "depth": 4,
+   "level": 3,
+   "order": 22,
+   "parentId": "users",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+",
+    "Secure the system"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users",
+    "secure-the-system"
+   ],
+   "headingMarkdown": "#### Secure the system",
+   "markdown": "\n\n* Encrypt data in transit and at rest\n* Use a Virtual Private Cloud\n    * Create a public subnet for the single **Web Server** so it can send and receive traffic from the internet\n    * Create a private subnet for everything else, preventing outside access\n    * Only open ports from whitelisted IPs for each component\n* These same patterns should be implemented for new components in the remainder of the exercise\n\n*Trade-offs, alternatives, and additional details:*\n\n* See the [Security](https://github.com/donnemartin/system-design-primer#security) section\n\n",
+   "sourceLines": [
+    179,
+    191
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#security"
+   ],
+   "images": []
+  },
+  "users-1": {
+   "id": "users-1",
+   "title": "Users++",
+   "depth": 3,
+   "level": 2,
+   "order": 23,
+   "parentId": "step-4-scale-the-design",
+   "childIds": [
+    "assumptions-1",
+    "goals-2"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users++"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-1"
+   ],
+   "headingMarkdown": "### Users++",
+   "markdown": "\n\n![Imgur](http://i.imgur.com/raoFTXM.png)\n\n",
+   "sourceLines": [
+    192,
+    195
+   ],
+   "urls": [
+    "http://i.imgur.com/raoFTXM.png"
+   ],
+   "images": [
+    "http://i.imgur.com/raoFTXM.png"
+   ]
+  },
+  "assumptions-1": {
+   "id": "assumptions-1",
+   "title": "Assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 24,
+   "parentId": "users-1",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users++",
+    "Assumptions"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-1",
+    "assumptions-1"
+   ],
+   "headingMarkdown": "#### Assumptions",
+   "markdown": "\n\nOur **Benchmarks/Load Tests** and **Profiling** show that our single **Web Server** bottlenecks during peak hours, resulting in slow responses and in some cases, downtime.  As the service matures, we'd also like to move towards higher availability and redundancy.\n\n",
+   "sourceLines": [
+    196,
+    199
+   ],
+   "urls": [],
+   "images": []
+  },
+  "goals-2": {
+   "id": "goals-2",
+   "title": "Goals",
+   "depth": 4,
+   "level": 3,
+   "order": 25,
+   "parentId": "users-1",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users++",
+    "Goals"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-1",
+    "goals-2"
+   ],
+   "headingMarkdown": "#### Goals",
+   "markdown": "\n\n* The following goals attempt to address the scaling issues with the **Web Server**\n    * Based on the **Benchmarks/Load Tests** and **Profiling**, you might only need to implement one or two of these techniques\n* Use [**Horizontal Scaling**](https://github.com/donnemartin/system-design-primer#horizontal-scaling) to handle increasing loads and to address single points of failure\n    * Add a [**Load Balancer**](https://github.com/donnemartin/system-design-primer#load-balancer) such as Amazon's ELB or HAProxy\n        * ELB is highly available\n        * If you are configuring your own **Load Balancer**, setting up multiple servers in [active-active](https://github.com/donnemartin/system-design-primer#active-active) or [active-passive](https://github.com/donnemartin/system-design-primer#active-passive) in multiple availability zones will improve availability\n        * Terminate SSL on the **Load Balancer** to reduce computational load on backend servers and to simplify certificate administration\n    * Use multiple **Web Servers** spread out over multiple availability zones\n    * Use multiple **MySQL** instances in [**Master-Slave Failover**](https://github.com/donnemartin/system-design-primer#master-slave-replication) mode across multiple availability zones to improve redundancy\n* Separate out the **Web Servers** from the [**Application Servers**](https://github.com/donnemartin/system-design-primer#application-layer)\n    * Scale and configure both layers independently\n    * **Web Servers** can run as a [**Reverse Proxy**](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n    * For example, you can add **Application Servers** handling **Read APIs** while others handle **Write APIs**\n* Move static (and some dynamic) content to a [**Content Delivery Network (CDN)**](https://github.com/donnemartin/system-design-primer#content-delivery-network) such as CloudFront to reduce load and latency\n\n*Trade-offs, alternatives, and additional details:*\n\n* See the linked content above for details\n\n",
+   "sourceLines": [
+    200,
+    220
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#horizontal-scaling",
+    "https://github.com/donnemartin/system-design-primer#load-balancer",
+    "https://github.com/donnemartin/system-design-primer#active-active",
+    "https://github.com/donnemartin/system-design-primer#active-passive",
+    "https://github.com/donnemartin/system-design-primer#master-slave-replication",
+    "https://github.com/donnemartin/system-design-primer#application-layer",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#content-delivery-network"
+   ],
+   "images": []
+  },
+  "users-2": {
+   "id": "users-2",
+   "title": "Users+++",
+   "depth": 3,
+   "level": 2,
+   "order": 26,
+   "parentId": "step-4-scale-the-design",
+   "childIds": [
+    "assumptions-2",
+    "goals-3",
+    "add-mysql-read-replicas"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+++"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-2"
+   ],
+   "headingMarkdown": "### Users+++",
+   "markdown": "\n\n![Imgur](http://i.imgur.com/OZCxJr0.png)\n\n**Note:** **Internal Load Balancers** not shown to reduce clutter\n\n",
+   "sourceLines": [
+    221,
+    226
+   ],
+   "urls": [
+    "http://i.imgur.com/OZCxJr0.png"
+   ],
+   "images": [
+    "http://i.imgur.com/OZCxJr0.png"
+   ]
+  },
+  "assumptions-2": {
+   "id": "assumptions-2",
+   "title": "Assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 27,
+   "parentId": "users-2",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+++",
+    "Assumptions"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-2",
+    "assumptions-2"
+   ],
+   "headingMarkdown": "#### Assumptions",
+   "markdown": "\n\nOur **Benchmarks/Load Tests** and **Profiling** show that we are read-heavy (100:1 with writes) and our database is suffering from poor performance from the high read requests.\n\n",
+   "sourceLines": [
+    227,
+    230
+   ],
+   "urls": [],
+   "images": []
+  },
+  "goals-3": {
+   "id": "goals-3",
+   "title": "Goals",
+   "depth": 4,
+   "level": 3,
+   "order": 28,
+   "parentId": "users-2",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+++",
+    "Goals"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-2",
+    "goals-3"
+   ],
+   "headingMarkdown": "#### Goals",
+   "markdown": "\n\n* The following goals attempt to address the scaling issues with the **MySQL Database**\n    * Based on the **Benchmarks/Load Tests** and **Profiling**, you might only need to implement one or two of these techniques\n* Move the following data to a [**Memory Cache**](https://github.com/donnemartin/system-design-primer#cache) such as Elasticache to reduce load and latency:\n    * Frequently accessed content from **MySQL**\n        * First, try to configure the **MySQL Database** cache to see if that is sufficient to relieve the bottleneck before implementing a **Memory Cache**\n    * Session data from the **Web Servers**\n        * The **Web Servers** become stateless, allowing for **Autoscaling**\n    * Reading 1 MB sequentially from memory takes about 250 microseconds, while reading from SSD takes 4x and from disk takes 80x longer.<sup><a href=https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know>1</a></sup>\n* Add [**MySQL Read Replicas**](https://github.com/donnemartin/system-design-primer#master-slave-replication) to reduce load on the write master\n* Add more **Web Servers** and **Application Servers** to improve responsiveness\n\n*Trade-offs, alternatives, and additional details:*\n\n* See the linked content above for details\n\n",
+   "sourceLines": [
+    231,
+    247
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#cache",
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know",
+    "https://github.com/donnemartin/system-design-primer#master-slave-replication"
+   ],
+   "images": []
+  },
+  "add-mysql-read-replicas": {
+   "id": "add-mysql-read-replicas",
+   "title": "Add MySQL read replicas",
+   "depth": 4,
+   "level": 3,
+   "order": 29,
+   "parentId": "users-2",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+++",
+    "Add MySQL read replicas"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-2",
+    "add-mysql-read-replicas"
+   ],
+   "headingMarkdown": "#### Add MySQL read replicas",
+   "markdown": "\n\n* In addition to adding and scaling a **Memory Cache**, **MySQL Read Replicas** can also help relieve load on the **MySQL Write Master**\n* Add logic to **Web Server** to separate out writes and reads\n* Add **Load Balancers** in front of **MySQL Read Replicas** (not pictured to reduce clutter)\n* Most services are read-heavy vs write-heavy\n\n*Trade-offs, alternatives, and additional details:*\n\n* See the [Relational database management system (RDBMS)](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms) section\n\n",
+   "sourceLines": [
+    248,
+    258
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms"
+   ],
+   "images": []
+  },
+  "users-3": {
+   "id": "users-3",
+   "title": "Users++++",
+   "depth": 3,
+   "level": 2,
+   "order": 30,
+   "parentId": "step-4-scale-the-design",
+   "childIds": [
+    "assumptions-3",
+    "goals-4",
+    "add-autoscaling"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users++++"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-3"
+   ],
+   "headingMarkdown": "### Users++++",
+   "markdown": "\n\n![Imgur](http://i.imgur.com/3X8nmdL.png)\n\n",
+   "sourceLines": [
+    259,
+    262
+   ],
+   "urls": [
+    "http://i.imgur.com/3X8nmdL.png"
+   ],
+   "images": [
+    "http://i.imgur.com/3X8nmdL.png"
+   ]
+  },
+  "assumptions-3": {
+   "id": "assumptions-3",
+   "title": "Assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 31,
+   "parentId": "users-3",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users++++",
+    "Assumptions"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-3",
+    "assumptions-3"
+   ],
+   "headingMarkdown": "#### Assumptions",
+   "markdown": "\n\nOur **Benchmarks/Load Tests** and **Profiling** show that our traffic spikes during regular business hours in the U.S. and drop significantly when users leave the office.  We think we can cut costs by automatically spinning up and down servers based on actual load.  We're a small shop so we'd like to automate as much of the DevOps as possible for **Autoscaling** and for the general operations.\n\n",
+   "sourceLines": [
+    263,
+    266
+   ],
+   "urls": [],
+   "images": []
+  },
+  "goals-4": {
+   "id": "goals-4",
+   "title": "Goals",
+   "depth": 4,
+   "level": 3,
+   "order": 32,
+   "parentId": "users-3",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users++++",
+    "Goals"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-3",
+    "goals-4"
+   ],
+   "headingMarkdown": "#### Goals",
+   "markdown": "\n\n* Add **Autoscaling** to provision capacity as needed\n    * Keep up with traffic spikes\n    * Reduce costs by powering down unused instances\n* Automate DevOps\n    * Chef, Puppet, Ansible, etc\n* Continue monitoring metrics to address bottlenecks\n    * **Host level** - Review a single EC2 instance\n    * **Aggregate level** - Review load balancer stats\n    * **Log analysis** - CloudWatch, CloudTrail, Loggly, Splunk, Sumo\n    * **External site performance** - Pingdom or New Relic\n    * **Handle notifications and incidents** - PagerDuty\n    * **Error Reporting** - Sentry\n\n",
+   "sourceLines": [
+    267,
+    281
+   ],
+   "urls": [],
+   "images": []
+  },
+  "add-autoscaling": {
+   "id": "add-autoscaling",
+   "title": "Add autoscaling",
+   "depth": 4,
+   "level": 3,
+   "order": 33,
+   "parentId": "users-3",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users++++",
+    "Add autoscaling"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-3",
+    "add-autoscaling"
+   ],
+   "headingMarkdown": "#### Add autoscaling",
+   "markdown": "\n\n* Consider a managed service such as AWS **Autoscaling**\n    * Create one group for each **Web Server** and one for each **Application Server** type, place each group in multiple availability zones\n    * Set a min and max number of instances\n    * Trigger to scale up and down through CloudWatch\n        * Simple time of day metric for predictable loads or\n        * Metrics over a time period:\n            * CPU load\n            * Latency\n            * Network traffic\n            * Custom metric\n    * Disadvantages\n        * Autoscaling can introduce complexity\n        * It could take some time before a system appropriately scales up to meet increased demand, or to scale down when demand drops\n\n",
+   "sourceLines": [
+    282,
+    297
+   ],
+   "urls": [],
+   "images": []
+  },
+  "users-4": {
+   "id": "users-4",
+   "title": "Users+++++",
+   "depth": 3,
+   "level": 2,
+   "order": 34,
+   "parentId": "step-4-scale-the-design",
+   "childIds": [
+    "assumptions-4",
+    "goals-5"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+++++"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-4"
+   ],
+   "headingMarkdown": "### Users+++++",
+   "markdown": "\n\n![Imgur](http://i.imgur.com/jj3A5N8.png)\n\n**Note:** **Autoscaling** groups not shown to reduce clutter\n\n",
+   "sourceLines": [
+    298,
+    303
+   ],
+   "urls": [
+    "http://i.imgur.com/jj3A5N8.png"
+   ],
+   "images": [
+    "http://i.imgur.com/jj3A5N8.png"
+   ]
+  },
+  "assumptions-4": {
+   "id": "assumptions-4",
+   "title": "Assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 35,
+   "parentId": "users-4",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+++++",
+    "Assumptions"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-4",
+    "assumptions-4"
+   ],
+   "headingMarkdown": "#### Assumptions",
+   "markdown": "\n\nAs the service continues to grow towards the figures outlined in the constraints, we iteratively run **Benchmarks/Load Tests** and **Profiling** to uncover and address new bottlenecks.\n\n",
+   "sourceLines": [
+    304,
+    307
+   ],
+   "urls": [],
+   "images": []
+  },
+  "goals-5": {
+   "id": "goals-5",
+   "title": "Goals",
+   "depth": 4,
+   "level": 3,
+   "order": 36,
+   "parentId": "users-4",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Step 4: Scale the design",
+    "Users+++++",
+    "Goals"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "step-4-scale-the-design",
+    "users-4",
+    "goals-5"
+   ],
+   "headingMarkdown": "#### Goals",
+   "markdown": "\n\nWe'll continue to address scaling issues due to the problem's constraints:\n\n* If our **MySQL Database** starts to grow too large, we might consider only storing a limited time period of data in the database, while storing the rest in a data warehouse such as Redshift\n    * A data warehouse such as Redshift can comfortably handle the constraint of 1 TB of new content per month\n* With 40,000 average read requests per second, read traffic for popular content can be addressed by scaling the **Memory Cache**, which is also useful for handling the unevenly distributed traffic and traffic spikes\n    * The **SQL Read Replicas** might have trouble handling the cache misses, we'll probably need to employ additional SQL scaling patterns\n* 400 average writes per second (with presumably significantly higher peaks) might be tough for a single **SQL Write Master-Slave**, also pointing to a need for additional scaling techniques\n\nSQL scaling patterns include:\n\n* [Federation](https://github.com/donnemartin/system-design-primer#federation)\n* [Sharding](https://github.com/donnemartin/system-design-primer#sharding)\n* [Denormalization](https://github.com/donnemartin/system-design-primer#denormalization)\n* [SQL Tuning](https://github.com/donnemartin/system-design-primer#sql-tuning)\n\nTo further address the high read and write requests, we should also consider moving appropriate data to a [**NoSQL Database**](https://github.com/donnemartin/system-design-primer#nosql) such as DynamoDB.\n\nWe can further separate out our [**Application Servers**](https://github.com/donnemartin/system-design-primer#application-layer) to allow for independent scaling.  Batch processes or computations that do not need to be done in real-time can be done [**Asynchronously**](https://github.com/donnemartin/system-design-primer#asynchronism) with **Queues** and **Workers**:\n\n* For example, in a photo service, the photo upload and the thumbnail creation can be separated:\n    * **Client** uploads photo\n    * **Application Server** puts a job in a **Queue** such as SQS\n    * The **Worker Service** on EC2 or Lambda pulls work off the **Queue** then:\n        * Creates a thumbnail\n        * Updates a **Database**\n        * Stores the thumbnail in the **Object Store**\n\n*Trade-offs, alternatives, and additional details:*\n\n* See the linked content above for details\n\n",
+   "sourceLines": [
+    308,
+    340
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#federation",
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#denormalization",
+    "https://github.com/donnemartin/system-design-primer#sql-tuning",
+    "https://github.com/donnemartin/system-design-primer#nosql",
+    "https://github.com/donnemartin/system-design-primer#application-layer",
+    "https://github.com/donnemartin/system-design-primer#asynchronism"
+   ],
+   "images": []
+  },
+  "additional-talking-points": {
+   "id": "additional-talking-points",
+   "title": "Additional talking points",
+   "depth": 2,
+   "level": 1,
+   "order": 37,
+   "parentId": "design-a-system-that-scales-to-millions-of-users-on-aws",
+   "childIds": [
+    "sql-scaling-patterns",
+    "caching",
+    "asynchronism-and-microservices",
+    "communications",
+    "security",
+    "latency-numbers",
+    "ongoing"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points"
+   ],
+   "headingMarkdown": "## Additional talking points",
+   "markdown": "\n\n> Additional topics to dive into, depending on the problem scope and time remaining.\n\n",
+   "sourceLines": [
+    341,
+    344
+   ],
+   "urls": [],
+   "images": []
+  },
+  "sql-scaling-patterns": {
+   "id": "sql-scaling-patterns",
+   "title": "SQL scaling patterns",
+   "depth": 3,
+   "level": 2,
+   "order": 38,
+   "parentId": "additional-talking-points",
+   "childIds": [
+    "nosql"
+   ],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points",
+    "SQL scaling patterns"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points",
+    "sql-scaling-patterns"
+   ],
+   "headingMarkdown": "### SQL scaling patterns",
+   "markdown": "\n\n* [Read replicas](https://github.com/donnemartin/system-design-primer#master-slave-replication)\n* [Federation](https://github.com/donnemartin/system-design-primer#federation)\n* [Sharding](https://github.com/donnemartin/system-design-primer#sharding)\n* [Denormalization](https://github.com/donnemartin/system-design-primer#denormalization)\n* [SQL Tuning](https://github.com/donnemartin/system-design-primer#sql-tuning)\n\n",
+   "sourceLines": [
+    345,
+    352
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#master-slave-replication",
+    "https://github.com/donnemartin/system-design-primer#federation",
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#denormalization",
+    "https://github.com/donnemartin/system-design-primer#sql-tuning"
+   ],
+   "images": []
+  },
+  "nosql": {
+   "id": "nosql",
+   "title": "NoSQL",
+   "depth": 4,
+   "level": 3,
+   "order": 39,
+   "parentId": "sql-scaling-patterns",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points",
+    "SQL scaling patterns",
+    "NoSQL"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points",
+    "sql-scaling-patterns",
+    "nosql"
+   ],
+   "headingMarkdown": "#### NoSQL",
+   "markdown": "\n\n* [Key-value store](https://github.com/donnemartin/system-design-primer#key-value-store)\n* [Document store](https://github.com/donnemartin/system-design-primer#document-store)\n* [Wide column store](https://github.com/donnemartin/system-design-primer#wide-column-store)\n* [Graph database](https://github.com/donnemartin/system-design-primer#graph-database)\n* [SQL vs NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql)\n\n",
+   "sourceLines": [
+    353,
+    360
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#key-value-store",
+    "https://github.com/donnemartin/system-design-primer#document-store",
+    "https://github.com/donnemartin/system-design-primer#wide-column-store",
+    "https://github.com/donnemartin/system-design-primer#graph-database",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql"
+   ],
+   "images": []
+  },
+  "caching": {
+   "id": "caching",
+   "title": "Caching",
+   "depth": 3,
+   "level": 2,
+   "order": 40,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points",
+    "Caching"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points",
+    "caching"
+   ],
+   "headingMarkdown": "### Caching",
+   "markdown": "\n\n* Where to cache\n    * [Client caching](https://github.com/donnemartin/system-design-primer#client-caching)\n    * [CDN caching](https://github.com/donnemartin/system-design-primer#cdn-caching)\n    * [Web server caching](https://github.com/donnemartin/system-design-primer#web-server-caching)\n    * [Database caching](https://github.com/donnemartin/system-design-primer#database-caching)\n    * [Application caching](https://github.com/donnemartin/system-design-primer#application-caching)\n* What to cache\n    * [Caching at the database query level](https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level)\n    * [Caching at the object level](https://github.com/donnemartin/system-design-primer#caching-at-the-object-level)\n* When to update the cache\n    * [Cache-aside](https://github.com/donnemartin/system-design-primer#cache-aside)\n    * [Write-through](https://github.com/donnemartin/system-design-primer#write-through)\n    * [Write-behind (write-back)](https://github.com/donnemartin/system-design-primer#write-behind-write-back)\n    * [Refresh ahead](https://github.com/donnemartin/system-design-primer#refresh-ahead)\n\n",
+   "sourceLines": [
+    361,
+    377
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#client-caching",
+    "https://github.com/donnemartin/system-design-primer#cdn-caching",
+    "https://github.com/donnemartin/system-design-primer#web-server-caching",
+    "https://github.com/donnemartin/system-design-primer#database-caching",
+    "https://github.com/donnemartin/system-design-primer#application-caching",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-object-level",
+    "https://github.com/donnemartin/system-design-primer#cache-aside",
+    "https://github.com/donnemartin/system-design-primer#write-through",
+    "https://github.com/donnemartin/system-design-primer#write-behind-write-back",
+    "https://github.com/donnemartin/system-design-primer#refresh-ahead"
+   ],
+   "images": []
+  },
+  "asynchronism-and-microservices": {
+   "id": "asynchronism-and-microservices",
+   "title": "Asynchronism and microservices",
+   "depth": 3,
+   "level": 2,
+   "order": 41,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points",
+    "Asynchronism and microservices"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points",
+    "asynchronism-and-microservices"
+   ],
+   "headingMarkdown": "### Asynchronism and microservices",
+   "markdown": "\n\n* [Message queues](https://github.com/donnemartin/system-design-primer#message-queues)\n* [Task queues](https://github.com/donnemartin/system-design-primer#task-queues)\n* [Back pressure](https://github.com/donnemartin/system-design-primer#back-pressure)\n* [Microservices](https://github.com/donnemartin/system-design-primer#microservices)\n\n",
+   "sourceLines": [
+    378,
+    384
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#message-queues",
+    "https://github.com/donnemartin/system-design-primer#task-queues",
+    "https://github.com/donnemartin/system-design-primer#back-pressure",
+    "https://github.com/donnemartin/system-design-primer#microservices"
+   ],
+   "images": []
+  },
+  "communications": {
+   "id": "communications",
+   "title": "Communications",
+   "depth": 3,
+   "level": 2,
+   "order": 42,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points",
+    "Communications"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points",
+    "communications"
+   ],
+   "headingMarkdown": "### Communications",
+   "markdown": "\n\n* Discuss tradeoffs:\n    * External communication with clients - [HTTP APIs following REST](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest)\n    * Internal communications - [RPC](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc)\n* [Service discovery](https://github.com/donnemartin/system-design-primer#service-discovery)\n\n",
+   "sourceLines": [
+    385,
+    391
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc",
+    "https://github.com/donnemartin/system-design-primer#service-discovery"
+   ],
+   "images": []
+  },
+  "security": {
+   "id": "security",
+   "title": "Security",
+   "depth": 3,
+   "level": 2,
+   "order": 43,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points",
+    "Security"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points",
+    "security"
+   ],
+   "headingMarkdown": "### Security",
+   "markdown": "\n\nRefer to the [security section](https://github.com/donnemartin/system-design-primer#security).\n\n",
+   "sourceLines": [
+    392,
+    395
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#security"
+   ],
+   "images": []
+  },
+  "latency-numbers": {
+   "id": "latency-numbers",
+   "title": "Latency numbers",
+   "depth": 3,
+   "level": 2,
+   "order": 44,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points",
+    "Latency numbers"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points",
+    "latency-numbers"
+   ],
+   "headingMarkdown": "### Latency numbers",
+   "markdown": "\n\nSee [Latency numbers every programmer should know](https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know).\n\n",
+   "sourceLines": [
+    396,
+    399
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know"
+   ],
+   "images": []
+  },
+  "ongoing": {
+   "id": "ongoing",
+   "title": "Ongoing",
+   "depth": 3,
+   "level": 2,
+   "order": 45,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design a system that scales to millions of users on AWS",
+    "Additional talking points",
+    "Ongoing"
+   ],
+   "pathIds": [
+    "design-a-system-that-scales-to-millions-of-users-on-aws",
+    "additional-talking-points",
+    "ongoing"
+   ],
+   "headingMarkdown": "### Ongoing",
+   "markdown": "\n\n* Continue benchmarking and monitoring your system to address bottlenecks as they come up\n* Scaling is an iterative process\n",
+   "sourceLines": [
+    400,
+    403
+   ],
+   "urls": [],
+   "images": []
+  }
+ },
+ "id": "scaling-aws",
+ "dir": "scaling_aws",
+ "title": "Design a system that scales to millions of users on AWS",
+ "readmeTitle": "Design a system that scales to millions of users on AWS",
+ "readmeTopicId": "design-a-system-that-scales-to-millions-of-users-on-aws",
+ "steps": [
+  {
+   "step": 1,
+   "label": "Outline use cases and constraints",
+   "nodeId": "step-1-outline-use-cases-and-constraints"
+  },
+  {
+   "step": 2,
+   "label": "Create a high level design",
+   "nodeId": "step-2-create-a-high-level-design"
+  },
+  {
+   "step": 3,
+   "label": "Design core components",
+   "nodeId": "step-3-design-core-components"
+  },
+  {
+   "step": 4,
+   "label": "Scale the design",
+   "nodeId": "step-4-scale-the-design"
+  },
+  {
+   "step": 5,
+   "label": "Additional talking points",
+   "nodeId": "additional-talking-points"
+  }
+ ]
+}
