@@ -1,6 +1,6 @@
 # System Design Atlas: Step 0 plan
 
-Status: **approved** (D1–D5 as recommended). Phase 1 complete; see the Phase log at the end.
+Status: **approved** (D1–D5 as recommended). Phases 1–2 complete; see the Phase log at the end.
 
 Source: `./source` is a fresh clone of `donnemartin/system-design-primer` at commit
 `ae9bbd7` ("Fix link for UDP vs TCP (#1153)"). This fork's root is at the same commit.
@@ -639,3 +639,42 @@ map, and a generic card with the Original layer only.
   plain because the source doesn't state their language.
 - **Bundle:** the content JSON is bundled eagerly (about 345 KB gzipped in total). It will be code-split in
   Phase 5.
+
+### Phase 2: visual cards for the core topics
+
+- **Name:** the app keeps the repo's name, *System Design Atlas*.
+- **Visual kit** (`src/visuals/kit`): themed SVG nodes (server, database cylinder, cache, client, load
+  balancer, app, DNS, queue), wires, animated packets, and Play/Back/Step/Reset controls. The active step is
+  highlighted in the step list, in the Primer's code (cache-aside and write-through), and in the Original text
+  (via the CSS Custom Highlight API). The kit also has comparison tables with a "choose when" row, pros/cons,
+  "use when", notes, and related topics. A "wide" toggle widens the card.
+- **32 topic cards** with metadata in `content/visuals/*.ts`:
+  - CAP, CP and AP: partition simulation with CP/AP modes.
+  - Consistency patterns: weak, eventual and strong replication.
+  - Availability patterns: a four-pattern comparison.
+  - Fail-over, active-passive and active-active: heartbeats, IP takeover, and a hot/cold standby toggle.
+  - Replication: master-slave (including tree replication and promotion) and master-master (load balancer,
+    conflict, failure).
+  - Availability calculator: nested series/parallel groups, a live block diagram, and downtime per period. The
+    99.9% and 99.99% tables are shown computed vs the Primer.
+  - Load balancer: live routing simulation (Random, Least loaded, Session/cookies, Round robin, Weighted round
+    robin; unhealthy servers and weights adjustable).
+  - L4 vs L7: what each layer reads, NAT vs terminating the connection, and content-based routing.
+  - Horizontal vs vertical scaling.
+  - Federation and sharding: shard by initial or by geography, a hot shard, a failed shard, and rebalancing with
+    a count of moved users.
+  - The four cache strategies, plus small diagrams of each one's data paths.
+- **Accuracy:** `tests/visuals.test.ts` checks that all **527 quoted claims** appear verbatim within their cited
+  README lines. The **61 paraphrases** are marked ≈ in the UI and cite their lines. The calculator maths is
+  tested against the Primer's tables and examples (`tests/availability.test.ts`).
+- **F12 (new): write-behind text vs diagram.** The Primer's text says "the application" asynchronously writes to
+  the data store. Its diagram (`rgSrvjG`) shows the cache adding an event to a queue, which an event processor
+  then writes to the DB. The animation follows the diagram's four numbered steps, and a note on the card says so.
+- **F13 (new): sharding diagram vs text.** The sharding diagram (`wU8x5Id`) routes through a box labelled
+  "Load balancer". The text says application logic must work with shards. The visual follows the text.
+- **Labels kept to the source:** the L7 node says "terminates traffic", following the Primer's wording, rather
+  than naming TCP. Weighted round robin weights and the sample users in the sharding visual are illustrative,
+  and the UI labels them that way.
+- **Fixed during review:**
+  - Duplicate sibling React keys left old visuals in the DOM after navigating between cards.
+  - The Play button was invisible because two background classes conflicted.

@@ -3,6 +3,8 @@ import type { TopicNode } from '../lib/types.ts'
 import { AREA_LABEL, areaColor, meta, oods, prevNext, solutionByReadmeTopic, topics } from '../lib/content.ts'
 import { getVisual } from '../../content/visuals/index.ts'
 import { OriginalPanel } from './OriginalPanel.tsx'
+import { VisualSection } from '../visuals/VisualSection.tsx'
+import { StepHighlightProvider } from '../visuals/kit/highlight.tsx'
 
 export function AreaChip({ node }: { node: TopicNode }) {
   return (
@@ -82,14 +84,39 @@ function PracticeLinks({ node }: { node: TopicNode }) {
   return null
 }
 
-export function TopicCard({ node, onClose }: { node: TopicNode; onClose?: () => void }) {
+export function TopicCard({
+  node,
+  onClose,
+  wide,
+  onToggleWide,
+}: {
+  node: TopicNode
+  onClose?: () => void
+  wide?: boolean
+  onToggleWide?: () => void
+}) {
   const { prev, next } = prevNext(node.id)
   const visual = getVisual(node.id)
   return (
+    <StepHighlightProvider>
     <article className="flex flex-col gap-5" aria-labelledby="card-title" data-topic-id={node.id}>
       <header className="flex flex-col gap-2">
         <div className="flex items-start justify-between gap-3">
           <Breadcrumbs node={node} />
+          <div className="flex shrink-0 items-center gap-1">
+          {onToggleWide && (
+            <button
+              onClick={onToggleWide}
+              className="-mt-1 hidden rounded-md p-1 text-muted hover:bg-surface-2 hover:text-ink md:block"
+              aria-label={wide ? 'Narrow card' : 'Widen card'}
+              aria-pressed={wide}
+              title={wide ? 'Narrow card' : 'Widen card'}
+            >
+              <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
+                {wide ? <path d="M10 3L6 8l4 5M14 3v10" /> : <path d="M6 3l4 5-4 5M2 3v10" />}
+              </svg>
+            </button>
+          )}
           {onClose && (
             <button onClick={onClose} className="-mt-1 -mr-1 rounded-md p-1 text-muted hover:bg-surface-2 hover:text-ink" aria-label="Close card">
               <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="2">
@@ -97,6 +124,7 @@ export function TopicCard({ node, onClose }: { node: TopicNode; onClose?: () => 
               </svg>
             </button>
           )}
+          </div>
         </div>
         <h2 id="card-title" className="text-2xl font-semibold tracking-tight text-balance">
           {node.title}
@@ -110,8 +138,9 @@ export function TopicCard({ node, onClose }: { node: TopicNode; onClose?: () => 
       </header>
 
       <PracticeLinks node={node} />
+      {visual && <VisualSection key={`visual-${node.id}`} visual={visual} node={node} />}
       <ChildLinks node={node} />
-      <OriginalPanel key={node.id} doc={topics} nodeId={node.id} defaultOpen={!visual} />
+      <OriginalPanel key={`original-${node.id}`} doc={topics} nodeId={node.id} defaultOpen={!visual} />
 
       <nav aria-label="Previous and next topic" className="grid grid-cols-2 gap-2 border-t border-line pt-4 text-sm">
         {prev ? (
@@ -141,5 +170,6 @@ export function TopicCard({ node, onClose }: { node: TopicNode; onClose?: () => 
         .
       </p>
     </article>
+    </StepHighlightProvider>
   )
 }

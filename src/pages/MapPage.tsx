@@ -20,6 +20,22 @@ export function MapPage() {
   const node = getTopic(id)
   const navigate = useNavigate()
   const [view, setView] = useState<View>(readView)
+  const [wide, setWide] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('atlas-wide') === '1'
+    } catch {
+      return false
+    }
+  })
+  const toggleWide = () =>
+    setWide((w) => {
+      try {
+        localStorage.setItem('atlas-wide', w ? '0' : '1')
+      } catch {
+        /* storage unavailable */
+      }
+      return !w
+    })
   const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -77,10 +93,10 @@ export function MapPage() {
         <aside
           ref={panelRef}
           aria-label="Topic card"
-          className="fixed inset-x-0 bottom-0 z-20 max-h-[82vh] overflow-y-auto rounded-t-2xl border-t border-line bg-surface p-5 shadow-[0_-8px_30px_rgba(0,0,0,0.18)] md:static md:z-auto md:max-h-none md:w-[min(600px,48vw)] md:shrink-0 md:rounded-none md:border-t-0 md:border-l md:shadow-none"
+          className={`fixed inset-x-0 bottom-0 z-20 max-h-[82vh] overflow-y-auto rounded-t-2xl border-t border-line bg-surface p-5 shadow-[0_-8px_30px_rgba(0,0,0,0.18)] md:static md:z-auto md:max-h-none ${wide ? 'md:w-[min(1040px,72vw)]' : 'md:w-[min(620px,50vw)]'} md:shrink-0 md:rounded-none md:border-t-0 md:border-l md:shadow-none`}
         >
           <div aria-hidden className="mx-auto -mt-2 mb-3 h-1 w-10 rounded-full bg-line md:hidden" />
-          <TopicCard node={node} onClose={() => navigate('/')} />
+          <TopicCard node={node} onClose={() => navigate('/')} wide={wide} onToggleWide={toggleWide} />
         </aside>
       )}
     </div>

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { useOriginalHighlight } from '../visuals/kit/highlight.tsx'
 import type { SectionDocument, SectionNode } from '../lib/types.ts'
 import { githubBlob } from '../lib/content.ts'
 import { PrimerMarkdown } from './PrimerMarkdown.tsx'
@@ -55,6 +56,8 @@ export function OriginalPanel({
   const last = sections[sections.length - 1]
   const lines: [number, number] = [node.sourceLines[0], last.sourceLines[1]]
   const subCount = collect(doc, nodeId, true).length - 1
+  const articleRef = useRef<HTMLElement>(null)
+  useOriginalHighlight(articleRef, [nodeId, withChildren])
 
   return (
     <details open={defaultOpen} className="group rounded-xl border border-line bg-surface">
@@ -82,7 +85,7 @@ export function OriginalPanel({
             This heading has no text of its own in the Primer; its content is in the subsections.
           </p>
         ) : (
-          <article className="primer prose prose-sm max-w-none">
+          <article ref={articleRef} className="primer prose prose-sm max-w-none">
             {sections.map((s, i) => (
               <SectionBody key={s.id} doc={doc} node={s} baseLevel={node.level} showHeading={i > 0} />
             ))}
