@@ -67,7 +67,8 @@ export function layoutFocus(t: TopicsFile, focusId: string, opts: { twoSided: bo
   const kids = focus.childIds.map((id) => t.nodes[id])
   const totalGc = kids.reduce((s, k) => s + k.childIds.length, 0)
   const showGc = totalGc > 0 && totalGc <= opts.maxGrandchildren
-  const cw = centerWidth(focus.title)
+  const centre = focus.parentId ? focus.title : 'System Design Atlas'
+  const cw = centerWidth(centre)
   const halfC = cw / 2
 
   // Height of each child's block: one row per grandchild when they are drawn.
@@ -135,7 +136,7 @@ export function layoutFocus(t: TopicsFile, focusId: string, opts: { twoSided: bo
     }
   }
 
-  nodes.unshift({ id: focus.id, node: focus, role: 'focus', x: 0, y: 0, side: 1, label: truncate(focus.title, 30), labelW: cw, hidden: 0 })
+  nodes.unshift({ id: focus.id, node: focus, role: 'focus', x: 0, y: 0, side: 1, label: truncate(centre, 30), labelW: cw, hidden: 0 })
 
   let minY = -Math.max(maxSideH / 2, 24)
   const maxY = Math.max(maxSideH / 2, 24)
