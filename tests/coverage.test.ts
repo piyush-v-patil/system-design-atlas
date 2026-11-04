@@ -14,19 +14,27 @@ import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { allTopics, removedTopicIds, topics, solutions, oods, images } from '../src/lib/content.ts'
 import scope from '../content/scope.json'
+import { hiddenImageLines, HIDDEN_IMAGES } from '../src/lib/hiddenImages.ts'
 import { buildMapTree, type MapDatum } from '../src/map/mapData.ts'
 import { inspect, type RenderedPage } from './helpers/render.tsx'
 import { builders } from '../content/builders/index.ts'
 import { headingsOf, notebooks, notebookUrls, read, solutionDirs, urlsOf, type SourceUrl } from './helpers/source.ts'
 
 const PUBLIC = join(import.meta.dirname, '../public')
-const CHECKS = 6
+const CHECKS = 7
 const report: Record<string, { checked: number; missing: string[] }> = {}
 const record = (check: string, checked: number, missing: string[]) => (report[check] = { checked, missing })
 
 /** README lines that belong to sections left out of the Atlas on purpose (content/scope.json). */
 const removedRanges = [...removedTopicIds].map((id) => allTopics.nodes[id].sourceLines)
-const inRemoved = (file: string, line: number) => file === 'README.md' && removedRanges.some(([a, b]) => line >= a && line <= b)
+/** Lines of images hidden because the Atlas draws its own visual (content/scope.json), with their credit lines. */
+const hiddenLines = new Map<string, [number, number][]>()
+const hiddenIn = (file: string) => {
+  if (!hiddenLines.has(file)) hiddenLines.set(file, hiddenImageLines(read(file)))
+  return hiddenLines.get(file)!
+}
+const inRemoved = (file: string, line: number) =>
+  (file === 'README.md' && removedRanges.some(([a, b]) => line >= a && line <= b)) || hiddenIn(file).some(([a, b]) => line >= a && line <= b)
 
 const pages = new Map<string, RenderedPage>()
 const page = (path: string) => {
@@ -190,7 +198,12 @@ describe('coverage', () => {
       else if (entry.credit && !shown.some((p) => p.text.includes(entry.credit!.text) && p.attrs.has(entry.credit!.url)))
         missing.push(`${where} → rendered without its credit "${entry.credit.text}"`)
     }
+    // Every hidden image is accounted for: it exists in the content and is referenced by the text.
+    for (const h of HIDDEN_IMAGES) if (!images.entries[h]) missing.push(`hidden image ${h} is not in content/images.json`)
+    const shownHidden = [...pages.values()].flatMap((p) => p.imgs.filter((i) => i.sourceSrc && HIDDEN_IMAGES.has(i.sourceSrc)).map((i) => `${p.path}: ${i.sourceSrc}`))
+    for (const x of shownHidden) missing.push(`hidden image still rendered at ${x}`)
     record('Images (rendered, file present, credit shown)', checked.size, missing)
+    record(`Images hidden on purpose (content/scope.json; not counted above)`, HIDDEN_IMAGES.size, [])
     expect(missing).toEqual([])
   })
 

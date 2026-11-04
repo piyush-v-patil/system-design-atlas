@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { Builder, Flow } from '../../content/builders/types.ts'
 import type { Claim, ProcessStep } from '../../content/visuals/types.ts'
-import { imageSrc, sourceText, topics } from '../lib/content.ts'
+import { sourceText, topics } from '../lib/content.ts'
 import { resolveLink } from '../lib/links.ts'
 import { lineQuote } from '../lib/quote.ts'
 import type { SolutionFile } from '../lib/types.ts'
@@ -272,18 +272,6 @@ function AdditionsPanel({ b, sol, src, frame, selected, setSelected }: { b: Buil
   )
 }
 
-function PrimerImage({ refUrl, label }: { refUrl: string; label: string }) {
-  const { src, entry } = imageSrc(refUrl)
-  return (
-    <details className="rounded-xl border border-line bg-surface">
-      <summary className="cursor-pointer px-4 py-2.5 text-sm font-medium select-none hover:bg-surface-2">Reference diagram for {label}</summary>
-      <div className="border-t border-line p-3">
-        <img src={src} alt={entry?.caption ?? `Reference diagram: ${label}`} loading="lazy" className="mx-auto max-h-[70vh] w-auto rounded bg-white p-2" />
-      </div>
-    </details>
-  )
-}
-
 /** The builder: tabs for the four steps, the diagram as it stands at the selected step, and the step's panel. */
 export function SolutionBuilder({ b, sol, frame, setFrame }: { b: Builder; sol: SolutionFile; frame: number; setFrame: (f: number) => void }) {
   const src = useMemo(() => sourceText(sol), [sol])
@@ -350,7 +338,6 @@ export function SolutionBuilder({ b, sol, frame, setFrame }: { b: Builder; sol: 
           </ul>
         </section>
       )}
-      {!talking && fr.image && <PrimerImage refUrl={fr.image} label={fr.step === 4 && b.frames.filter((x) => x.step === 4).length > 1 ? fr.label : `Step ${fr.step}`} />}
       {talking && (
         <p className="rounded-xl border border-line bg-surface p-3 text-sm text-muted sm:p-4">
           The diagram shows the final design. The talking points are in the walkthrough.

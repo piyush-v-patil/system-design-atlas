@@ -151,7 +151,7 @@ function WideModel() {
         ColumnFamily&lt;RowKey, Columns&lt;ColKey, Value, Timestamp&gt;&gt;
       </text>
       <Caption x={280} y={224} tone="muted">
-        example data from the image (source: SQL &amp; NoSQL, a brief history)
+        example data (source: SQL &amp; NoSQL, a brief history)
       </Caption>
     </Diagram>
   )
@@ -184,7 +184,7 @@ function GraphModel() {
         </g>
       ))}
       <Caption x={280} y={244} tone="muted">
-        example data from the image (source: Wikipedia, Graph database)
+        example data (source: Wikipedia, Graph database)
       </Caption>
     </Diagram>
   )

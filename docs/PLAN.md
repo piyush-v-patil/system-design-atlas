@@ -908,3 +908,18 @@ That is 12 headings in all.
   - all drawn in the app's style.
 
   The scanned diagrams remain inside each solution's walkthrough and under "Reference diagram".
+
+### Source images only where needed
+
+- **53 of the 55 source images are now hidden** wherever the Atlas draws the same idea itself:
+  - 31 topic images, each covered by a hand-built visual (CAP, DNS, CDN, load balancer, reverse proxy, application
+    layer, replication, federation, sharding, data models, caching strategies, async, OSI, TCP/UDP, RPC, latency
+    chart and others);
+  - the problem images, replaced by the generated architecture diagrams;
+  - all 20 solution diagrams, which the step-through builders redraw.
+- **Each image goes together with its "Source:" credit line.** The list is `content/scope.json` → `hiddenImages`;
+  the files and credits stay in `content/images.json`.
+- **Kept:** the database overview and the real-world architectures diagram, which no Atlas visual replaces.
+- **The solution page's "Reference diagram" panel is removed.**
+- **Coverage:** the test counts hidden images separately, fails if one still renders anywhere, and still checks the
+  2 remaining images and their credits.

@@ -5,6 +5,7 @@ import { AreaChip, Breadcrumbs, PracticeLinks } from './parts.tsx'
 import { PrimerMarkdown } from '../card/PrimerMarkdown.tsx'
 import { areaColor, getTopic, topics } from '../lib/content.ts'
 import { visitTopic } from '../lib/journey.ts'
+import { stripHiddenImages } from '../lib/hiddenImages.ts'
 import type { TopicNode } from '../lib/types.ts'
 import { VisualSection } from '../visuals/VisualSection.tsx'
 import { StepHighlightProvider, useOriginalHighlight } from '../visuals/kit/highlight.tsx'
@@ -108,7 +109,8 @@ export function TopicPage() {
   const subs = subtopics(node)
   const isRoot = node.id === topics.rootId
   const hubWithoutText = isBlank(node.markdown) && !isRoot
-  const [lead, rest] = splitLead(node.markdown)
+  const text = stripHiddenImages(node.markdown)
+  const [lead, rest] = splitLead(text)
   const hasVisual = !!visual && !visual.textOnly
   const prose = 'primer prose prose-sm max-w-none md:prose-base'
 
@@ -135,7 +137,7 @@ export function TopicPage() {
           {(isRoot && !isBlank(topics.preamble)) || !isBlank(lead) ? (
             <div className={prose}>
               {isRoot && <PrimerMarkdown markdown={topics.preamble} docPath={topics.source.path} />}
-              <PrimerMarkdown markdown={hasVisual ? lead : node.markdown} docPath={topics.source.path} />
+              <PrimerMarkdown markdown={hasVisual ? lead : text} docPath={topics.source.path} />
             </div>
           ) : null}
           {hasVisual && <VisualSection key={`visual-${node.id}`} visual={visual!} node={node} hideSummary />}

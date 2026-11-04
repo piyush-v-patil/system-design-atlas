@@ -61,7 +61,7 @@ export function OsiVisual(_: VisualProps) {
         ) : (
           <div className="text-xs text-muted">Not covered further here.</div>
         )}
-        <p className="mt-auto text-[11px] text-muted">Layer names and examples follow the OSI image (source: OSI 7 layer model).</p>
+        <p className="mt-auto text-[11px] text-muted">Layer names and examples: OSI 7 layer model.</p>
       </div>
     </div>
   )
@@ -287,9 +287,6 @@ export function RpcVisual({ visual }: VisualProps) {
         {st === 5 && <Badge x={sx[2]} y={214} text="unmarshal + call" tone="accent" />}
         {st === 3 && <Packet key="rq" path={line([190, 84], [302, 84])} to={[302, 84]} label="msg" />}
         {st === 6 && <Packet key="rp" path={line([302, 116], [190, 116])} to={[190, 116]} label="res" tone="ok" />}
-        <Caption x={280} y={244} tone="muted">
-          “dispatcher” and “service procedure” appear in the diagram
-        </Caption>
       </Diagram>
     </ProcessPlayer>
   )

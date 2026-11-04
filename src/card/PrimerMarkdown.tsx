@@ -9,6 +9,7 @@ import { codeKey } from '../lib/hash.ts'
 import { imageSrc } from '../lib/content.ts'
 import { resolveLink } from '../lib/links.ts'
 import { normalizeInlineHtml } from '../lib/markdown-fixups.ts'
+import { stripHiddenImages } from '../lib/hiddenImages.ts'
 import { GLOSSARY } from '../../content/glossary.ts'
 import { GlossaryLink } from '../media/GlossaryLink.tsx'
 import { VideoEmbed, youTubeId } from '../media/VideoEmbed.tsx'
@@ -141,7 +142,7 @@ export function PrimerMarkdown({ markdown, docPath }: { markdown: string; docPat
       rehypePlugins={[rehypeRaw, [rehypeSanitize, schema]]}
       components={components(docPath)}
     >
-      {normalizeInlineHtml(markdown)}
+      {normalizeInlineHtml(stripHiddenImages(markdown))}
     </Markdown>
   )
 }
