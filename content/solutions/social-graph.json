@@ -1,0 +1,695 @@
+{
+ "source": {
+  "repo": "https://github.com/donnemartin/system-design-primer",
+  "commit": "ae9bbd7b02d90b9866215de185217d33f39ab733",
+  "path": "solutions/system_design/social_graph/README.md"
+ },
+ "preamble": "",
+ "rootId": "design-the-data-structures-for-a-social-network",
+ "order": [
+  "design-the-data-structures-for-a-social-network",
+  "step-1-outline-use-cases-and-constraints",
+  "use-cases",
+  "well-scope-the-problem-to-handle-only-the-following-use-cases",
+  "constraints-and-assumptions",
+  "state-assumptions",
+  "calculate-usage",
+  "step-2-create-a-high-level-design",
+  "step-3-design-core-components",
+  "use-case-user-searches-for-someone-and-sees-the-shortest-path-to-the-searched-person",
+  "step-4-scale-the-design",
+  "additional-talking-points",
+  "sql-scaling-patterns",
+  "nosql",
+  "caching",
+  "asynchronism-and-microservices",
+  "communications",
+  "security",
+  "latency-numbers",
+  "ongoing"
+ ],
+ "nodes": {
+  "design-the-data-structures-for-a-social-network": {
+   "id": "design-the-data-structures-for-a-social-network",
+   "title": "Design the data structures for a social network",
+   "depth": 1,
+   "level": 0,
+   "order": 0,
+   "parentId": null,
+   "childIds": [
+    "step-1-outline-use-cases-and-constraints",
+    "step-2-create-a-high-level-design",
+    "step-3-design-core-components",
+    "step-4-scale-the-design",
+    "additional-talking-points"
+   ],
+   "headingPath": [
+    "Design the data structures for a social network"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network"
+   ],
+   "headingMarkdown": "# Design the data structures for a social network",
+   "markdown": "\n\n*Note: This document links directly to relevant areas found in the [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) to avoid duplication.  Refer to the linked content for general talking points, tradeoffs, and alternatives.*\n\n",
+   "sourceLines": [
+    1,
+    4
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics"
+   ],
+   "images": []
+  },
+  "step-1-outline-use-cases-and-constraints": {
+   "id": "step-1-outline-use-cases-and-constraints",
+   "title": "Step 1: Outline use cases and constraints",
+   "depth": 2,
+   "level": 1,
+   "order": 1,
+   "parentId": "design-the-data-structures-for-a-social-network",
+   "childIds": [
+    "use-cases",
+    "constraints-and-assumptions"
+   ],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 1: Outline use cases and constraints"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-1-outline-use-cases-and-constraints"
+   ],
+   "headingMarkdown": "## Step 1: Outline use cases and constraints",
+   "markdown": "\n\n> Gather requirements and scope the problem.\n> Ask questions to clarify use cases and constraints.\n> Discuss assumptions.\n\nWithout an interviewer to address clarifying questions, we'll define some use cases and constraints.\n\n",
+   "sourceLines": [
+    5,
+    12
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-cases": {
+   "id": "use-cases",
+   "title": "Use cases",
+   "depth": 3,
+   "level": 2,
+   "order": 2,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 1: Outline use cases and constraints",
+    "Use cases"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases"
+   ],
+   "headingMarkdown": "### Use cases",
+   "markdown": "\n\n",
+   "sourceLines": [
+    13,
+    14
+   ],
+   "urls": [],
+   "images": []
+  },
+  "well-scope-the-problem-to-handle-only-the-following-use-cases": {
+   "id": "well-scope-the-problem-to-handle-only-the-following-use-cases",
+   "title": "We'll scope the problem to handle only the following use cases",
+   "depth": 4,
+   "level": 3,
+   "order": 3,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "We'll scope the problem to handle only the following use cases"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingMarkdown": "#### We'll scope the problem to handle only the following use cases",
+   "markdown": "\n\n* **User** searches for someone and sees the shortest path to the searched person\n* **Service** has high availability\n\n",
+   "sourceLines": [
+    15,
+    19
+   ],
+   "urls": [],
+   "images": []
+  },
+  "constraints-and-assumptions": {
+   "id": "constraints-and-assumptions",
+   "title": "Constraints and assumptions",
+   "depth": 3,
+   "level": 2,
+   "order": 4,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "state-assumptions",
+    "calculate-usage"
+   ],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions"
+   ],
+   "headingMarkdown": "### Constraints and assumptions",
+   "markdown": "\n\n",
+   "sourceLines": [
+    20,
+    21
+   ],
+   "urls": [],
+   "images": []
+  },
+  "state-assumptions": {
+   "id": "state-assumptions",
+   "title": "State assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 5,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "State assumptions"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "state-assumptions"
+   ],
+   "headingMarkdown": "#### State assumptions",
+   "markdown": "\n\n* Traffic is not evenly distributed\n    * Some searches are more popular than others, while others are only executed once\n* Graph data won't fit on a single machine\n* Graph edges are unweighted\n* 100 million users\n* 50 friends per user average\n* 1 billion friend searches per month\n\nExercise the use of more traditional systems - don't use graph-specific solutions such as [GraphQL](http://graphql.org/) or a graph database like [Neo4j](https://neo4j.com/)\n\n",
+   "sourceLines": [
+    22,
+    33
+   ],
+   "urls": [
+    "http://graphql.org/",
+    "https://neo4j.com/"
+   ],
+   "images": []
+  },
+  "calculate-usage": {
+   "id": "calculate-usage",
+   "title": "Calculate usage",
+   "depth": 4,
+   "level": 3,
+   "order": 6,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "Calculate usage"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "calculate-usage"
+   ],
+   "headingMarkdown": "#### Calculate usage",
+   "markdown": "\n\n**Clarify with your interviewer if you should run back-of-the-envelope usage calculations.**\n\n* 5 billion friend relationships\n    * 100 million users * 50 friends per user average\n* 400 search requests per second\n\nHandy conversion guide:\n\n* 2.5 million seconds per month\n* 1 request per second = 2.5 million requests per month\n* 40 requests per second = 100 million requests per month\n* 400 requests per second = 1 billion requests per month\n\n",
+   "sourceLines": [
+    34,
+    48
+   ],
+   "urls": [],
+   "images": []
+  },
+  "step-2-create-a-high-level-design": {
+   "id": "step-2-create-a-high-level-design",
+   "title": "Step 2: Create a high level design",
+   "depth": 2,
+   "level": 1,
+   "order": 7,
+   "parentId": "design-the-data-structures-for-a-social-network",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 2: Create a high level design"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-2-create-a-high-level-design"
+   ],
+   "headingMarkdown": "## Step 2: Create a high level design",
+   "markdown": "\n\n> Outline a high level design with all important components.\n\n![Imgur](http://i.imgur.com/wxXyq2J.png)\n\n",
+   "sourceLines": [
+    49,
+    54
+   ],
+   "urls": [
+    "http://i.imgur.com/wxXyq2J.png"
+   ],
+   "images": [
+    "http://i.imgur.com/wxXyq2J.png"
+   ]
+  },
+  "step-3-design-core-components": {
+   "id": "step-3-design-core-components",
+   "title": "Step 3: Design core components",
+   "depth": 2,
+   "level": 1,
+   "order": 8,
+   "parentId": "design-the-data-structures-for-a-social-network",
+   "childIds": [
+    "use-case-user-searches-for-someone-and-sees-the-shortest-path-to-the-searched-person"
+   ],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 3: Design core components"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-3-design-core-components"
+   ],
+   "headingMarkdown": "## Step 3: Design core components",
+   "markdown": "\n\n> Dive into details for each core component.\n\n",
+   "sourceLines": [
+    55,
+    58
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-user-searches-for-someone-and-sees-the-shortest-path-to-the-searched-person": {
+   "id": "use-case-user-searches-for-someone-and-sees-the-shortest-path-to-the-searched-person",
+   "title": "Use case: User searches for someone and sees the shortest path to the searched person",
+   "depth": 3,
+   "level": 2,
+   "order": 9,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 3: Design core components",
+    "Use case: User searches for someone and sees the shortest path to the searched person"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-3-design-core-components",
+    "use-case-user-searches-for-someone-and-sees-the-shortest-path-to-the-searched-person"
+   ],
+   "headingMarkdown": "### Use case: User searches for someone and sees the shortest path to the searched person",
+   "markdown": "\n\n**Clarify with your interviewer how much code you are expected to write**.\n\nWithout the constraint of millions of users (vertices) and billions of friend relationships (edges), we could solve this unweighted shortest path task with a general BFS approach:\n\n```python\nclass Graph(Graph):\n\n    def shortest_path(self, source, dest):\n        if source is None or dest is None:\n            return None\n        if source is dest:\n            return [source.key]\n        prev_node_keys = self._shortest_path(source, dest)\n        if prev_node_keys is None:\n            return None\n        else:\n            path_ids = [dest.key]\n            prev_node_key = prev_node_keys[dest.key]\n            while prev_node_key is not None:\n                path_ids.append(prev_node_key)\n                prev_node_key = prev_node_keys[prev_node_key]\n            return path_ids[::-1]\n\n    def _shortest_path(self, source, dest):\n        queue = deque()\n        queue.append(source)\n        prev_node_keys = {source.key: None}\n        source.visit_state = State.visited\n        while queue:\n            node = queue.popleft()\n            if node is dest:\n                return prev_node_keys\n            prev_node = node\n            for adj_node in node.adj_nodes.values():\n                if adj_node.visit_state == State.unvisited:\n                    queue.append(adj_node)\n                    prev_node_keys[adj_node.key] = prev_node.key\n                    adj_node.visit_state = State.visited\n        return None\n```\n\nWe won't be able to fit all users on the same machine, we'll need to [shard](https://github.com/donnemartin/system-design-primer#sharding) users across **Person Servers** and access them with a **Lookup Service**.\n\n* The **Client** sends a request to the **Web Server**, running as a [reverse proxy](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* The **Web Server** forwards the request to the **Search API** server\n* The **Search API** server forwards the request to the **User Graph Service**\n* The **User Graph Service** does the following:\n    * Uses the **Lookup Service** to find the **Person Server** where the current user's info is stored\n    * Finds the appropriate **Person Server** to retrieve the current user's list of `friend_ids`\n    * Runs a BFS search using the current user as the `source` and the current user's `friend_ids` as the ids for each `adjacent_node`\n    * To get the `adjacent_node` from a given id:\n        * The **User Graph Service** will *again* need to communicate with the **Lookup Service** to determine which **Person Server** stores the`adjacent_node` matching the given id (potential for optimization)\n\n**Clarify with your interviewer how much code you should be writing**.\n\n**Note**: Error handling is excluded below for simplicity.  Ask if you should code proper error handing.\n\n**Lookup Service** implementation:\n\n```python\nclass LookupService(object):\n\n    def __init__(self):\n        self.lookup = self._init_lookup()  # key: person_id, value: person_server\n\n    def _init_lookup(self):\n        ...\n\n    def lookup_person_server(self, person_id):\n        return self.lookup[person_id]\n```\n\n**Person Server** implementation:\n\n```python\nclass PersonServer(object):\n\n    def __init__(self):\n        self.people = {}  # key: person_id, value: person\n\n    def add_person(self, person):\n        ...\n\n    def people(self, ids):\n        results = []\n        for id in ids:\n            if id in self.people:\n                results.append(self.people[id])\n        return results\n```\n\n**Person** implementation:\n\n```python\nclass Person(object):\n\n    def __init__(self, id, name, friend_ids):\n        self.id = id\n        self.name = name\n        self.friend_ids = friend_ids\n```\n\n**User Graph Service** implementation:\n\n```python\nclass UserGraphService(object):\n\n    def __init__(self, lookup_service):\n        self.lookup_service = lookup_service\n\n    def person(self, person_id):\n        person_server = self.lookup_service.lookup_person_server(person_id)\n        return person_server.people([person_id])\n\n    def shortest_path(self, source_key, dest_key):\n        if source_key is None or dest_key is None:\n            return None\n        if source_key is dest_key:\n            return [source_key]\n        prev_node_keys = self._shortest_path(source_key, dest_key)\n        if prev_node_keys is None:\n            return None\n        else:\n            # Iterate through the path_ids backwards, starting at dest_key\n            path_ids = [dest_key]\n            prev_node_key = prev_node_keys[dest_key]\n            while prev_node_key is not None:\n                path_ids.append(prev_node_key)\n                prev_node_key = prev_node_keys[prev_node_key]\n            # Reverse the list since we iterated backwards\n            return path_ids[::-1]\n\n    def _shortest_path(self, source_key, dest_key, path):\n        # Use the id to get the Person\n        source = self.person(source_key)\n        # Update our bfs queue\n        queue = deque()\n        queue.append(source)\n        # prev_node_keys keeps track of each hop from\n        # the source_key to the dest_key\n        prev_node_keys = {source_key: None}\n        # We'll use visited_ids to keep track of which nodes we've\n        # visited, which can be different from a typical bfs where\n        # this can be stored in the node itself\n        visited_ids = set()\n        visited_ids.add(source.id)\n        while queue:\n            node = queue.popleft()\n            if node.key is dest_key:\n                return prev_node_keys\n            prev_node = node\n            for friend_id in node.friend_ids:\n                if friend_id not in visited_ids:\n                    friend_node = self.person(friend_id)\n                    queue.append(friend_node)\n                    prev_node_keys[friend_id] = prev_node.key\n                    visited_ids.add(friend_id)\n        return None\n```\n\nWe'll use a public [**REST API**](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest):\n\n```\n$ curl https://social.com/api/v1/friend_search?person_id=1234\n```\n\nResponse:\n\n```\n{\n    \"person_id\": \"100\",\n    \"name\": \"foo\",\n    \"link\": \"https://social.com/foo\",\n},\n{\n    \"person_id\": \"53\",\n    \"name\": \"bar\",\n    \"link\": \"https://social.com/bar\",\n},\n{\n    \"person_id\": \"1234\",\n    \"name\": \"baz\",\n    \"link\": \"https://social.com/baz\",\n},\n```\n\nFor internal communications, we could use [Remote Procedure Calls](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc).\n\n",
+   "sourceLines": [
+    59,
+    248
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc"
+   ],
+   "images": []
+  },
+  "step-4-scale-the-design": {
+   "id": "step-4-scale-the-design",
+   "title": "Step 4: Scale the design",
+   "depth": 2,
+   "level": 1,
+   "order": 10,
+   "parentId": "design-the-data-structures-for-a-social-network",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Step 4: Scale the design"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "step-4-scale-the-design"
+   ],
+   "headingMarkdown": "## Step 4: Scale the design",
+   "markdown": "\n\n> Identify and address bottlenecks, given the constraints.\n\n![Imgur](http://i.imgur.com/cdCv5g7.png)\n\n**Important: Do not simply jump right into the final design from the initial design!**\n\nState you would 1) **Benchmark/Load Test**, 2) **Profile** for bottlenecks 3) address bottlenecks while evaluating alternatives and trade-offs, and 4) repeat.  See [Design a system that scales to millions of users on AWS](../scaling_aws/README.md) as a sample on how to iteratively scale the initial design.\n\nIt's important to discuss what bottlenecks you might encounter with the initial design and how you might address each of them.  For example, what issues are addressed by adding a **Load Balancer** with multiple **Web Servers**?  **CDN**?  **Master-Slave Replicas**?  What are the alternatives and **Trade-Offs** for each?\n\nWe'll introduce some components to complete the design and to address scalability issues.  Internal load balancers are not shown to reduce clutter.\n\n*To avoid repeating discussions*, refer to the following [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) for main talking points, tradeoffs, and alternatives:\n\n* [DNS](https://github.com/donnemartin/system-design-primer#domain-name-system)\n* [Load balancer](https://github.com/donnemartin/system-design-primer#load-balancer)\n* [Horizontal scaling](https://github.com/donnemartin/system-design-primer#horizontal-scaling)\n* [Web server (reverse proxy)](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* [API server (application layer)](https://github.com/donnemartin/system-design-primer#application-layer)\n* [Cache](https://github.com/donnemartin/system-design-primer#cache)\n* [Consistency patterns](https://github.com/donnemartin/system-design-primer#consistency-patterns)\n* [Availability patterns](https://github.com/donnemartin/system-design-primer#availability-patterns)\n\nTo address the constraint of 400 *average* read requests per second (higher at peak), person data can be served from a **Memory Cache** such as Redis or Memcached to reduce response times and to reduce traffic to downstream services.  This could be especially useful for people who do multiple searches in succession and for people who are well-connected.  Reading 1 MB sequentially from memory takes about 250 microseconds, while reading from SSD takes 4x and from disk takes 80x longer.<sup><a href=https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know>1</a></sup>\n\nBelow are further optimizations:\n\n* Store complete or partial BFS traversals to speed up subsequent lookups in the **Memory Cache**\n* Batch compute offline then store complete or partial BFS traversals to speed up subsequent lookups in a **NoSQL Database**\n* Reduce machine jumps by batching together friend lookups hosted on the same **Person Server**\n    * [Shard](https://github.com/donnemartin/system-design-primer#sharding) **Person Servers** by location to further improve this, as friends generally live closer to each other\n* Do two BFS searches at the same time, one starting from the source, and one from the destination, then merge the two paths\n* Start the BFS search from people with large numbers of friends, as they are more likely to reduce the number of [degrees of separation](https://en.wikipedia.org/wiki/Six_degrees_of_separation) between the current user and the search target\n* Set a limit based on time or number of hops before asking the user if they want to continue searching, as searching could take a considerable amount of time in some cases\n* Use a **Graph Database** such as [Neo4j](https://neo4j.com/) or a graph-specific query language such as [GraphQL](http://graphql.org/) (if there were no constraint preventing the use of **Graph Databases**)\n\n",
+   "sourceLines": [
+    249,
+    286
+   ],
+   "urls": [
+    "http://i.imgur.com/cdCv5g7.png",
+    "../scaling_aws/README.md",
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics",
+    "https://github.com/donnemartin/system-design-primer#domain-name-system",
+    "https://github.com/donnemartin/system-design-primer#load-balancer",
+    "https://github.com/donnemartin/system-design-primer#horizontal-scaling",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#application-layer",
+    "https://github.com/donnemartin/system-design-primer#cache",
+    "https://github.com/donnemartin/system-design-primer#consistency-patterns",
+    "https://github.com/donnemartin/system-design-primer#availability-patterns",
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know",
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://en.wikipedia.org/wiki/Six_degrees_of_separation",
+    "https://neo4j.com/",
+    "http://graphql.org/"
+   ],
+   "images": [
+    "http://i.imgur.com/cdCv5g7.png"
+   ]
+  },
+  "additional-talking-points": {
+   "id": "additional-talking-points",
+   "title": "Additional talking points",
+   "depth": 2,
+   "level": 1,
+   "order": 11,
+   "parentId": "design-the-data-structures-for-a-social-network",
+   "childIds": [
+    "sql-scaling-patterns",
+    "caching",
+    "asynchronism-and-microservices",
+    "communications",
+    "security",
+    "latency-numbers",
+    "ongoing"
+   ],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points"
+   ],
+   "headingMarkdown": "## Additional talking points",
+   "markdown": "\n\n> Additional topics to dive into, depending on the problem scope and time remaining.\n\n",
+   "sourceLines": [
+    287,
+    290
+   ],
+   "urls": [],
+   "images": []
+  },
+  "sql-scaling-patterns": {
+   "id": "sql-scaling-patterns",
+   "title": "SQL scaling patterns",
+   "depth": 3,
+   "level": 2,
+   "order": 12,
+   "parentId": "additional-talking-points",
+   "childIds": [
+    "nosql"
+   ],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points",
+    "SQL scaling patterns"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points",
+    "sql-scaling-patterns"
+   ],
+   "headingMarkdown": "### SQL scaling patterns",
+   "markdown": "\n\n* [Read replicas](https://github.com/donnemartin/system-design-primer#master-slave-replication)\n* [Federation](https://github.com/donnemartin/system-design-primer#federation)\n* [Sharding](https://github.com/donnemartin/system-design-primer#sharding)\n* [Denormalization](https://github.com/donnemartin/system-design-primer#denormalization)\n* [SQL Tuning](https://github.com/donnemartin/system-design-primer#sql-tuning)\n\n",
+   "sourceLines": [
+    291,
+    298
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#master-slave-replication",
+    "https://github.com/donnemartin/system-design-primer#federation",
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#denormalization",
+    "https://github.com/donnemartin/system-design-primer#sql-tuning"
+   ],
+   "images": []
+  },
+  "nosql": {
+   "id": "nosql",
+   "title": "NoSQL",
+   "depth": 4,
+   "level": 3,
+   "order": 13,
+   "parentId": "sql-scaling-patterns",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points",
+    "SQL scaling patterns",
+    "NoSQL"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points",
+    "sql-scaling-patterns",
+    "nosql"
+   ],
+   "headingMarkdown": "#### NoSQL",
+   "markdown": "\n\n* [Key-value store](https://github.com/donnemartin/system-design-primer#key-value-store)\n* [Document store](https://github.com/donnemartin/system-design-primer#document-store)\n* [Wide column store](https://github.com/donnemartin/system-design-primer#wide-column-store)\n* [Graph database](https://github.com/donnemartin/system-design-primer#graph-database)\n* [SQL vs NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql)\n\n",
+   "sourceLines": [
+    299,
+    306
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#key-value-store",
+    "https://github.com/donnemartin/system-design-primer#document-store",
+    "https://github.com/donnemartin/system-design-primer#wide-column-store",
+    "https://github.com/donnemartin/system-design-primer#graph-database",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql"
+   ],
+   "images": []
+  },
+  "caching": {
+   "id": "caching",
+   "title": "Caching",
+   "depth": 3,
+   "level": 2,
+   "order": 14,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points",
+    "Caching"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points",
+    "caching"
+   ],
+   "headingMarkdown": "### Caching",
+   "markdown": "\n\n* Where to cache\n    * [Client caching](https://github.com/donnemartin/system-design-primer#client-caching)\n    * [CDN caching](https://github.com/donnemartin/system-design-primer#cdn-caching)\n    * [Web server caching](https://github.com/donnemartin/system-design-primer#web-server-caching)\n    * [Database caching](https://github.com/donnemartin/system-design-primer#database-caching)\n    * [Application caching](https://github.com/donnemartin/system-design-primer#application-caching)\n* What to cache\n    * [Caching at the database query level](https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level)\n    * [Caching at the object level](https://github.com/donnemartin/system-design-primer#caching-at-the-object-level)\n* When to update the cache\n    * [Cache-aside](https://github.com/donnemartin/system-design-primer#cache-aside)\n    * [Write-through](https://github.com/donnemartin/system-design-primer#write-through)\n    * [Write-behind (write-back)](https://github.com/donnemartin/system-design-primer#write-behind-write-back)\n    * [Refresh ahead](https://github.com/donnemartin/system-design-primer#refresh-ahead)\n\n",
+   "sourceLines": [
+    307,
+    323
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#client-caching",
+    "https://github.com/donnemartin/system-design-primer#cdn-caching",
+    "https://github.com/donnemartin/system-design-primer#web-server-caching",
+    "https://github.com/donnemartin/system-design-primer#database-caching",
+    "https://github.com/donnemartin/system-design-primer#application-caching",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-object-level",
+    "https://github.com/donnemartin/system-design-primer#cache-aside",
+    "https://github.com/donnemartin/system-design-primer#write-through",
+    "https://github.com/donnemartin/system-design-primer#write-behind-write-back",
+    "https://github.com/donnemartin/system-design-primer#refresh-ahead"
+   ],
+   "images": []
+  },
+  "asynchronism-and-microservices": {
+   "id": "asynchronism-and-microservices",
+   "title": "Asynchronism and microservices",
+   "depth": 3,
+   "level": 2,
+   "order": 15,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points",
+    "Asynchronism and microservices"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points",
+    "asynchronism-and-microservices"
+   ],
+   "headingMarkdown": "### Asynchronism and microservices",
+   "markdown": "\n\n* [Message queues](https://github.com/donnemartin/system-design-primer#message-queues)\n* [Task queues](https://github.com/donnemartin/system-design-primer#task-queues)\n* [Back pressure](https://github.com/donnemartin/system-design-primer#back-pressure)\n* [Microservices](https://github.com/donnemartin/system-design-primer#microservices)\n\n",
+   "sourceLines": [
+    324,
+    330
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#message-queues",
+    "https://github.com/donnemartin/system-design-primer#task-queues",
+    "https://github.com/donnemartin/system-design-primer#back-pressure",
+    "https://github.com/donnemartin/system-design-primer#microservices"
+   ],
+   "images": []
+  },
+  "communications": {
+   "id": "communications",
+   "title": "Communications",
+   "depth": 3,
+   "level": 2,
+   "order": 16,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points",
+    "Communications"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points",
+    "communications"
+   ],
+   "headingMarkdown": "### Communications",
+   "markdown": "\n\n* Discuss tradeoffs:\n    * External communication with clients - [HTTP APIs following REST](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest)\n    * Internal communications - [RPC](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc)\n* [Service discovery](https://github.com/donnemartin/system-design-primer#service-discovery)\n\n",
+   "sourceLines": [
+    331,
+    337
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc",
+    "https://github.com/donnemartin/system-design-primer#service-discovery"
+   ],
+   "images": []
+  },
+  "security": {
+   "id": "security",
+   "title": "Security",
+   "depth": 3,
+   "level": 2,
+   "order": 17,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points",
+    "Security"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points",
+    "security"
+   ],
+   "headingMarkdown": "### Security",
+   "markdown": "\n\nRefer to the [security section](https://github.com/donnemartin/system-design-primer#security).\n\n",
+   "sourceLines": [
+    338,
+    341
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#security"
+   ],
+   "images": []
+  },
+  "latency-numbers": {
+   "id": "latency-numbers",
+   "title": "Latency numbers",
+   "depth": 3,
+   "level": 2,
+   "order": 18,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points",
+    "Latency numbers"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points",
+    "latency-numbers"
+   ],
+   "headingMarkdown": "### Latency numbers",
+   "markdown": "\n\nSee [Latency numbers every programmer should know](https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know).\n\n",
+   "sourceLines": [
+    342,
+    345
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know"
+   ],
+   "images": []
+  },
+  "ongoing": {
+   "id": "ongoing",
+   "title": "Ongoing",
+   "depth": 3,
+   "level": 2,
+   "order": 19,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the data structures for a social network",
+    "Additional talking points",
+    "Ongoing"
+   ],
+   "pathIds": [
+    "design-the-data-structures-for-a-social-network",
+    "additional-talking-points",
+    "ongoing"
+   ],
+   "headingMarkdown": "### Ongoing",
+   "markdown": "\n\n* Continue benchmarking and monitoring your system to address bottlenecks as they come up\n* Scaling is an iterative process\n",
+   "sourceLines": [
+    346,
+    349
+   ],
+   "urls": [],
+   "images": []
+  }
+ },
+ "id": "social-graph",
+ "dir": "social_graph",
+ "title": "Design the data structures for a social network",
+ "readmeTitle": "Design the data structures for a social network",
+ "readmeTopicId": "design-the-data-structures-for-a-social-network",
+ "steps": [
+  {
+   "step": 1,
+   "label": "Outline use cases and constraints",
+   "nodeId": "step-1-outline-use-cases-and-constraints"
+  },
+  {
+   "step": 2,
+   "label": "Create a high level design",
+   "nodeId": "step-2-create-a-high-level-design"
+  },
+  {
+   "step": 3,
+   "label": "Design core components",
+   "nodeId": "step-3-design-core-components"
+  },
+  {
+   "step": 4,
+   "label": "Scale the design",
+   "nodeId": "step-4-scale-the-design"
+  },
+  {
+   "step": 5,
+   "label": "Additional talking points",
+   "nodeId": "additional-talking-points"
+  }
+ ]
+}

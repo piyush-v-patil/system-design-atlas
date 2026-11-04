@@ -1,0 +1,87 @@
+import { type Builder, e, GB, n, PER_MONTH, STANDARD_FRAMES, TB } from './types.ts'
+
+// Same layout as the Primer's diagram (it mirrors Pastebin's). Frames: 0 = Step 1 … 3 = Step 4.
+const builder: Builder = {
+  solutionId: 'sales-rank',
+  width: 760,
+  height: 640,
+  frames: STANDARD_FRAMES('http://i.imgur.com/vwMa1Qu.png', 'http://i.imgur.com/MzExP06.png'),
+  nodes: [
+    n('client', 'Client', 'client', 120, 40, 0),
+    n('dns', 'DNS', 'dns', 400, 40, 3),
+    n('cdn', 'CDN', 'cdn', 400, 115, 3),
+    n('lb', 'Load Balancer', 'lb', 270, 195, 3, { multi: 3 }),
+    n('web', 'Web Server', 'server', 270, 290, 1, { multi: 3 }),
+    n('sales', 'Sales API', 'app', 140, 390, 1, { multi: 3 }),
+    n('read', 'Read API', 'app', 380, 390, 1, { multi: 3 }),
+    n('srs', 'Sales Rank\nService', 'app', 620, 390, 2, { multi: 3, aka: ['MapReduce'] }),
+    n('mc', 'Memory Cache', 'cache', 270, 490, 3, { multi: 3 }),
+    n('sql', 'SQL', 'db', 330, 595, 1, { until: 3, aka: ['SQL Database'] }),
+    n('wms', 'SQL Write\nMaster-Slave', 'db', 140, 595, 3, { multi: 3 }),
+    n('rr', 'SQL Read\nReplicas', 'db', 330, 595, 3, { multi: 3 }),
+    n('obj', 'Object\nStore', 'store', 630, 595, 1),
+  ],
+  edges: [
+    e('client', 'web', { until: 3 }),
+    e('client', 'dns'),
+    e('client', 'cdn'),
+    e('client', 'lb'),
+    e('lb', 'web'),
+    e('cdn', 'obj'),
+    e('web', 'sales'),
+    e('web', 'read'),
+    e('web', 'obj', { from: 3 }),
+    e('sales', 'sql', { until: 3 }),
+    e('sales', 'obj'),
+    e('read', 'sql', { until: 3 }),
+    e('read', 'obj', { from: 3 }),
+    e('srs', 'obj'),
+    e('srs', 'sql', { until: 3 }),
+    e('sales', 'wms'),
+    e('read', 'mc'),
+    e('read', 'rr'),
+    e('srs', 'rr', { bend: -60 }),
+    e('wms', 'rr', { style: 'dashed' }),
+  ],
+  flows: [
+    {
+      title: "Service calculates the past week's most popular products by category",
+      line: 79,
+      hops: [
+        ['sales', 'obj', 81],
+        ['srs', 'obj', 98],
+        ['srs', 'sql', 98],
+      ],
+    },
+    {
+      title: "User views the past week's most popular products by category",
+      line: 201,
+      hops: [
+        ['client', 'web', 203],
+        ['web', 'read', 204],
+        ['read', 'sql', 205],
+      ],
+    },
+  ],
+  math: [
+    { label: 'Size per transaction', formula: '5 + 8 + 4 + 8 + 8 + 4 + 5 bytes', value: 5 + 8 + 4 + 8 + 8 + 4 + 5, stated: 40, unit: 'B', line: 54, statedText: 'Total: ~40 bytes', inputs: [47, 48, 49, 50, 51, 52, 53] },
+    { label: 'New content per month', formula: '40 bytes per transaction × 1 billion transactions per month', value: 40 * 1e9, stated: 40 * GB, unit: 'B', line: 55, statedText: '40 GB of new transaction content per month', inputs: [54, 38] },
+    { label: 'Content in 3 years', formula: '40 GB per month × 36 months', value: 40 * GB * 36, stated: 1.44 * TB, unit: 'B', line: 57, statedText: '1.44 TB of new transaction content in 3 years', inputs: [55] },
+    { label: 'Transactions per second', formula: '1 billion transactions per month ÷ 2.5 million seconds per month', value: 1e9 / PER_MONTH, stated: 400, unit: 'req/s', line: 59, statedText: '400 transactions per second on average', inputs: [38, 64] },
+    { label: 'Reads per second', formula: '100 billion reads per month ÷ 2.5 million seconds per month', value: 100e9 / PER_MONTH, stated: 40_000, unit: 'req/s', line: 60, statedText: '40,000 read requests per second on average', inputs: [39, 64] },
+  ],
+  additions: [
+    { nodes: ['dns'], line: 254, topics: ['domain-name-system'] },
+    { nodes: ['cdn'], line: 248, topics: ['content-delivery-network'] },
+    { nodes: ['lb'], line: 248, topics: ['load-balancer', 'horizontal-scaling'] },
+    { nodes: ['mc'], line: 271, topics: ['cache'] },
+    { nodes: ['rr'], line: 271, topics: ['master-slave-replication'] },
+    { nodes: ['wms'], line: 273, topics: ['fail-over', 'federation', 'sharding', 'denormalization', 'sql-tuning'] },
+  ],
+  notes: [
+    'The fields listed for a transaction add up to 42 bytes; the Primer rounds this to ~40 bytes (L54) and uses 40 bytes from then on.',
+    'As drawn, the final diagram connects the Sales Rank Service to the SQL Read Replicas, although the service writes the sales_rank table (L98), which in a master-slave setup goes to the write master.',
+    'The text mentions an Analytics Database (L267), which the final diagram does not draw.',
+  ],
+}
+export default builder

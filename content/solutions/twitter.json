@@ -1,0 +1,782 @@
+{
+ "source": {
+  "repo": "https://github.com/donnemartin/system-design-primer",
+  "commit": "ae9bbd7b02d90b9866215de185217d33f39ab733",
+  "path": "solutions/system_design/twitter/README.md"
+ },
+ "preamble": "",
+ "rootId": "design-the-twitter-timeline-and-search",
+ "order": [
+  "design-the-twitter-timeline-and-search",
+  "step-1-outline-use-cases-and-constraints",
+  "use-cases",
+  "well-scope-the-problem-to-handle-only-the-following-use-cases",
+  "out-of-scope",
+  "constraints-and-assumptions",
+  "state-assumptions",
+  "calculate-usage",
+  "step-2-create-a-high-level-design",
+  "step-3-design-core-components",
+  "use-case-user-posts-a-tweet",
+  "use-case-user-views-the-home-timeline",
+  "use-case-user-views-the-user-timeline",
+  "use-case-user-searches-keywords",
+  "step-4-scale-the-design",
+  "additional-talking-points",
+  "nosql",
+  "caching",
+  "asynchronism-and-microservices",
+  "communications",
+  "security",
+  "latency-numbers",
+  "ongoing"
+ ],
+ "nodes": {
+  "design-the-twitter-timeline-and-search": {
+   "id": "design-the-twitter-timeline-and-search",
+   "title": "Design the Twitter timeline and search",
+   "depth": 1,
+   "level": 0,
+   "order": 0,
+   "parentId": null,
+   "childIds": [
+    "step-1-outline-use-cases-and-constraints",
+    "step-2-create-a-high-level-design",
+    "step-3-design-core-components",
+    "step-4-scale-the-design",
+    "additional-talking-points"
+   ],
+   "headingPath": [
+    "Design the Twitter timeline and search"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search"
+   ],
+   "headingMarkdown": "# Design the Twitter timeline and search",
+   "markdown": "\n\n*Note: This document links directly to relevant areas found in the [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) to avoid duplication.  Refer to the linked content for general talking points, tradeoffs, and alternatives.*\n\n**Design the Facebook feed** and **Design Facebook search** are similar questions.\n\n",
+   "sourceLines": [
+    1,
+    6
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics"
+   ],
+   "images": []
+  },
+  "step-1-outline-use-cases-and-constraints": {
+   "id": "step-1-outline-use-cases-and-constraints",
+   "title": "Step 1: Outline use cases and constraints",
+   "depth": 2,
+   "level": 1,
+   "order": 1,
+   "parentId": "design-the-twitter-timeline-and-search",
+   "childIds": [
+    "use-cases",
+    "constraints-and-assumptions"
+   ],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 1: Outline use cases and constraints"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-1-outline-use-cases-and-constraints"
+   ],
+   "headingMarkdown": "## Step 1: Outline use cases and constraints",
+   "markdown": "\n\n> Gather requirements and scope the problem.\n> Ask questions to clarify use cases and constraints.\n> Discuss assumptions.\n\nWithout an interviewer to address clarifying questions, we'll define some use cases and constraints.\n\n",
+   "sourceLines": [
+    7,
+    14
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-cases": {
+   "id": "use-cases",
+   "title": "Use cases",
+   "depth": 3,
+   "level": 2,
+   "order": 2,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "well-scope-the-problem-to-handle-only-the-following-use-cases",
+    "out-of-scope"
+   ],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 1: Outline use cases and constraints",
+    "Use cases"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases"
+   ],
+   "headingMarkdown": "### Use cases",
+   "markdown": "\n\n",
+   "sourceLines": [
+    15,
+    16
+   ],
+   "urls": [],
+   "images": []
+  },
+  "well-scope-the-problem-to-handle-only-the-following-use-cases": {
+   "id": "well-scope-the-problem-to-handle-only-the-following-use-cases",
+   "title": "We'll scope the problem to handle only the following use cases",
+   "depth": 4,
+   "level": 3,
+   "order": 3,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "We'll scope the problem to handle only the following use cases"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "well-scope-the-problem-to-handle-only-the-following-use-cases"
+   ],
+   "headingMarkdown": "#### We'll scope the problem to handle only the following use cases",
+   "markdown": "\n\n* **User** posts a tweet\n    * **Service** pushes tweets to followers, sending push notifications and emails\n* **User** views the user timeline (activity from the user)\n* **User** views the home timeline (activity from people the user is following)\n* **User** searches keywords\n* **Service** has high availability\n\n",
+   "sourceLines": [
+    17,
+    25
+   ],
+   "urls": [],
+   "images": []
+  },
+  "out-of-scope": {
+   "id": "out-of-scope",
+   "title": "Out of scope",
+   "depth": 4,
+   "level": 3,
+   "order": 4,
+   "parentId": "use-cases",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 1: Outline use cases and constraints",
+    "Use cases",
+    "Out of scope"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-1-outline-use-cases-and-constraints",
+    "use-cases",
+    "out-of-scope"
+   ],
+   "headingMarkdown": "#### Out of scope",
+   "markdown": "\n\n* **Service** pushes tweets to the Twitter Firehose and other streams\n* **Service** strips out tweets based on users' visibility settings\n    * Hide @reply if the user is not also following the person being replied to\n    * Respect 'hide retweets' setting\n* Analytics\n\n",
+   "sourceLines": [
+    26,
+    33
+   ],
+   "urls": [],
+   "images": []
+  },
+  "constraints-and-assumptions": {
+   "id": "constraints-and-assumptions",
+   "title": "Constraints and assumptions",
+   "depth": 3,
+   "level": 2,
+   "order": 5,
+   "parentId": "step-1-outline-use-cases-and-constraints",
+   "childIds": [
+    "state-assumptions",
+    "calculate-usage"
+   ],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions"
+   ],
+   "headingMarkdown": "### Constraints and assumptions",
+   "markdown": "\n\n",
+   "sourceLines": [
+    34,
+    35
+   ],
+   "urls": [],
+   "images": []
+  },
+  "state-assumptions": {
+   "id": "state-assumptions",
+   "title": "State assumptions",
+   "depth": 4,
+   "level": 3,
+   "order": 6,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "State assumptions"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "state-assumptions"
+   ],
+   "headingMarkdown": "#### State assumptions",
+   "markdown": "\n\nGeneral\n\n* Traffic is not evenly distributed\n* Posting a tweet should be fast\n    * Fanning out a tweet to all of your followers should be fast, unless you have millions of followers\n* 100 million active users\n* 500 million tweets per day or 15 billion tweets per month\n    * Each tweet averages a fanout of 10 deliveries\n    * 5 billion total tweets delivered on fanout per day\n    * 150 billion tweets delivered on fanout per month\n* 250 billion read requests per month\n* 10 billion searches per month\n\nTimeline\n\n* Viewing the timeline should be fast\n* Twitter is more read heavy than write heavy\n    * Optimize for fast reads of tweets\n* Ingesting tweets is write heavy\n\nSearch\n\n* Searching should be fast\n* Search is read-heavy\n\n",
+   "sourceLines": [
+    36,
+    62
+   ],
+   "urls": [],
+   "images": []
+  },
+  "calculate-usage": {
+   "id": "calculate-usage",
+   "title": "Calculate usage",
+   "depth": 4,
+   "level": 3,
+   "order": 7,
+   "parentId": "constraints-and-assumptions",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 1: Outline use cases and constraints",
+    "Constraints and assumptions",
+    "Calculate usage"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-1-outline-use-cases-and-constraints",
+    "constraints-and-assumptions",
+    "calculate-usage"
+   ],
+   "headingMarkdown": "#### Calculate usage",
+   "markdown": "\n\n**Clarify with your interviewer if you should run back-of-the-envelope usage calculations.**\n\n* Size per tweet:\n    * `tweet_id` - 8 bytes\n    * `user_id` - 32 bytes\n    * `text` - 140 bytes\n    * `media` - 10 KB average\n    * Total: ~10 KB\n* 150 TB of new tweet content per month\n    * 10 KB per tweet * 500 million tweets per day * 30 days per month\n    * 5.4 PB of new tweet content in 3 years\n* 100 thousand read requests per second\n    * 250 billion read requests per month * (400 requests per second / 1 billion requests per month)\n* 6,000 tweets per second\n    * 15 billion tweets per month * (400 requests per second / 1 billion requests per month)\n* 60 thousand tweets delivered on fanout per second\n    * 150 billion tweets delivered on fanout per month * (400 requests per second / 1 billion requests per month)\n* 4,000 search requests per second\n    * 10 billion searches per month * (400 requests per second / 1 billion requests per month)\n\nHandy conversion guide:\n\n* 2.5 million seconds per month\n* 1 request per second = 2.5 million requests per month\n* 40 requests per second = 100 million requests per month\n* 400 requests per second = 1 billion requests per month\n\n",
+   "sourceLines": [
+    63,
+    91
+   ],
+   "urls": [],
+   "images": []
+  },
+  "step-2-create-a-high-level-design": {
+   "id": "step-2-create-a-high-level-design",
+   "title": "Step 2: Create a high level design",
+   "depth": 2,
+   "level": 1,
+   "order": 8,
+   "parentId": "design-the-twitter-timeline-and-search",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 2: Create a high level design"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-2-create-a-high-level-design"
+   ],
+   "headingMarkdown": "## Step 2: Create a high level design",
+   "markdown": "\n\n> Outline a high level design with all important components.\n\n![Imgur](http://i.imgur.com/48tEA2j.png)\n\n",
+   "sourceLines": [
+    92,
+    97
+   ],
+   "urls": [
+    "http://i.imgur.com/48tEA2j.png"
+   ],
+   "images": [
+    "http://i.imgur.com/48tEA2j.png"
+   ]
+  },
+  "step-3-design-core-components": {
+   "id": "step-3-design-core-components",
+   "title": "Step 3: Design core components",
+   "depth": 2,
+   "level": 1,
+   "order": 9,
+   "parentId": "design-the-twitter-timeline-and-search",
+   "childIds": [
+    "use-case-user-posts-a-tweet",
+    "use-case-user-views-the-home-timeline",
+    "use-case-user-views-the-user-timeline",
+    "use-case-user-searches-keywords"
+   ],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 3: Design core components"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-3-design-core-components"
+   ],
+   "headingMarkdown": "## Step 3: Design core components",
+   "markdown": "\n\n> Dive into details for each core component.\n\n",
+   "sourceLines": [
+    98,
+    101
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-user-posts-a-tweet": {
+   "id": "use-case-user-posts-a-tweet",
+   "title": "Use case: User posts a tweet",
+   "depth": 3,
+   "level": 2,
+   "order": 10,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 3: Design core components",
+    "Use case: User posts a tweet"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-3-design-core-components",
+    "use-case-user-posts-a-tweet"
+   ],
+   "headingMarkdown": "### Use case: User posts a tweet",
+   "markdown": "\n\nWe could store the user's own tweets to populate the user timeline (activity from the user) in a [relational database](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms).  We should discuss the [use cases and tradeoffs between choosing SQL or NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql).\n\nDelivering tweets and building the home timeline (activity from people the user is following) is trickier.  Fanning out tweets to all followers (60 thousand tweets delivered on fanout per second) will overload a traditional [relational database](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms).  We'll probably want to choose a data store with fast writes such as a **NoSQL database** or **Memory Cache**.  Reading 1 MB sequentially from memory takes about 250 microseconds, while reading from SSD takes 4x and from disk takes 80x longer.<sup><a href=https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know>1</a></sup>\n\nWe could store media such as photos or videos on an **Object Store**.\n\n* The **Client** posts a tweet to the **Web Server**, running as a [reverse proxy](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* The **Web Server** forwards the request to the **Write API** server\n* The **Write API** stores the tweet in the user's timeline on a **SQL database**\n* The **Write API** contacts the **Fan Out Service**, which does the following:\n    * Queries the **User Graph Service** to find the user's followers stored in the **Memory Cache**\n    * Stores the tweet in the *home timeline of the user's followers* in a **Memory Cache**\n        * O(n) operation:  1,000 followers = 1,000 lookups and inserts\n    * Stores the tweet in the **Search Index Service** to enable fast searching\n    * Stores media in the **Object Store**\n    * Uses the **Notification Service** to send out push notifications to followers:\n        * Uses a **Queue** (not pictured) to asynchronously send out notifications\n\n**Clarify with your interviewer how much code you are expected to write**.\n\nIf our **Memory Cache** is Redis, we could use a native Redis list with the following structure:\n\n```\n           tweet n+2                   tweet n+1                   tweet n\n| 8 bytes   8 bytes  1 byte | 8 bytes   8 bytes  1 byte | 8 bytes   8 bytes  1 byte |\n| tweet_id  user_id  meta   | tweet_id  user_id  meta   | tweet_id  user_id  meta   |\n```\n\nThe new tweet would be placed in the **Memory Cache**, which populates the user's home timeline (activity from people the user is following).\n\nWe'll use a public [**REST API**](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest):\n\n```\n$ curl -X POST --data '{ \"user_id\": \"123\", \"auth_token\": \"ABC123\", \\\n    \"status\": \"hello world!\", \"media_ids\": \"ABC987\" }' \\\n    https://twitter.com/api/v1/tweet\n```\n\nResponse:\n\n```\n{\n    \"created_at\": \"Wed Sep 05 00:37:15 +0000 2012\",\n    \"status\": \"hello world!\",\n    \"tweet_id\": \"987\",\n    \"user_id\": \"123\",\n    ...\n}\n```\n\nFor internal communications, we could use [Remote Procedure Calls](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc).\n\n",
+   "sourceLines": [
+    102,
+    155
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql",
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc"
+   ],
+   "images": []
+  },
+  "use-case-user-views-the-home-timeline": {
+   "id": "use-case-user-views-the-home-timeline",
+   "title": "Use case: User views the home timeline",
+   "depth": 3,
+   "level": 2,
+   "order": 11,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 3: Design core components",
+    "Use case: User views the home timeline"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-3-design-core-components",
+    "use-case-user-views-the-home-timeline"
+   ],
+   "headingMarkdown": "### Use case: User views the home timeline",
+   "markdown": "\n\n* The **Client** posts a home timeline request to the **Web Server**\n* The **Web Server** forwards the request to the **Read API** server\n* The **Read API** server contacts the **Timeline Service**, which does the following:\n    * Gets the timeline data stored in the **Memory Cache**, containing tweet ids and user ids - O(1)\n    * Queries the **Tweet Info Service** with a [multiget](http://redis.io/commands/mget) to obtain additional info about the tweet ids - O(n)\n    * Queries the **User Info Service** with a multiget to obtain additional info about the user ids - O(n)\n\nREST API:\n\n```\n$ curl https://twitter.com/api/v1/home_timeline?user_id=123\n```\n\nResponse:\n\n```\n{\n    \"user_id\": \"456\",\n    \"tweet_id\": \"123\",\n    \"status\": \"foo\"\n},\n{\n    \"user_id\": \"789\",\n    \"tweet_id\": \"456\",\n    \"status\": \"bar\"\n},\n{\n    \"user_id\": \"789\",\n    \"tweet_id\": \"579\",\n    \"status\": \"baz\"\n},\n```\n\n",
+   "sourceLines": [
+    156,
+    190
+   ],
+   "urls": [
+    "http://redis.io/commands/mget"
+   ],
+   "images": []
+  },
+  "use-case-user-views-the-user-timeline": {
+   "id": "use-case-user-views-the-user-timeline",
+   "title": "Use case: User views the user timeline",
+   "depth": 3,
+   "level": 2,
+   "order": 12,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 3: Design core components",
+    "Use case: User views the user timeline"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-3-design-core-components",
+    "use-case-user-views-the-user-timeline"
+   ],
+   "headingMarkdown": "### Use case: User views the user timeline",
+   "markdown": "\n\n* The **Client** posts a user timeline request to the **Web Server**\n* The **Web Server** forwards the request to the **Read API** server\n* The **Read API** retrieves the user timeline from the **SQL Database**\n\nThe REST API would be similar to the home timeline, except all tweets would come from the user as opposed to the people the user is following.\n\n",
+   "sourceLines": [
+    191,
+    198
+   ],
+   "urls": [],
+   "images": []
+  },
+  "use-case-user-searches-keywords": {
+   "id": "use-case-user-searches-keywords",
+   "title": "Use case: User searches keywords",
+   "depth": 3,
+   "level": 2,
+   "order": 13,
+   "parentId": "step-3-design-core-components",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 3: Design core components",
+    "Use case: User searches keywords"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-3-design-core-components",
+    "use-case-user-searches-keywords"
+   ],
+   "headingMarkdown": "### Use case: User searches keywords",
+   "markdown": "\n\n* The **Client** sends a search request to the **Web Server**\n* The **Web Server** forwards the request to the **Search API** server\n* The **Search API** contacts the **Search Service**, which does the following:\n    * Parses/tokenizes the input query, determining what needs to be searched\n        * Removes markup\n        * Breaks up the text into terms\n        * Fixes typos\n        * Normalizes capitalization\n        * Converts the query to use boolean operations\n    * Queries the **Search Cluster** (ie [Lucene](https://lucene.apache.org/)) for the results:\n        * [Scatter gathers](https://github.com/donnemartin/system-design-primer#under-development) each server in the cluster to determine if there are any results for the query\n        * Merges, ranks, sorts, and returns the results\n\nREST API:\n\n```\n$ curl https://twitter.com/api/v1/search?query=hello+world\n```\n\nThe response would be similar to that of the home timeline, except for tweets matching the given query.\n\n",
+   "sourceLines": [
+    199,
+    221
+   ],
+   "urls": [
+    "https://lucene.apache.org/",
+    "https://github.com/donnemartin/system-design-primer#under-development"
+   ],
+   "images": []
+  },
+  "step-4-scale-the-design": {
+   "id": "step-4-scale-the-design",
+   "title": "Step 4: Scale the design",
+   "depth": 2,
+   "level": 1,
+   "order": 14,
+   "parentId": "design-the-twitter-timeline-and-search",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Step 4: Scale the design"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "step-4-scale-the-design"
+   ],
+   "headingMarkdown": "## Step 4: Scale the design",
+   "markdown": "\n\n> Identify and address bottlenecks, given the constraints.\n\n![Imgur](http://i.imgur.com/jrUBAF7.png)\n\n**Important: Do not simply jump right into the final design from the initial design!**\n\nState you would 1) **Benchmark/Load Test**, 2) **Profile** for bottlenecks 3) address bottlenecks while evaluating alternatives and trade-offs, and 4) repeat.  See [Design a system that scales to millions of users on AWS](../scaling_aws/README.md) as a sample on how to iteratively scale the initial design.\n\nIt's important to discuss what bottlenecks you might encounter with the initial design and how you might address each of them.  For example, what issues are addressed by adding a **Load Balancer** with multiple **Web Servers**?  **CDN**?  **Master-Slave Replicas**?  What are the alternatives and **Trade-Offs** for each?\n\nWe'll introduce some components to complete the design and to address scalability issues.  Internal load balancers are not shown to reduce clutter.\n\n*To avoid repeating discussions*, refer to the following [system design topics](https://github.com/donnemartin/system-design-primer#index-of-system-design-topics) for main talking points, tradeoffs, and alternatives:\n\n* [DNS](https://github.com/donnemartin/system-design-primer#domain-name-system)\n* [CDN](https://github.com/donnemartin/system-design-primer#content-delivery-network)\n* [Load balancer](https://github.com/donnemartin/system-design-primer#load-balancer)\n* [Horizontal scaling](https://github.com/donnemartin/system-design-primer#horizontal-scaling)\n* [Web server (reverse proxy)](https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server)\n* [API server (application layer)](https://github.com/donnemartin/system-design-primer#application-layer)\n* [Cache](https://github.com/donnemartin/system-design-primer#cache)\n* [Relational database management system (RDBMS)](https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms)\n* [SQL write master-slave failover](https://github.com/donnemartin/system-design-primer#fail-over)\n* [Master-slave replication](https://github.com/donnemartin/system-design-primer#master-slave-replication)\n* [Consistency patterns](https://github.com/donnemartin/system-design-primer#consistency-patterns)\n* [Availability patterns](https://github.com/donnemartin/system-design-primer#availability-patterns)\n\nThe **Fanout Service** is a potential bottleneck.  Twitter users with millions of followers could take several minutes to have their tweets go through the fanout process.  This could lead to race conditions with @replies to the tweet, which we could mitigate by re-ordering the tweets at serve time.\n\nWe could also avoid fanning out tweets from highly-followed users.  Instead, we could search to find tweets for highly-followed users, merge the search results with the user's home timeline results, then re-order the tweets at serve time.\n\nAdditional optimizations include:\n\n* Keep only several hundred tweets for each home timeline in the **Memory Cache**\n* Keep only active users' home timeline info in the **Memory Cache**\n    * If a user was not previously active in the past 30 days, we could rebuild the timeline from the **SQL Database**\n        * Query the **User Graph Service** to determine who the user is following\n        * Get the tweets from the **SQL Database** and add them to the **Memory Cache**\n* Store only a month of tweets in the **Tweet Info Service**\n* Store only active users in the **User Info Service**\n* The **Search Cluster** would likely need to keep the tweets in memory to keep latency low\n\nWe'll also want to address the bottleneck with the **SQL Database**.\n\nAlthough the **Memory Cache** should reduce the load on the database, it is unlikely the **SQL Read Replicas** alone would be enough to handle the cache misses.  We'll probably need to employ additional SQL scaling patterns.\n\nThe high volume of writes would overwhelm a single **SQL Write Master-Slave**, also pointing to a need for additional scaling techniques.\n\n* [Federation](https://github.com/donnemartin/system-design-primer#federation)\n* [Sharding](https://github.com/donnemartin/system-design-primer#sharding)\n* [Denormalization](https://github.com/donnemartin/system-design-primer#denormalization)\n* [SQL Tuning](https://github.com/donnemartin/system-design-primer#sql-tuning)\n\nWe should also consider moving some data to a **NoSQL Database**.\n\n",
+   "sourceLines": [
+    222,
+    278
+   ],
+   "urls": [
+    "http://i.imgur.com/jrUBAF7.png",
+    "../scaling_aws/README.md",
+    "https://github.com/donnemartin/system-design-primer#index-of-system-design-topics",
+    "https://github.com/donnemartin/system-design-primer#domain-name-system",
+    "https://github.com/donnemartin/system-design-primer#content-delivery-network",
+    "https://github.com/donnemartin/system-design-primer#load-balancer",
+    "https://github.com/donnemartin/system-design-primer#horizontal-scaling",
+    "https://github.com/donnemartin/system-design-primer#reverse-proxy-web-server",
+    "https://github.com/donnemartin/system-design-primer#application-layer",
+    "https://github.com/donnemartin/system-design-primer#cache",
+    "https://github.com/donnemartin/system-design-primer#relational-database-management-system-rdbms",
+    "https://github.com/donnemartin/system-design-primer#fail-over",
+    "https://github.com/donnemartin/system-design-primer#master-slave-replication",
+    "https://github.com/donnemartin/system-design-primer#consistency-patterns",
+    "https://github.com/donnemartin/system-design-primer#availability-patterns",
+    "https://github.com/donnemartin/system-design-primer#federation",
+    "https://github.com/donnemartin/system-design-primer#sharding",
+    "https://github.com/donnemartin/system-design-primer#denormalization",
+    "https://github.com/donnemartin/system-design-primer#sql-tuning"
+   ],
+   "images": [
+    "http://i.imgur.com/jrUBAF7.png"
+   ]
+  },
+  "additional-talking-points": {
+   "id": "additional-talking-points",
+   "title": "Additional talking points",
+   "depth": 2,
+   "level": 1,
+   "order": 15,
+   "parentId": "design-the-twitter-timeline-and-search",
+   "childIds": [
+    "nosql",
+    "caching",
+    "asynchronism-and-microservices",
+    "communications",
+    "security",
+    "latency-numbers",
+    "ongoing"
+   ],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Additional talking points"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "additional-talking-points"
+   ],
+   "headingMarkdown": "## Additional talking points",
+   "markdown": "\n\n> Additional topics to dive into, depending on the problem scope and time remaining.\n\n",
+   "sourceLines": [
+    279,
+    282
+   ],
+   "urls": [],
+   "images": []
+  },
+  "nosql": {
+   "id": "nosql",
+   "title": "NoSQL",
+   "depth": 4,
+   "level": 2,
+   "order": 16,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Additional talking points",
+    "NoSQL"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "additional-talking-points",
+    "nosql"
+   ],
+   "headingMarkdown": "#### NoSQL",
+   "markdown": "\n\n* [Key-value store](https://github.com/donnemartin/system-design-primer#key-value-store)\n* [Document store](https://github.com/donnemartin/system-design-primer#document-store)\n* [Wide column store](https://github.com/donnemartin/system-design-primer#wide-column-store)\n* [Graph database](https://github.com/donnemartin/system-design-primer#graph-database)\n* [SQL vs NoSQL](https://github.com/donnemartin/system-design-primer#sql-or-nosql)\n\n",
+   "sourceLines": [
+    283,
+    290
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#key-value-store",
+    "https://github.com/donnemartin/system-design-primer#document-store",
+    "https://github.com/donnemartin/system-design-primer#wide-column-store",
+    "https://github.com/donnemartin/system-design-primer#graph-database",
+    "https://github.com/donnemartin/system-design-primer#sql-or-nosql"
+   ],
+   "images": []
+  },
+  "caching": {
+   "id": "caching",
+   "title": "Caching",
+   "depth": 3,
+   "level": 2,
+   "order": 17,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Additional talking points",
+    "Caching"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "additional-talking-points",
+    "caching"
+   ],
+   "headingMarkdown": "### Caching",
+   "markdown": "\n\n* Where to cache\n    * [Client caching](https://github.com/donnemartin/system-design-primer#client-caching)\n    * [CDN caching](https://github.com/donnemartin/system-design-primer#cdn-caching)\n    * [Web server caching](https://github.com/donnemartin/system-design-primer#web-server-caching)\n    * [Database caching](https://github.com/donnemartin/system-design-primer#database-caching)\n    * [Application caching](https://github.com/donnemartin/system-design-primer#application-caching)\n* What to cache\n    * [Caching at the database query level](https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level)\n    * [Caching at the object level](https://github.com/donnemartin/system-design-primer#caching-at-the-object-level)\n* When to update the cache\n    * [Cache-aside](https://github.com/donnemartin/system-design-primer#cache-aside)\n    * [Write-through](https://github.com/donnemartin/system-design-primer#write-through)\n    * [Write-behind (write-back)](https://github.com/donnemartin/system-design-primer#write-behind-write-back)\n    * [Refresh ahead](https://github.com/donnemartin/system-design-primer#refresh-ahead)\n\n",
+   "sourceLines": [
+    291,
+    307
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#client-caching",
+    "https://github.com/donnemartin/system-design-primer#cdn-caching",
+    "https://github.com/donnemartin/system-design-primer#web-server-caching",
+    "https://github.com/donnemartin/system-design-primer#database-caching",
+    "https://github.com/donnemartin/system-design-primer#application-caching",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-database-query-level",
+    "https://github.com/donnemartin/system-design-primer#caching-at-the-object-level",
+    "https://github.com/donnemartin/system-design-primer#cache-aside",
+    "https://github.com/donnemartin/system-design-primer#write-through",
+    "https://github.com/donnemartin/system-design-primer#write-behind-write-back",
+    "https://github.com/donnemartin/system-design-primer#refresh-ahead"
+   ],
+   "images": []
+  },
+  "asynchronism-and-microservices": {
+   "id": "asynchronism-and-microservices",
+   "title": "Asynchronism and microservices",
+   "depth": 3,
+   "level": 2,
+   "order": 18,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Additional talking points",
+    "Asynchronism and microservices"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "additional-talking-points",
+    "asynchronism-and-microservices"
+   ],
+   "headingMarkdown": "### Asynchronism and microservices",
+   "markdown": "\n\n* [Message queues](https://github.com/donnemartin/system-design-primer#message-queues)\n* [Task queues](https://github.com/donnemartin/system-design-primer#task-queues)\n* [Back pressure](https://github.com/donnemartin/system-design-primer#back-pressure)\n* [Microservices](https://github.com/donnemartin/system-design-primer#microservices)\n\n",
+   "sourceLines": [
+    308,
+    314
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#message-queues",
+    "https://github.com/donnemartin/system-design-primer#task-queues",
+    "https://github.com/donnemartin/system-design-primer#back-pressure",
+    "https://github.com/donnemartin/system-design-primer#microservices"
+   ],
+   "images": []
+  },
+  "communications": {
+   "id": "communications",
+   "title": "Communications",
+   "depth": 3,
+   "level": 2,
+   "order": 19,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Additional talking points",
+    "Communications"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "additional-talking-points",
+    "communications"
+   ],
+   "headingMarkdown": "### Communications",
+   "markdown": "\n\n* Discuss tradeoffs:\n    * External communication with clients - [HTTP APIs following REST](https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest)\n    * Internal communications - [RPC](https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc)\n* [Service discovery](https://github.com/donnemartin/system-design-primer#service-discovery)\n\n",
+   "sourceLines": [
+    315,
+    321
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#representational-state-transfer-rest",
+    "https://github.com/donnemartin/system-design-primer#remote-procedure-call-rpc",
+    "https://github.com/donnemartin/system-design-primer#service-discovery"
+   ],
+   "images": []
+  },
+  "security": {
+   "id": "security",
+   "title": "Security",
+   "depth": 3,
+   "level": 2,
+   "order": 20,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Additional talking points",
+    "Security"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "additional-talking-points",
+    "security"
+   ],
+   "headingMarkdown": "### Security",
+   "markdown": "\n\nRefer to the [security section](https://github.com/donnemartin/system-design-primer#security).\n\n",
+   "sourceLines": [
+    322,
+    325
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#security"
+   ],
+   "images": []
+  },
+  "latency-numbers": {
+   "id": "latency-numbers",
+   "title": "Latency numbers",
+   "depth": 3,
+   "level": 2,
+   "order": 21,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Additional talking points",
+    "Latency numbers"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "additional-talking-points",
+    "latency-numbers"
+   ],
+   "headingMarkdown": "### Latency numbers",
+   "markdown": "\n\nSee [Latency numbers every programmer should know](https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know).\n\n",
+   "sourceLines": [
+    326,
+    329
+   ],
+   "urls": [
+    "https://github.com/donnemartin/system-design-primer#latency-numbers-every-programmer-should-know"
+   ],
+   "images": []
+  },
+  "ongoing": {
+   "id": "ongoing",
+   "title": "Ongoing",
+   "depth": 3,
+   "level": 2,
+   "order": 22,
+   "parentId": "additional-talking-points",
+   "childIds": [],
+   "headingPath": [
+    "Design the Twitter timeline and search",
+    "Additional talking points",
+    "Ongoing"
+   ],
+   "pathIds": [
+    "design-the-twitter-timeline-and-search",
+    "additional-talking-points",
+    "ongoing"
+   ],
+   "headingMarkdown": "### Ongoing",
+   "markdown": "\n\n* Continue benchmarking and monitoring your system to address bottlenecks as they come up\n* Scaling is an iterative process\n",
+   "sourceLines": [
+    330,
+    333
+   ],
+   "urls": [],
+   "images": []
+  }
+ },
+ "id": "twitter",
+ "dir": "twitter",
+ "title": "Design the Twitter timeline and search",
+ "readmeTitle": "Design the Twitter timeline and search (or Facebook feed and search)",
+ "readmeTopicId": "design-the-twitter-timeline-and-search-or-facebook-feed-and-search",
+ "steps": [
+  {
+   "step": 1,
+   "label": "Outline use cases and constraints",
+   "nodeId": "step-1-outline-use-cases-and-constraints"
+  },
+  {
+   "step": 2,
+   "label": "Create a high level design",
+   "nodeId": "step-2-create-a-high-level-design"
+  },
+  {
+   "step": 3,
+   "label": "Design core components",
+   "nodeId": "step-3-design-core-components"
+  },
+  {
+   "step": 4,
+   "label": "Scale the design",
+   "nodeId": "step-4-scale-the-design"
+  },
+  {
+   "step": 5,
+   "label": "Additional talking points",
+   "nodeId": "additional-talking-points"
+  }
+ ]
+}

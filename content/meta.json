@@ -1,0 +1,25 @@
+{
+ "repo": "https://github.com/donnemartin/system-design-primer",
+ "commit": "ae9bbd7b02d90b9866215de185217d33f39ab733",
+ "license": {
+  "name": "CC BY 4.0",
+  "url": "https://creativecommons.org/licenses/by/4.0/"
+ },
+ "generatedFrom": [
+  "README.md",
+  "solutions/system_design/pastebin/README.md",
+  "solutions/system_design/twitter/README.md",
+  "solutions/system_design/web_crawler/README.md",
+  "solutions/system_design/mint/README.md",
+  "solutions/system_design/social_graph/README.md",
+  "solutions/system_design/query_cache/README.md",
+  "solutions/system_design/sales_rank/README.md",
+  "solutions/system_design/scaling_aws/README.md",
+  "solutions/object_oriented_design/hash_table/hash_map.ipynb",
+  "solutions/object_oriented_design/lru_cache/lru_cache.ipynb",
+  "solutions/object_oriented_design/call_center/call_center.ipynb",
+  "solutions/object_oriented_design/deck_of_cards/deck_of_cards.ipynb",
+  "solutions/object_oriented_design/parking_lot/parking_lot.ipynb",
+  "solutions/object_oriented_design/online_chat/online_chat.ipynb"
+ ]
+}

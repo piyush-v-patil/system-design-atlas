@@ -1,0 +1,654 @@
+{
+ "entries": {
+  "images/jj3A5N8.png": {
+   "ref": "images/jj3A5N8.png",
+   "src": "images/jj3A5N8.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/zdCAkB3.png": {
+   "ref": "images/zdCAkB3.png",
+   "src": "images/zdCAkB3.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/b4YtAEN.png": {
+   "ref": "images/b4YtAEN.png",
+   "src": "images/b4YtAEN.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/jrUBAF7.png": {
+   "ref": "images/jrUBAF7.png",
+   "src": "images/jrUBAF7.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/OfVllex.png": {
+   "ref": "images/OfVllex.png",
+   "src": "images/OfVllex.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/4edXG0T.png": {
+   "ref": "images/4edXG0T.png",
+   "src": "images/4edXG0T.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/bWxPtQA.png": {
+   "ref": "images/bWxPtQA.png",
+   "src": "images/bWxPtQA.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/V5q57vU.png": {
+   "ref": "images/V5q57vU.png",
+   "src": "images/V5q57vU.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/cdCv5g7.png": {
+   "ref": "images/cdCv5g7.png",
+   "src": "images/cdCv5g7.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/4j99mhe.png": {
+   "ref": "images/4j99mhe.png",
+   "src": "images/4j99mhe.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/MzExP06.png": {
+   "ref": "images/MzExP06.png",
+   "src": "images/MzExP06.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/bgLMI2u.png": {
+   "ref": "images/bgLMI2u.png",
+   "src": "images/bgLMI2u.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: CAP theorem revisited",
+   "credit": {
+    "text": "Source: CAP theorem revisited",
+    "url": "https://robertgreiner.com/cap-theorem-revisited"
+   }
+  },
+  "images/IOyLj4i.jpg": {
+   "ref": "images/IOyLj4i.jpg",
+   "src": "images/IOyLj4i.jpg",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: DNS security presentation",
+   "credit": {
+    "text": "Source: DNS security presentation",
+    "url": "http://www.slideshare.net/srikrupa5/dns-security-presentation-issa"
+   }
+  },
+  "images/h9TAuGI.jpg": {
+   "ref": "images/h9TAuGI.jpg",
+   "src": "images/h9TAuGI.jpg",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Why use a CDN",
+   "credit": {
+    "text": "Source: Why use a CDN",
+    "url": "https://www.creative-artworks.eu/why-use-a-content-delivery-network-cdn/"
+   }
+  },
+  "images/h81n9iK.png": {
+   "ref": "images/h81n9iK.png",
+   "src": "images/h81n9iK.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scalable system design patterns",
+   "credit": {
+    "text": "Source: Scalable system design patterns",
+    "url": "http://horicky.blogspot.com/2010/10/scalable-system-design-patterns.html"
+   }
+  },
+  "images/n41Azff.png": {
+   "ref": "images/n41Azff.png",
+   "src": "images/n41Azff.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Wikipedia",
+   "credit": {
+    "text": "Source: Wikipedia",
+    "url": "https://upload.wikimedia.org/wikipedia/commons/6/67/Reverse_proxy_h2g2bob.svg"
+   }
+  },
+  "images/yB5SYwm.png": {
+   "ref": "images/yB5SYwm.png",
+   "src": "images/yB5SYwm.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Intro to architecting systems for scale",
+   "credit": {
+    "text": "Source: Intro to architecting systems for scale",
+    "url": "http://lethain.com/introduction-to-architecting-systems-for-scale/#platform_layer"
+   }
+  },
+  "images/Xkm5CXz.png": {
+   "ref": "images/Xkm5CXz.png",
+   "src": "images/Xkm5CXz.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scaling up to your first 10 million users",
+   "credit": {
+    "text": "Source: Scaling up to your first 10 million users",
+    "url": "https://www.youtube.com/watch?v=kKjm4ehYiMs"
+   }
+  },
+  "images/C9ioGtn.png": {
+   "ref": "images/C9ioGtn.png",
+   "src": "images/C9ioGtn.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scalability, availability, stability, patterns",
+   "credit": {
+    "text": "Source: Scalability, availability, stability, patterns",
+    "url": "http://www.slideshare.net/jboner/scalability-availability-stability-patterns/"
+   }
+  },
+  "images/krAHLGg.png": {
+   "ref": "images/krAHLGg.png",
+   "src": "images/krAHLGg.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scalability, availability, stability, patterns",
+   "credit": {
+    "text": "Source: Scalability, availability, stability, patterns",
+    "url": "http://www.slideshare.net/jboner/scalability-availability-stability-patterns/"
+   }
+  },
+  "images/U3qV33e.png": {
+   "ref": "images/U3qV33e.png",
+   "src": "images/U3qV33e.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scaling up to your first 10 million users",
+   "credit": {
+    "text": "Source: Scaling up to your first 10 million users",
+    "url": "https://www.youtube.com/watch?v=kKjm4ehYiMs"
+   }
+  },
+  "images/wU8x5Id.png": {
+   "ref": "images/wU8x5Id.png",
+   "src": "images/wU8x5Id.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scalability, availability, stability, patterns",
+   "credit": {
+    "text": "Source: Scalability, availability, stability, patterns",
+    "url": "http://www.slideshare.net/jboner/scalability-availability-stability-patterns/"
+   }
+  },
+  "images/n16iOGk.png": {
+   "ref": "images/n16iOGk.png",
+   "src": "images/n16iOGk.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: SQL & NoSQL, a brief history",
+   "credit": {
+    "text": "Source: SQL & NoSQL, a brief history",
+    "url": "http://blog.grio.com/2015/11/sql-nosql-a-brief-history.html"
+   }
+  },
+  "images/fNcl65g.png": {
+   "ref": "images/fNcl65g.png",
+   "src": "images/fNcl65g.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Graph database",
+   "credit": {
+    "text": "Source: Graph database",
+    "url": "https://en.wikipedia.org/wiki/File:GraphDatabase_PropertyGraph.png"
+   }
+  },
+  "images/wXGqG5f.png": {
+   "ref": "images/wXGqG5f.png",
+   "src": "images/wXGqG5f.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Transitioning from RDBMS to NoSQL",
+   "credit": {
+    "text": "Source: Transitioning from RDBMS to NoSQL",
+    "url": "https://www.infoq.com/articles/Transition-RDBMS-NoSQL/"
+   }
+  },
+  "images/Q6z24La.png": {
+   "ref": "images/Q6z24La.png",
+   "src": "images/Q6z24La.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scalable system design patterns",
+   "credit": {
+    "text": "Source: Scalable system design patterns",
+    "url": "http://horicky.blogspot.com/2010/10/scalable-system-design-patterns.html"
+   }
+  },
+  "images/ONjORqk.png": {
+   "ref": "images/ONjORqk.png",
+   "src": "images/ONjORqk.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: From cache to in-memory data grid",
+   "credit": {
+    "text": "Source: From cache to in-memory data grid",
+    "url": "http://www.slideshare.net/tmatyashovsky/from-cache-to-in-memory-data-grid-introduction-to-hazelcast"
+   }
+  },
+  "images/0vBc0hN.png": {
+   "ref": "images/0vBc0hN.png",
+   "src": "images/0vBc0hN.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scalability, availability, stability, patterns",
+   "credit": {
+    "text": "Source: Scalability, availability, stability, patterns",
+    "url": "http://www.slideshare.net/jboner/scalability-availability-stability-patterns/"
+   }
+  },
+  "images/rgSrvjG.png": {
+   "ref": "images/rgSrvjG.png",
+   "src": "images/rgSrvjG.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Scalability, availability, stability, patterns",
+   "credit": {
+    "text": "Source: Scalability, availability, stability, patterns",
+    "url": "http://www.slideshare.net/jboner/scalability-availability-stability-patterns/"
+   }
+  },
+  "images/kxtjqgE.png": {
+   "ref": "images/kxtjqgE.png",
+   "src": "images/kxtjqgE.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: From cache to in-memory data grid",
+   "credit": {
+    "text": "Source: From cache to in-memory data grid",
+    "url": "http://www.slideshare.net/tmatyashovsky/from-cache-to-in-memory-data-grid-introduction-to-hazelcast"
+   }
+  },
+  "images/54GYsSx.png": {
+   "ref": "images/54GYsSx.png",
+   "src": "images/54GYsSx.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Intro to architecting systems for scale",
+   "credit": {
+    "text": "Source: Intro to architecting systems for scale",
+    "url": "http://lethain.com/introduction-to-architecting-systems-for-scale/#platform_layer"
+   }
+  },
+  "images/5KeocQs.jpg": {
+   "ref": "images/5KeocQs.jpg",
+   "src": "images/5KeocQs.jpg",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: OSI 7 layer model",
+   "credit": {
+    "text": "Source: OSI 7 layer model",
+    "url": "http://www.escotal.com/osilayer.html"
+   }
+  },
+  "images/JdAsdvG.jpg": {
+   "ref": "images/JdAsdvG.jpg",
+   "src": "images/JdAsdvG.jpg",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: How to make a multiplayer game",
+   "credit": {
+    "text": "Source: How to make a multiplayer game",
+    "url": "http://www.wildbunny.co.uk/blog/2012/10/09/how-to-make-a-multi-player-game-part-1/"
+   }
+  },
+  "images/yzDrJtA.jpg": {
+   "ref": "images/yzDrJtA.jpg",
+   "src": "images/yzDrJtA.jpg",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: How to make a multiplayer game",
+   "credit": {
+    "text": "Source: How to make a multiplayer game",
+    "url": "http://www.wildbunny.co.uk/blog/2012/10/09/how-to-make-a-multi-player-game-part-1/"
+   }
+  },
+  "images/iF4Mkb5.png": {
+   "ref": "images/iF4Mkb5.png",
+   "src": "images/iF4Mkb5.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Crack the system design interview",
+   "credit": {
+    "text": "Source: Crack the system design interview",
+    "url": "http://www.puncsky.com/blog/2016-02-13-crack-the-system-design-interview"
+   }
+  },
+  "https://camo.githubusercontent.com/77f72259e1eb58596b564d1ad823af1853bc60a3/687474703a2f2f692e696d6775722e636f6d2f6b307431652e706e67": {
+   "ref": "https://camo.githubusercontent.com/77f72259e1eb58596b564d1ad823af1853bc60a3/687474703a2f2f692e696d6775722e636f6d2f6b307431652e706e67",
+   "src": "images/remote/k0t1e.png",
+   "origin": "remote",
+   "vendoredFrom": "https://i.imgur.com/k0t1e.png",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "images/TcUo2fw.png": {
+   "ref": "images/TcUo2fw.png",
+   "src": "images/TcUo2fw.png",
+   "origin": "primer-images",
+   "referencedIn": [
+    "README.md"
+   ],
+   "caption": "Source: Twitter timelines at scale",
+   "credit": {
+    "text": "Source: Twitter timelines at scale",
+    "url": "https://www.infoq.com/presentations/Twitter-Timeline-Scalability"
+   }
+  },
+  "http://i.imgur.com/BKsBnmG.png": {
+   "ref": "http://i.imgur.com/BKsBnmG.png",
+   "src": "images/solutions/pastebin/pastebin_basic.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/pastebin/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/4edXG0T.png": {
+   "ref": "http://i.imgur.com/4edXG0T.png",
+   "src": "images/solutions/pastebin/pastebin.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/pastebin/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/48tEA2j.png": {
+   "ref": "http://i.imgur.com/48tEA2j.png",
+   "src": "images/solutions/twitter/twitter_basic.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/twitter/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/jrUBAF7.png": {
+   "ref": "http://i.imgur.com/jrUBAF7.png",
+   "src": "images/solutions/twitter/twitter.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/twitter/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/xjdAAUv.png": {
+   "ref": "http://i.imgur.com/xjdAAUv.png",
+   "src": "images/solutions/web_crawler/web_crawler_basic.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/web_crawler/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/bWxPtQA.png": {
+   "ref": "http://i.imgur.com/bWxPtQA.png",
+   "src": "images/solutions/web_crawler/web_crawler.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/web_crawler/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/E8klrBh.png": {
+   "ref": "http://i.imgur.com/E8klrBh.png",
+   "src": "images/solutions/mint/mint_basic.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/mint/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/V5q57vU.png": {
+   "ref": "http://i.imgur.com/V5q57vU.png",
+   "src": "images/solutions/mint/mint.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/mint/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/wxXyq2J.png": {
+   "ref": "http://i.imgur.com/wxXyq2J.png",
+   "src": "images/solutions/social_graph/social_graph_basic.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/social_graph/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/cdCv5g7.png": {
+   "ref": "http://i.imgur.com/cdCv5g7.png",
+   "src": "images/solutions/social_graph/social_graph.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/social_graph/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/KqZ3dSx.png": {
+   "ref": "http://i.imgur.com/KqZ3dSx.png",
+   "src": "images/solutions/query_cache/query_cache_basic.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/query_cache/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/4j99mhe.png": {
+   "ref": "http://i.imgur.com/4j99mhe.png",
+   "src": "images/solutions/query_cache/query_cache.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/query_cache/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/vwMa1Qu.png": {
+   "ref": "http://i.imgur.com/vwMa1Qu.png",
+   "src": "images/solutions/sales_rank/sales_rank_basic.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/sales_rank/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/MzExP06.png": {
+   "ref": "http://i.imgur.com/MzExP06.png",
+   "src": "images/solutions/sales_rank/sales_rank.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/sales_rank/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/B8LDKD7.png": {
+   "ref": "http://i.imgur.com/B8LDKD7.png",
+   "src": "images/solutions/scaling_aws/scaling_aws_1.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/scaling_aws/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/rrfjMXB.png": {
+   "ref": "http://i.imgur.com/rrfjMXB.png",
+   "src": "images/solutions/scaling_aws/scaling_aws_2.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/scaling_aws/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/raoFTXM.png": {
+   "ref": "http://i.imgur.com/raoFTXM.png",
+   "src": "images/solutions/scaling_aws/scaling_aws_3.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/scaling_aws/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/OZCxJr0.png": {
+   "ref": "http://i.imgur.com/OZCxJr0.png",
+   "src": "images/solutions/scaling_aws/scaling_aws_4.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/scaling_aws/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/3X8nmdL.png": {
+   "ref": "http://i.imgur.com/3X8nmdL.png",
+   "src": "images/solutions/scaling_aws/scaling_aws_5.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/scaling_aws/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  },
+  "http://i.imgur.com/jj3A5N8.png": {
+   "ref": "http://i.imgur.com/jj3A5N8.png",
+   "src": "images/solutions/scaling_aws/scaling_aws_7.png",
+   "origin": "solution-folder",
+   "referencedIn": [
+    "solutions/system_design/scaling_aws/README.md"
+   ],
+   "caption": null,
+   "credit": null
+  }
+ },
+ "unreferenced": [
+  "images/solutions/scaling_aws/scaling_aws.png",
+  "images/solutions/scaling_aws/scaling_aws_6.png"
+ ]
+}
