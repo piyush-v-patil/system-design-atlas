@@ -1009,3 +1009,10 @@ The layout was chosen from mockups on the design canvas.
 - Both side panels sit at 60% opacity so the text in the middle has the focus. Hovering over a panel or tabbing into
   it brings it back to full strength. The Previous/Next cards at the bottom stay at full strength.
 - Screenshots: `docs/screenshots/dim-*.png`.
+
+### Footer reduced to one line (reader feedback)
+
+- The attribution block is now a single small, centred line with no background or border: "Adapted from The System
+  Design Primer by Donne Martin and contributors · CC BY 4.0". The Primer's licence needs the credit, the licence
+  link and a note that it was changed ("Adapted"), so this line stays. The Primer link points at the pinned commit.
+  Screenshots: `docs/screenshots/footer-*.png`.
