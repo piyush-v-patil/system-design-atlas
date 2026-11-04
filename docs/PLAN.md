@@ -1000,3 +1000,12 @@ The layout was chosen from mockups on the design canvas.
   further-reading section opened from search stays visible. Narrow screens are unchanged, and the server render still
   carries every section, so the coverage tests are unaffected.
 - Screenshots: `docs/screenshots/sleek-*.png`.
+
+### Left panel restyle and dimmed side panels (reader feedback)
+
+- The left panel follows the mockup the reader picked: stage label and title, then the stage's topics with a green ✓
+  once read (in grey text), a highlighted pill for this page, and ○ for topics still to read. The progress bar and
+  "N of M read" line are gone.
+- Both side panels sit at 60% opacity so the text in the middle has the focus. Hovering over a panel or tabbing into
+  it brings it back to full strength. The Previous/Next cards at the bottom stay at full strength.
+- Screenshots: `docs/screenshots/dim-*.png`.
