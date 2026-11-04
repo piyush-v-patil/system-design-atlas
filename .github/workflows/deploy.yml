@@ -14,8 +14,9 @@ permissions:
 
 # One deploy at a time. A newer run waits instead of cancelling one mid-deploy: a deploy cut off part-way can leave
 # GitHub Pages stuck, with later runs queued behind it.
+# (Renamed from "pages" on 2026-11-04: a run stuck in that group after finishing blocked every later deploy.)
 concurrency:
-  group: pages
+  group: pages-deploy
   cancel-in-progress: false
 
 jobs:
