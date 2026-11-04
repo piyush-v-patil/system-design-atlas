@@ -79,6 +79,12 @@
 }
 
 @theme inline {
+  /* The type scale for everything around the reading text: text-sm (14px) for titles, text-ui (13px) for lists
+     and secondary text, text-label (11px) for labels and small print. */
+  --text-ui: 13px;
+  --text-ui--line-height: 1.4;
+  --text-label: 11px;
+  --text-label--line-height: 1.45;
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);

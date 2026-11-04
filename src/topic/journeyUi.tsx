@@ -54,7 +54,7 @@ export function PathStrip({ node, onlyDetour }: { node: TopicNode; onlyDetour?: 
   const done = stage.breadth.filter((id) => read.has(id) || id === node.id).length
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-line bg-surface-2/60 px-3 py-2 text-sm sm:flex-row sm:items-center">
-      <Link to={`/path#stage-${stage.id}`} className="shrink-0 self-start rounded-full bg-[var(--accent)] px-2 py-0.5 text-xs font-semibold text-on-accent hover:opacity-90 sm:self-auto">
+      <Link to={`/path#stage-${stage.id}`} className="shrink-0 self-start rounded-full bg-[var(--accent)] px-2 py-0.5 text-label font-semibold text-on-accent hover:opacity-90 sm:self-auto">
         Stage {stage.index + 1} of {PATH.length}
       </Link>
       <span className="min-w-0 flex-1">
@@ -66,7 +66,7 @@ export function PathStrip({ node, onlyDetour }: { node: TopicNode; onlyDetour?: 
           {done} of {stage.breadth.length} core topics read
         </span>
       </span>
-      <span className="shrink-0 text-xs text-muted">
+      <span className="shrink-0 text-ui text-muted">
         {done}/{stage.breadth.length} core topics read
       </span>
     </div>
@@ -83,7 +83,7 @@ export function NextNav({ node }: { node: TopicNode }) {
       {step.kind === 'next' && (
         <Link to={`/topic/${step.target!.id}`} state={VIA_PATH} className={big}>
           <span>
-            <span className="block text-[11px] opacity-85">Next on your learning path</span>
+            <span className="block text-label opacity-85">Next on your learning path</span>
             <span className="block text-sm font-semibold">{step.target!.title}</span>
           </span>
           <span aria-hidden className="text-base">→</span>
@@ -93,7 +93,7 @@ export function NextNav({ node }: { node: TopicNode }) {
         <>
           <Link to={`/topic/${step.target!.id}`} className={big}>
             <span>
-              <span className="block text-[11px] opacity-85">Back to your place on the learning path</span>
+              <span className="block text-label opacity-85">Back to your place on the learning path</span>
               <span className="block text-sm font-semibold">{step.target!.title}</span>
             </span>
             <span aria-hidden className="text-base">↩</span>
@@ -111,7 +111,7 @@ export function NextNav({ node }: { node: TopicNode }) {
       {step.kind === 'start' && (
         <Link to={`/topic/${step.target!.id}`} state={VIA_PATH} className={big}>
           <span>
-            <span className="block text-[11px] opacity-85">Follow the learning path</span>
+            <span className="block text-label opacity-85">Follow the learning path</span>
             <span className="block text-sm font-semibold">{step.target!.title}</span>
           </span>
           <span aria-hidden className="text-base">→</span>
@@ -125,7 +125,7 @@ export function NextNav({ node }: { node: TopicNode }) {
           </Link>
         </div>
       )}
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-ui text-muted">
         <span>In reading order:</span>
         <span className="flex flex-wrap gap-x-4 gap-y-1">
           {prev && (

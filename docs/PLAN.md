@@ -1023,3 +1023,10 @@ The layout was chosen from mockups on the design canvas.
   Next sat lower. On wide screens the page now fills the screen height and the ribbon is pushed to the bottom, so the
   three always sit together at the bottom of the screen, just above the footer (measured the same 773–837 px at
   1860×900 on a short, a medium and a long page). Screenshot: `docs/screenshots/short-page-end.png`.
+
+### Type scale tidy-up (reader feedback)
+
+- Everything around the reading text now uses three sizes, defined once in `src/index.css`: `text-sm` (14px) for
+  titles and the left topic list, `text-ui` (13px) for panel items, the stage bar, breadcrumbs and secondary lines,
+  and `text-label` (11px) for labels, website names, chips and the footer. This replaces six near-identical sizes
+  (10.5, 11, 12, 12.5, 13, 14px). The reading text (16px / 28 on desktop) and the visuals are unchanged.

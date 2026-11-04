@@ -22,7 +22,7 @@ export function PathNavigator({ node }: { node: TopicNode }) {
   if (!pos) {
     return (
       <nav aria-label="Learning path" className="flex flex-col gap-2 text-sm">
-        <div className="text-[11px] font-semibold tracking-wide text-muted uppercase">Background reading</div>
+        <div className="text-label font-semibold tracking-wide text-muted uppercase">Background reading</div>
         <p className="text-muted">This page isn’t a stop on the learning path.</p>
         <Link to="/path" className="text-link hover:underline">
           See the learning path →
@@ -35,8 +35,8 @@ export function PathNavigator({ node }: { node: TopicNode }) {
   // The stage's core topics, plus the current page if it is a detailed (depth) topic.
   const items = [...new Set([...stage.breadth, node.id])].filter((id) => PATH_ORDER.includes(id)).sort((a, b) => topics.nodes[a].order - topics.nodes[b].order)
   return (
-    <nav aria-label="Learning path" className="flex flex-col gap-2 text-[13px]">
-      <Link to={`/path#stage-${stage.id}`} className="text-[11px] font-semibold tracking-wide text-muted uppercase hover:text-ink">
+    <nav aria-label="Learning path" className="flex flex-col gap-2 text-sm">
+      <Link to={`/path#stage-${stage.id}`} className="text-label font-semibold tracking-wide text-muted uppercase hover:text-ink">
         Stage {stage.index + 1} of {PATH.length}
       </Link>
       <div className="text-sm leading-snug font-semibold">{stage.title}</div>
@@ -86,7 +86,7 @@ export function PrevCard({ node }: { node: TopicNode }) {
   if (!prev) return <div className={END_ROW_H} aria-hidden />
   return (
     <Link to={`/topic/${prev.id}`} state={PATH_ORDER.includes(prev.id) ? VIA_PATH : undefined} className={`${card} border border-line bg-surface shadow-md shadow-black/15 hover:border-[var(--accent)]`}>
-      <span className="text-[11px] text-muted">← Previous</span>
+      <span className="text-label text-muted">← Previous</span>
       <span className="truncate text-sm font-semibold">{prev.title}</span>
     </Link>
   )
@@ -97,7 +97,7 @@ export function NextCard({ node }: { node: TopicNode }) {
   if (step.kind === 'end')
     return (
       <Link to="/problems" className={`${card} border border-ok/50 bg-ok-soft`}>
-        <span className="text-[11px] font-semibold text-ok">End of the learning path</span>
+        <span className="text-label font-semibold text-ok">End of the learning path</span>
         <span className="truncate text-sm font-semibold">Practise the problems →</span>
       </Link>
     )
@@ -105,7 +105,7 @@ export function NextCard({ node }: { node: TopicNode }) {
   const label = step.kind === 'back' ? 'Back to your path ↩' : step.kind === 'start' ? 'Follow the learning path →' : 'Next on your path →'
   return (
     <Link to={`/topic/${t.id}`} state={step.kind === 'back' ? undefined : VIA_PATH} className={`${card} bg-[var(--accent)] text-on-accent shadow-md shadow-black/20 hover:opacity-95`}>
-      <span className="text-[11px] font-semibold opacity-90">{label}</span>
+      <span className="text-label font-semibold opacity-90">{label}</span>
       <span className="truncate text-sm font-bold">{t.title}</span>
     </Link>
   )
@@ -134,14 +134,14 @@ export function StageRibbon({ node }: { node: TopicNode }) {
   const left = stops.filter((id) => !read.has(id) && id !== here).length
     return (
     <section aria-label={`End of ${node.title}`} className={`${END_ROW_H} box-border flex flex-col justify-center gap-2 rounded-xl border border-line bg-surface px-4`}>
-      <div className="flex items-baseline justify-between gap-3 text-[13px] leading-tight">
+      <div className="flex items-baseline justify-between gap-3 text-ui leading-tight">
         <span className="min-w-0 truncate font-semibold">
           <span aria-hidden className="mr-1.5 text-ok">
             ✓
           </span>
           End of {node.title}
         </span>
-        <span className="shrink-0 text-xs text-muted">
+        <span className="shrink-0 text-ui text-muted">
           Stage {stage.index + 1} · {left === 0 ? 'complete' : `${left} to go`}
           {next && (
             // On narrow screens the Next button right below says this already.
@@ -241,7 +241,7 @@ export function sidePanelItems(node: TopicNode, hideSubtopics: boolean) {
   return { terms, reading, deeper }
 }
 
-const label = 'mb-1.5 text-[10.5px] font-semibold tracking-wider text-muted uppercase'
+const label = 'mb-1.5 text-label font-semibold tracking-wider text-muted uppercase'
 
 /**
  * The page's extras, kept out of the way of the reading: the terms it explains, further reading and where to go
@@ -251,7 +251,7 @@ export function SidePanel({ node, hideSubtopics }: { node: TopicNode; hideSubtop
   const { terms, reading, deeper } = sidePanelItems(node, hideSubtopics)
   if (!terms.length && !reading.length && !deeper.length) return null
   return (
-    <div aria-label="On this page" className="flex flex-col gap-6 text-[13px] leading-snug text-muted">
+    <div aria-label="On this page" className="flex flex-col gap-6 text-ui text-muted">
       {terms.length > 0 && (
         <section>
           <h2 className={label}>Terms</h2>
@@ -265,7 +265,7 @@ export function SidePanel({ node, hideSubtopics }: { node: TopicNode; hideSubtop
                     </svg>
                     <span className="group-open:text-ink">{entry.term}</span>
                   </summary>
-                  <div className="mb-2 ml-[18px] border-l border-line pl-2.5 text-[12.5px] leading-relaxed">
+                  <div className="mb-2 ml-[18px] border-l border-line pl-2.5 leading-relaxed">
                     {entry.text[0]}{' '}
                     <a href={url} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-link hover:underline">
                       More ↗
@@ -307,7 +307,7 @@ export function SidePanel({ node, hideSubtopics }: { node: TopicNode; hideSubtop
                 <li key={url}>
                   <a href={r.href} target="_blank" rel="noopener noreferrer" className="group block rounded-md py-1 hover:text-ink">
                     <span className="line-clamp-2">{title}</span>
-                    <span className="text-[11px] opacity-70 group-hover:opacity-100">{domainOf(r.href)} ↗</span>
+                    <span className="text-label opacity-70 group-hover:opacity-100">{domainOf(r.href)} ↗</span>
                   </a>
                 </li>
               ),

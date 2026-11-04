@@ -139,7 +139,7 @@ export function TopicPage() {
           <header className="flex flex-col gap-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Breadcrumbs node={node} />
-              <Link to={`/map/${node.id}`} className="text-xs text-muted hover:text-ink hover:underline">
+              <Link to={`/map/${node.id}`} className="text-ui text-muted hover:text-ink hover:underline">
                 Show on the map
               </Link>
             </div>

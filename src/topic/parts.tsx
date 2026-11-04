@@ -4,7 +4,7 @@ import { AREA_LABEL, areaColor, oodRefs, solutionRefByReadmeTopic, topics } from
 
 export function AreaChip({ node }: { node: TopicNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-2 py-0.5 text-xs text-muted">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-line px-2 py-0.5 text-label text-muted">
       <span aria-hidden className="size-2 rounded-full" style={{ background: areaColor(node.area) }} />
       {AREA_LABEL[node.area]}
     </span>
@@ -15,7 +15,7 @@ export function Breadcrumbs({ node }: { node: TopicNode }) {
   const ancestors = node.pathIds.slice(0, -1)
   if (ancestors.length === 0) return null
   return (
-    <nav aria-label="Breadcrumb" className="text-xs text-muted">
+    <nav aria-label="Breadcrumb" className="text-ui text-muted">
       <ol className="flex flex-wrap items-center gap-x-1 gap-y-0.5">
         {ancestors.map((id, i) => (
           <li key={id} className="flex items-center gap-1">
