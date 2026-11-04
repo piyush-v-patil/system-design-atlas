@@ -222,7 +222,7 @@ export function RadialMap({
                   strokeWidth={satellite ? 1.4 : read ? 1.8 : 1.2}
                 />
                 {level === 0 ? (
-                  <text className="lbl-h2" y={-16} textAnchor="middle">
+                  <text className="lbl-h2" y={26} textAnchor="middle">
                     {n.node.title}
                   </text>
                 ) : n.isLeaf ? (

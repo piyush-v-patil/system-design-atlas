@@ -285,3 +285,36 @@ body {
   min-width: 100%;
   transition: background-color 200ms;
 }
+
+/* ---------- Focus map ---------- */
+.focus-map .fnode {
+  cursor: pointer;
+  transition: transform 420ms cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fnode-in 320ms ease-out;
+}
+.focus-map .fnode:focus-visible {
+  outline: none;
+}
+.focus-map .fnode:focus-visible circle,
+.focus-map .fnode:focus-visible rect {
+  stroke: var(--accent);
+  stroke-width: 3px;
+}
+.focus-map .fnode:hover text {
+  text-decoration: underline;
+}
+.focus-map .focus-label {
+  fill: #fff;
+  stroke: none;
+}
+.focus-map .flink {
+  animation: fnode-in 380ms ease-out;
+}
+@keyframes fnode-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

@@ -72,7 +72,10 @@ describe('coverage', () => {
       if (!node) missing.push(`${where} → no topic node "${h.slug}"`)
       else if (node.title !== h.title) missing.push(`${where} → node title "${node.title}"`)
       else if (!reachable.has(h.slug)) missing.push(`${where} → not in the map tree`)
-      else if (!mapPage.mapNodeIds.has(h.slug)) missing.push(`${where} → not rendered on the map`)
+      // Focus view (default): the root is on the home map; every other heading is drawn when its parent is focused,
+      // i.e. it is one click away from its parent on the map.
+      else if (!(node.parentId ? page(`/topic/${node.parentId}`) : mapPage).mapNodeIds.has(h.slug))
+        missing.push(`${where} → not drawn on the map when its parent is focused`)
       else {
         const card = page(`/topic/${h.slug}`)
         if (!card.html.includes(`data-topic-id="${h.slug}"`) || !card.text.includes(h.title))

@@ -2,16 +2,23 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getTopic } from '../lib/content.ts'
 import { RadialMap } from '../map/RadialMap.tsx'
+import { FocusMap } from '../map/FocusMap.tsx'
 import { OutlineView } from '../map/OutlineView.tsx'
 import { TopicCard } from '../card/TopicCard.tsx'
 
-type View = 'map' | 'outline'
+type View = 'focus' | 'map' | 'outline'
+const VIEWS: { value: View; label: string }[] = [
+  { value: 'focus', label: 'Focus' },
+  { value: 'map', label: 'Whole map' },
+  { value: 'outline', label: 'Outline' },
+]
 
 function readView(): View {
   try {
-    return localStorage.getItem('atlas-view') === 'outline' ? 'outline' : 'map'
+    const v = localStorage.getItem('atlas-view-v2')
+    return v === 'map' || v === 'outline' ? v : 'focus'
   } catch {
-    return 'map'
+    return 'focus'
   }
 }
 
@@ -40,7 +47,7 @@ export function MapPage() {
 
   useEffect(() => {
     try {
-      localStorage.setItem('atlas-view', view)
+      localStorage.setItem('atlas-view-v2', view)
     } catch {
       /* storage unavailable */
     }
@@ -62,19 +69,21 @@ export function MapPage() {
     <div className="relative flex min-h-0 flex-1">
       <section className="relative min-w-0 flex-1" aria-label="Topic map">
         <div className="absolute top-3 left-3 z-10 flex rounded-lg border border-line bg-surface/90 p-0.5 text-xs backdrop-blur" role="tablist">
-          {(['map', 'outline'] as const).map((v) => (
+          {VIEWS.map((v) => (
             <button
-              key={v}
+              key={v.value}
               role="tab"
-              aria-selected={view === v}
-              onClick={() => setView(v)}
-              className={`rounded-md px-2.5 py-1 capitalize ${view === v ? 'bg-surface-2 font-semibold' : 'text-muted hover:text-ink'}`}
+              aria-selected={view === v.value}
+              onClick={() => setView(v.value)}
+              className={`rounded-md px-2.5 py-1 ${view === v.value ? 'bg-surface-2 font-semibold' : 'text-muted hover:text-ink'}`}
             >
-              {v}
+              {v.label}
             </button>
           ))}
         </div>
-        {view === 'map' ? (
+        {view === 'focus' ? (
+          <FocusMap selectedId={node?.id} onSelect={(nid) => navigate(`/topic/${nid}`)} />
+        ) : view === 'map' ? (
           <RadialMap selectedId={node?.id} onSelect={(nid) => navigate(`/topic/${nid}`)} />
         ) : (
           <div className="h-full pt-12">

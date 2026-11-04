@@ -678,3 +678,16 @@ map, and a generic card with the Original layer only.
 - **Fixed during review:**
   - Duplicate sibling React keys left old visuals in the DOM after navigating between cards.
   - The Play button was invisible because two background classes conflicted.
+
+### Map revision (after Phase 2 review)
+
+- **New default "Focus" view.** The selected topic sits in the centre, its children branch out mind-map style
+  with horizontal labels, and its grandchildren appear beyond them when they fit at a readable size; otherwise
+  they collapse into "+N" pills. A parent node and a breadcrumb trail lead back up. Selecting a leaf centres its
+  parent, so its siblings stay in view.
+- **Layout by width.** Wide panes branch both ways. Narrow panes and phones branch one way, at a minimum readable
+  scale, and you drag to pan.
+- **Shorter satellite labels.** Under a parent, satellites read "Disadvantages" and "Further reading".
+- The radial dendrogram stays available as **Whole map**, next to **Outline**.
+- **Coverage test:** "reachable from the map" now means each heading is drawn in the Focus view when its parent
+  is focused, i.e. one click from its parent.
