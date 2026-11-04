@@ -1016,3 +1016,10 @@ The layout was chosen from mockups on the design canvas.
   Design Primer by Donne Martin and contributors · CC BY 4.0". The Primer's licence needs the credit, the licence
   link and a note that it was changed ("Adapted"), so this line stays. The Primer link points at the pinned commit.
   Screenshots: `docs/screenshots/footer-*.png`.
+
+### End row on short pages (reader feedback)
+
+- On a page shorter than its side panel or the screen, the stage ribbon used to end with the text while Previous /
+  Next sat lower. On wide screens the page now fills the screen height and the ribbon is pushed to the bottom, so the
+  three always sit together at the bottom of the screen, just above the footer (measured the same 773–837 px at
+  1860×900 on a short, a medium and a long page). Screenshot: `docs/screenshots/short-page-end.png`.

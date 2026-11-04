@@ -122,7 +122,7 @@ export function TopicPage() {
       {/* Wide screens: path navigator | text | side panel, with Previous / Next fixed at the bottom of the side
           columns. They settle into the end row beside the stage ribbon when you reach the end of the page. */}
       <div
-        className="mx-auto grid w-full max-w-[920px] grid-cols-1 gap-8 px-4 py-6 md:px-6 xl:max-w-[1380px] xl:grid-cols-[230px_minmax(0,760px)_270px] xl:justify-center"
+        className="mx-auto grid w-full max-w-[920px] grid-cols-1 gap-8 px-4 py-6 md:px-6 xl:max-w-[1380px] xl:flex-1 xl:grid-cols-[230px_minmax(0,760px)_270px] xl:justify-center"
         data-topic-id={node.id}
       >
         {/* Both side panels sit dimmed so the text in the middle has the focus; hovering or tabbing in lifts them. */}
@@ -193,7 +193,11 @@ export function TopicPage() {
             <GoDeeper node={node} hideSubtopics={hideSubs} />
           </div>
           {/* The ribbon ends the page; on narrow screens the next step follows it (on wide ones it is the fixed card). */}
-          <StageRibbon node={node} />
+          {/* Pushed to the bottom on wide screens, so it lines up with the Previous / Next cards even when a side
+              panel is taller than the text. */}
+          <div className="xl:mt-auto">
+            <StageRibbon node={node} />
+          </div>
           <div className="xl:hidden">
             <NextNav node={node} />
           </div>
