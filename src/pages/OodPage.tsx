@@ -110,7 +110,7 @@ export function OodPage() {
   const idx = oods.indexOf(ood)
 
   return (
-    <div className={`mx-auto w-full px-4 py-6 md:px-8 ${tab === 'classes' ? 'max-w-[1440px]' : 'max-w-4xl'}`}>
+    <div className={`mx-auto w-full px-4 py-6 md:px-8 ${tab === 'classes' ? 'max-w-[90rem]' : 'max-w-4xl'}`}>
       <nav aria-label="Breadcrumb" className="mb-3 text-xs text-muted">
         <Link to="/problems" className="hover:underline">
           Problems

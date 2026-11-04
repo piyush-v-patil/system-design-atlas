@@ -40,7 +40,7 @@ export function OsiVisual(_: VisualProps) {
                   {l.n}
                 </span>
                 <span className="font-medium">{l.name}</span>
-                {hot && <span className="ml-auto rounded-full bg-surface-2 px-1.5 text-[10px] text-muted">covered</span>}
+                {hot && <span className="ml-auto rounded-full bg-surface-2 px-1.5 text-[0.625rem] text-muted">covered</span>}
               </button>
             </li>
           )
@@ -61,7 +61,7 @@ export function OsiVisual(_: VisualProps) {
         ) : (
           <div className="text-xs text-muted">Not covered further here.</div>
         )}
-        <p className="mt-auto text-[11px] text-muted">Layer names and examples: OSI 7 layer model.</p>
+        <p className="mt-auto text-[0.6875rem] text-muted">Layer names and examples: OSI 7 layer model.</p>
       </div>
     </div>
   )
@@ -78,7 +78,7 @@ export function HttpVerbsVisual({ node }: VisualProps) {
   const yes = (v: string) => v.startsWith('Yes')
   const prop = (label: string, v: string) => (
     <div className={`rounded-lg border px-2.5 py-2 ${yes(v) ? 'border-[var(--ok)]/50 bg-[var(--ok-soft)]' : 'border-line'}`}>
-      <div className="text-[11px] text-muted">{label}</div>
+      <div className="text-[0.6875rem] text-muted">{label}</div>
       <div className={`text-sm font-semibold ${yes(v) ? 'text-ok' : ''}`}>{v}</div>
     </div>
   )
@@ -370,7 +370,7 @@ export function RpcRestTableVisual({ node }: VisualProps) {
         {[1, 2].map((c) => (
           <div key={`${c}-${i}`} className="rounded-lg border border-line" style={{ animation: 'fade-up 250ms ease-out both' }}>
             <div className="border-b border-line px-3 py-1.5 text-xs font-semibold">{t.header[c]}</div>
-            <pre className="m-0 overflow-x-auto px-3 py-2 text-[12px] leading-relaxed whitespace-pre-wrap">
+            <pre className="m-0 overflow-x-auto px-3 py-2 text-[0.75rem] leading-relaxed whitespace-pre-wrap">
               <code>{fmt(row.cells[c])}</code>
             </pre>
           </div>

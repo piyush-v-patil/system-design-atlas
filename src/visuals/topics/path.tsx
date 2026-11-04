@@ -58,7 +58,7 @@ export function StudyGuideVisual(_: VisualProps) {
         {rows.map((r, i) => (
           <li key={i} className="flex items-start gap-3 rounded-lg border border-line px-3 py-2 text-sm">
             <span
-              className={`mt-0.5 grid h-5 min-w-12 shrink-0 place-items-center rounded-full px-2 text-[11px] font-bold ${r.values[t] === '✓' ? 'bg-[var(--ok-soft)] text-ok' : 'bg-accent-soft text-[var(--accent)]'}`}
+              className={`mt-0.5 grid h-5 min-w-12 shrink-0 place-items-center rounded-full px-2 text-[0.6875rem] font-bold ${r.values[t] === '✓' ? 'bg-[var(--ok-soft)] text-ok' : 'bg-accent-soft text-[var(--accent)]'}`}
             >
               {r.values[t]}
             </span>
@@ -106,7 +106,7 @@ export function LearningPathVisual({ visual }: VisualProps) {
                 state={VIA_PATH}
                 className={`flex items-center gap-2.5 rounded-lg border px-2.5 py-2 text-sm hover:border-[var(--accent)] ${highlight === s.id ? 'border-[var(--accent)] bg-accent-soft' : 'border-line'}`}
               >
-                <span className="grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold text-white" style={{ background: areaColor(area) }}>
+                <span className="grid size-6 shrink-0 place-items-center rounded-full text-[0.6875rem] font-bold text-white" style={{ background: areaColor(area) }}>
                   {s.index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -115,7 +115,7 @@ export function LearningPathVisual({ visual }: VisualProps) {
                     <span className="block h-1 rounded-full bg-[var(--ok)] transition-all" style={{ width: `${(100 * done) / s.breadth.length}%` }} />
                   </span>
                 </span>
-                <span className="text-[11px] text-muted tabular-nums">
+                <span className="text-[0.6875rem] text-muted tabular-nums">
                   {done}/{s.breadth.length}
                 </span>
               </Link>
@@ -123,7 +123,7 @@ export function LearningPathVisual({ visual }: VisualProps) {
           )
         })}
       </ol>
-      <p className="text-[11px] text-muted">
+      <p className="text-[0.6875rem] text-muted">
         {PATH_ORDER.length} topics, in reading order. Progress is saved in this browser as you read.
       </p>
     </div>

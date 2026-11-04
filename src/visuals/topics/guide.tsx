@@ -29,7 +29,7 @@ export function InterviewSteps({ visual }: VisualProps) {
               aria-pressed={active === i + 1}
               className={`flex h-full w-full items-start gap-2 rounded-lg border px-2.5 py-2 text-left text-xs transition-colors ${active === i + 1 ? 'border-[var(--accent)] bg-accent-soft' : 'border-line hover:bg-surface-2'}`}
             >
-              <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${active === i + 1 ? 'bg-[var(--accent)] text-on-accent' : 'bg-surface-2'}`}>{i + 1}</span>
+              <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[0.6875rem] font-bold ${active === i + 1 ? 'bg-[var(--accent)] text-on-accent' : 'bg-surface-2'}`}>{i + 1}</span>
               <span className="font-medium leading-snug">{topics.nodes[id].title.replace(/^Step \d: /, '')}</span>
             </button>
           </li>
@@ -38,7 +38,7 @@ export function InterviewSteps({ visual }: VisualProps) {
       <div className="rounded-lg bg-surface-2/50 p-3" key={active} style={{ animation: 'fade-up 250ms ease-out both' }}>
         <ul className="flex flex-col gap-1 text-sm">
           {items.map((b, i) => (
-            <li key={i} style={{ marginLeft: b.depth * 16 }} className="flex gap-2">
+            <li key={i} style={{ marginLeft: `${b.depth}rem` }} className="flex gap-2">
               <span aria-hidden className="text-muted">
                 {b.depth ? '–' : '•'}
               </span>
@@ -95,12 +95,12 @@ export function OodGallery(_: VisualProps) {
               <span className="text-sm font-semibold group-hover:text-link">{o.readmeTitle}</span>
               <span className="flex flex-wrap gap-1">
                 {classes.map((c) => (
-                  <span key={c} className="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[10px]">
+                  <span key={c} className="rounded-md bg-surface-2 px-1.5 py-0.5 font-mono text-[0.625rem]">
                     {c}
                   </span>
                 ))}
               </span>
-              <span className="mt-auto text-[11px] text-muted">{classes.length} classes</span>
+              <span className="mt-auto text-[0.6875rem] text-muted">{classes.length} classes</span>
             </Link>
           </li>
         )

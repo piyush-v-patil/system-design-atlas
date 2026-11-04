@@ -59,7 +59,7 @@ export function StepTabs({ b, frame, setFrame }: { b: Builder; frame: number; se
                 aria-current={on ? 'step' : undefined}
                 className={`flex h-full w-full flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 text-center sm:flex-row sm:gap-2 sm:px-2 sm:text-left ${on ? 'bg-surface font-semibold text-ink shadow-sm' : 'text-muted hover:text-ink'}`}
               >
-                <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${on ? 'bg-[var(--accent)] text-on-accent' : s < current ? 'bg-ok-soft text-ok' : 'bg-surface text-muted'}`}>
+                <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[0.6875rem] font-bold ${on ? 'bg-[var(--accent)] text-on-accent' : s < current ? 'bg-ok-soft text-ok' : 'bg-surface text-muted'}`}>
                   {s <= 4 ? s : '+'}
                 </span>
                 <span className="leading-tight">{STEP_NAMES[s]}</span>
@@ -112,7 +112,7 @@ function MathPanel({ b, sol, src }: { b: Builder; sol: SolutionFile; src: string
         Each figure is worked out from the assumptions above, using 2.5 million seconds per month.
       </p>
       <div className="mt-3 overflow-x-auto">
-        <table className="w-full min-w-[520px] text-left text-sm">
+        <table className="w-full min-w-[32.5rem] text-left text-sm">
           <thead className="text-xs text-muted">
             <tr className="border-b border-line">
               <th className="py-1.5 pr-3 font-medium">Figure</th>
@@ -141,7 +141,7 @@ function MathPanel({ b, sol, src }: { b: Builder; sol: SolutionFile; src: string
                       {exact ? '✓' : '≈'}
                     </span>{' '}
                     {fmt(m.value, m.unit)}
-                    {!exact && <span className="block text-[11px] text-muted">rounded ({Math.round(err * 100)}% off)</span>}
+                    {!exact && <span className="block text-[0.6875rem] text-muted">rounded ({Math.round(err * 100)}% off)</span>}
                   </td>
                   <td className="py-2 text-xs">
                     <ClaimText claim={quote(sol, src, m.line)} />
@@ -237,7 +237,7 @@ function AdditionsPanel({ b, sol, src, frame, selected, setSelected }: { b: Buil
           )
         })}
       </div>
-      <div className="mt-3 min-h-[3.5rem] rounded-lg bg-surface-2/60 px-3 py-2 text-[13px] leading-snug" aria-live="polite">
+      <div className="mt-3 min-h-[3.5rem] rounded-lg bg-surface-2/60 px-3 py-2 text-[0.8125rem] leading-snug" aria-live="polite">
         {cur ? (
           <>
             <ClaimText claim={quote(sol, src, cur.line)} />
@@ -353,7 +353,7 @@ export function SolutionBuilder({ b, sol, frame, setFrame }: { b: Builder; sol: 
           </ul>
         </details>
       )}
-      <p className="text-[11px] text-muted">
+      <p className="text-[0.6875rem] text-muted">
         Shown so far: {shown} component{shown === 1 ? '' : 's'}.
       </p>
     </div>

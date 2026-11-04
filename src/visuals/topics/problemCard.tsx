@@ -28,7 +28,7 @@ export function ProblemCard({ node }: VisualProps) {
           return (
             <figure key={im.step} className="m-0 overflow-hidden rounded-lg border border-line">
               <SolutionThumb id={sol.id} stage={im.step === 2 ? 'basic' : 'final'} />
-              <figcaption className="border-t border-line px-2 py-1 text-[11px] text-muted">{im.label}</figcaption>
+              <figcaption className="border-t border-line px-2 py-1 text-[0.6875rem] text-muted">{im.label}</figcaption>
             </figure>
           )
         })}

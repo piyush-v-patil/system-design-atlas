@@ -72,7 +72,7 @@ export function SearchPalette({ onClose }: { onClose: () => void }) {
             aria-activedescendant={results[active] ? `sr-${active}` : undefined}
             className="h-14 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted"
           />
-          <kbd className="rounded border border-line px-1.5 py-0.5 text-[11px] text-muted">Esc</kbd>
+          <kbd className="rounded border border-line px-1.5 py-0.5 text-[0.6875rem] text-muted">Esc</kbd>
         </div>
         {q.trim() === '' ? (
           <p className="px-4 py-6 text-sm text-muted">Try “cache”, “sharding”, “consistent”, “twitter” or “TCP”.</p>
@@ -89,17 +89,17 @@ export function SearchPalette({ onClose }: { onClose: () => void }) {
                   className={`flex w-full flex-col gap-0.5 rounded-xl px-3 py-2.5 text-left ${i === active ? 'bg-surface-2' : ''}`}
                 >
                   <span className="flex items-center gap-2">
-                    <span className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-semibold tracking-wide uppercase ${KIND_STYLE[r.entry.kind]}`}>{KIND_LABEL[r.entry.kind]}</span>
+                    <span className={`shrink-0 rounded px-1.5 py-0.5 text-[0.625rem] font-semibold tracking-wide uppercase ${KIND_STYLE[r.entry.kind]}`}>{KIND_LABEL[r.entry.kind]}</span>
                     <span className="truncate font-medium">{mark(r.entry.title, words)}</span>
                   </span>
                   {r.entry.where && <span className="truncate text-xs text-muted">{r.entry.where}</span>}
-                  {r.snippet && <span className="line-clamp-2 text-[13px] text-muted">{mark(r.snippet, words)}</span>}
+                  {r.snippet && <span className="line-clamp-2 text-[0.8125rem] text-muted">{mark(r.snippet, words)}</span>}
                 </button>
               </li>
             ))}
           </ul>
         )}
-        <div className="flex gap-4 border-t border-line px-4 py-2 text-[11px] text-muted">
+        <div className="flex gap-4 border-t border-line px-4 py-2 text-[0.6875rem] text-muted">
           <span>↑ ↓ to move</span>
           <span>Enter to open</span>
           <span className="ml-auto">{results.length > 0 && `${results.length}${results.length === 30 ? '+' : ''} results`}</span>

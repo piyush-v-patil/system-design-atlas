@@ -76,7 +76,7 @@ export function PathPage() {
           )}
         </div>
       </div>
-      <p className="mt-2 text-[11px] text-muted">
+      <p className="mt-2 text-[0.6875rem] text-muted">
         How “breadth” and “depth” are split here (our reading of the study guide): breadth is each section and its main
         subtopics; depth is the detailed subsections below them. Progress is stored only in this browser.
       </p>
@@ -89,7 +89,7 @@ export function PathPage() {
           return (
             <li key={s.id} id={`stage-${s.id}`} className="relative scroll-mt-4">
               <span
-                className="absolute top-3 -left-[37px] grid size-7 place-items-center rounded-full border-4 border-bg text-xs font-bold text-white"
+                className="absolute top-3 -left-[2.3125rem] grid size-7 place-items-center rounded-full border-4 border-bg text-xs font-bold text-white"
                 style={{ background: complete ? 'var(--ok)' : areaColor(area) }}
               >
                 {complete ? '✓' : s.index + 1}
@@ -110,7 +110,7 @@ export function PathPage() {
                     return (
                       <span key={id} className="inline-flex items-center gap-1">
                         <Chip n={topics.nodes[id]} read={read.has(id)} />
-                        {v && v !== '✓' && <span className="rounded-full bg-accent-soft px-1.5 text-[10px] font-bold text-[var(--accent)]">{v}</span>}
+                        {v && v !== '✓' && <span className="rounded-full bg-accent-soft px-1.5 text-[0.625rem] font-bold text-[var(--accent)]">{v}</span>}
                       </span>
                     )
                   })}

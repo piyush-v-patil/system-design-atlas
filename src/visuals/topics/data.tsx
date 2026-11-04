@@ -195,7 +195,7 @@ export function DataModelVisual({ visual }: VisualProps) {
   return (
     <div className="rounded-xl border border-line bg-surface p-2 sm:p-3">
       <div className="rounded-lg bg-bg/60 p-1">{m === 'kv' ? <KvModel /> : m === 'document' ? <DocumentModel /> : m === 'wide' ? <WideModel /> : <GraphModel />}</div>
-      {(m === 'kv' || m === 'document') && <p className="mt-1 px-1 text-[11px] text-muted">Sample keys and documents are illustrative.</p>}
+      {(m === 'kv' || m === 'document') && <p className="mt-1 px-1 text-[0.6875rem] text-muted">Sample keys and documents are illustrative.</p>}
     </div>
   )
 }
@@ -260,7 +260,7 @@ export function SqlNoSqlPicker({ node }: VisualProps) {
           </span>
         ))}
       </div>
-      <p className="text-[11px] text-muted">A tally of the reasons, not a rule: weigh what matters most for your system.</p>
+      <p className="text-[0.6875rem] text-muted">A tally of the reasons, not a rule: weigh what matters most for your system.</p>
     </div>
   )
 }

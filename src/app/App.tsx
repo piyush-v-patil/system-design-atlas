@@ -60,7 +60,7 @@ function Header({ onSearch }: { onSearch: () => void }) {
             <path d="M20 20l-4.2-4.2" />
           </svg>
           <span className="hidden sm:inline">Search</span>
-          <kbd className="ml-auto hidden rounded border border-line px-1.5 text-[11px] sm:inline">{isMac ? '⌘K' : 'Ctrl K'}</kbd>
+          <kbd className="ml-auto hidden rounded border border-line px-1.5 text-[0.6875rem] sm:inline">{isMac ? '⌘K' : 'Ctrl K'}</kbd>
         </button>
         <ThemeToggle />
       </div>

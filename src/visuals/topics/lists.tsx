@@ -85,7 +85,7 @@ export function ReadingList({ node, visual }: VisualProps) {
                   </span>
                   <span className="min-w-0">
                     <span className="block text-sm font-medium leading-snug group-hover:text-link">{l.title}</span>
-                    <span className="block truncate text-[11px] text-muted">
+                    <span className="block truncate text-[0.6875rem] text-muted">
                       {k.label} · {domainOf(l.url)}
                       {l.note && ` · ${l.note}`}
                     </span>
@@ -146,7 +146,7 @@ export function KeyPoints({ node, visual }: VisualProps) {
                   onChange={() => setChecked((s) => (s.has(i) ? (s.delete(i), new Set(s)) : new Set(s).add(i)))}
                 />
               ) : (
-                <span aria-hidden className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent-soft text-[10px] font-bold text-[var(--accent)]">
+                <span aria-hidden className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-accent-soft text-[0.625rem] font-bold text-[var(--accent)]">
                   {icons?.[gi] ?? gi + 1}
                 </span>
               )}
@@ -155,7 +155,7 @@ export function KeyPoints({ node, visual }: VisualProps) {
             {children.length > 0 && (
               <ul className="mt-1.5 flex flex-col gap-1 border-l-2 border-line pl-3 sm:ml-7">
                 {children.map(({ item: c, index: ci }) => (
-                  <li key={ci} className="flex items-start gap-2" style={{ marginLeft: (c.depth - 1) * 14 }}>
+                  <li key={ci} className="flex items-start gap-2" style={{ marginLeft: `${((c.depth - 1) * 14) / 16}rem` }}>
                     <span aria-hidden className="mt-[0.55em] size-1.5 shrink-0 rounded-full bg-[var(--accent)]/60" />
                     {text(c)}
                   </li>

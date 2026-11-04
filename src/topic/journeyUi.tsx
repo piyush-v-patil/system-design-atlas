@@ -59,7 +59,7 @@ export function PathStrip({ node, onlyDetour }: { node: TopicNode; onlyDetour?: 
       </Link>
       <span className="min-w-0 flex-1">
         <span className="font-semibold">{stage.title}</span>
-        <span className="mt-1 block h-1.5 w-full max-w-[220px] overflow-hidden rounded-full bg-line" aria-hidden>
+        <span className="mt-1 block h-1.5 w-full max-w-[13.75rem] overflow-hidden rounded-full bg-line" aria-hidden>
           <span className="block h-full rounded-full bg-ok" style={{ width: `${(done / stage.breadth.length) * 100}%` }} />
         </span>
         <span className="sr-only">

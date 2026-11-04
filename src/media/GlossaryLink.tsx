@@ -45,7 +45,7 @@ export function GlossaryLink({ href, entry, children }: { href: string; entry: G
         >
           <span className="block font-semibold">{entry.term}</span>
           {entry.text.map((t, i) => (
-            <span key={i} className="mt-1.5 block text-[13px] text-muted">
+            <span key={i} className="mt-1.5 block text-[0.8125rem] text-muted">
               {t}
             </span>
           ))}

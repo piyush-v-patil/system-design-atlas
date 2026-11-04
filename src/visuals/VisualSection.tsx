@@ -13,7 +13,7 @@ export function VisualSection({ visual, node, hideSummary }: { visual: TopicVisu
   return (
     <section aria-label="Visual card" className="flex flex-col gap-4" data-visual={visual.component ?? visual.diagram}>
       {visual.summary && !hideSummary && (
-        <p className="border-l-4 border-[var(--accent)] pl-3 text-[15px] leading-relaxed">
+        <p className="border-l-4 border-[var(--accent)] pl-3 text-[0.9375rem] leading-relaxed">
           <ClaimText claim={visual.summary} />
         </p>
       )}

@@ -70,7 +70,7 @@ export function SolutionPage() {
 
   return (
     <StepHighlightProvider>
-      <div className="mx-auto w-full max-w-[1440px] px-4 py-6 md:px-8">
+      <div className="mx-auto w-full max-w-[90rem] px-4 py-6 md:px-8">
         <nav aria-label="Breadcrumb" className="mb-3 text-xs text-muted">
           <Link to="/problems" className="hover:underline">
             Problems

@@ -1030,3 +1030,14 @@ The layout was chosen from mockups on the design canvas.
   titles and the left topic list, `text-ui` (13px) for panel items, the stage bar, breadcrumbs and secondary lines,
   and `text-label` (11px) for labels, website names, chips and the footer. This replaces six near-identical sizes
   (10.5, 11, 12, 12.5, 13, 14px). The reading text (16px / 28 on desktop) and the visuals are unchanged.
+
+### 80% scale on larger screens (reader feedback)
+
+- The reader preferred the site at 80% browser zoom, so that is now the default on screens 1024px and wider. Every
+  size in the app was converted from px to rem (58 arbitrary classes, 4 inline styles, the theme's text sizes and two
+  CSS rules), and `html { font-size: 80% }` applies from the `64rem` breakpoint. It follows the browser's own font
+  size, so a reader who has set a larger default still gets a proportionally larger page. Breakpoints are unaffected
+  (media queries always use the browser default), and phones and small tablets stay at 100%. SVG diagrams were
+  already scaled by their viewBox and were left as they are. On wide screens the reading text is now 12.8px and the
+  smallest labels about 9px, the same as 80% zoom gave before.
+- Screenshots: `docs/screenshots/scale-80-*.png`.

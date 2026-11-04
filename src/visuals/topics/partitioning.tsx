@@ -233,7 +233,7 @@ export function ShardingVisual({ visual }: VisualProps) {
               { value: 'geo', label: 'By geographic location' },
             ]}
           />
-          <span className="text-[11px] text-muted">Sample users are illustrative.</span>
+          <span className="text-[0.6875rem] text-muted">Sample users are illustrative.</span>
         </div>
       }
     >
