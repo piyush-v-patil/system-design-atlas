@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { getBuilder } from '../../content/builders/index.ts'
-import { solutionById, solutions } from '../lib/content.ts'
+import { solutionById, solutions } from '../lib/problems.ts'
 import { SectionBody } from '../card/SectionBody.tsx'
 import type { SectionNode, SolutionFile } from '../lib/types.ts'
 import { SolutionBuilder } from '../solutions/SolutionBuilder.tsx'

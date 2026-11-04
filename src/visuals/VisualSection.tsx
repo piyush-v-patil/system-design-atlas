@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import type { TopicVisual } from '../../content/visuals/types.ts'
 import type { TopicNode } from '../lib/types.ts'
@@ -16,7 +17,11 @@ export function VisualSection({ visual, node, hideSummary }: { visual: TopicVisu
           <ClaimText claim={visual.summary} />
         </p>
       )}
-      {Comp && <Comp visual={visual} node={node} />}
+      {Comp && (
+        <Suspense fallback={<div className="h-40 rounded-xl border border-line bg-surface" aria-hidden />}>
+          <Comp visual={visual} node={node} />
+        </Suspense>
+      )}
       {visual.tiles && visual.tiles.length > 0 && (
         <ul className="grid gap-2 sm:grid-cols-2">
           {visual.tiles.map((t, i) => {

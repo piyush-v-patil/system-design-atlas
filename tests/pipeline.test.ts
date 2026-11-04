@@ -1,6 +1,7 @@
 /** The content pipeline is lossless: generated JSON reproduces the source files byte-for-byte. */
 import { describe, expect, it } from 'vitest'
-import { allTopics, removedTopicIds, solutions, oods, images } from '../src/lib/content.ts'
+import { allTopics, removedTopicIds, images } from '../src/lib/content.ts'
+import { solutions, oods } from '../src/lib/problems.ts'
 import { joinSections } from '../scripts/util/markdown.ts'
 import { notebooks, read } from './helpers/source.ts'
 import { resolveLink } from '../src/lib/links.ts'

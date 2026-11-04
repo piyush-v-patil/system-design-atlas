@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import type { ComponentType } from 'react'
 import type { TopicVisual } from '../../content/visuals/types.ts'
 import type { TopicNode } from '../lib/types.ts'
@@ -17,7 +18,9 @@ import { CacheGranularityVisual, CacheLayersVisual } from './topics/caching.tsx'
 import { AsyncFlowVisual, BackPressureSim, MessageQueueVisual, TaskQueueVisual } from './topics/async.tsx'
 import { HttpVerbsVisual, OsiVisual, RestVisual, RpcRestTableVisual, RpcVisual, TcpUdpVisual } from './topics/communication.tsx'
 import { EnvelopeCalc, LatencyChart, LatencyThroughputVisual, PowersOfTwo } from './topics/numbers.tsx'
-import { InterviewSteps, OodGallery, ProblemCard, ProblemGallery } from './topics/guide.tsx'
+import { InterviewSteps, OodGallery, ProblemGallery } from './topics/guide.tsx'
+// Loads the full solution file, so only with the 8 problem pages that show it.
+const ProblemCard = lazy(() => import('./topics/problemCard.tsx').then((m) => ({ default: m.ProblemCard })))
 
 export interface VisualProps {
   visual: TopicVisual

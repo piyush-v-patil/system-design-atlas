@@ -74,6 +74,17 @@ async function main() {
   for (const o of oods) write(join(CONTENT, 'ood', `${o.id}.json`), o)
   write(join(CONTENT, 'images.json'), images)
   write(join(CONTENT, 'highlight.json'), highlights)
+  // A small index of the problems, so pages that only link to them don't load the full solution files.
+  write(join(CONTENT, 'problems-index.json'), {
+    solutions: solutions.map((s) => ({ id: s.id, dir: s.dir, title: s.title, readmeTitle: s.readmeTitle, readmeTopicId: s.readmeTopicId })),
+    oods: oods.map((o) => ({
+      id: o.id,
+      dir: o.dir,
+      title: o.title,
+      readmeTitle: o.readmeTitle,
+      classes: [...(o.cells.find((c) => c.cellType === 'code')?.source ?? '').matchAll(/^class (\w+)/gm)].map((m) => m[1]),
+    })),
+  })
 
   console.log(
     `content: ${topics.order.length} topics, ${solutions.length} solutions, ${oods.length} OOD, ` +

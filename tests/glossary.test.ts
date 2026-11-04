@@ -1,7 +1,8 @@
 /** Every glossary entry explains a link that actually appears in the shown text, and stays short. */
 import { describe, expect, it } from 'vitest'
 import { GLOSSARY } from '../content/glossary.ts'
-import { solutions, topics } from '../src/lib/content.ts'
+import { topics } from '../src/lib/content.ts'
+import { solutions } from '../src/lib/problems.ts'
 
 describe('glossary', () => {
   const shown = [...topics.order.map((id) => topics.nodes[id].markdown), ...solutions.map((s) => s.order.map((id) => s.nodes[id].markdown).join('\n'))].join('\n')
