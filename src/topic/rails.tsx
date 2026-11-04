@@ -1,4 +1,3 @@
-import { useEffect, useState, type RefObject } from 'react'
 import { Link } from 'react-router-dom'
 import { GLOSSARY } from '../../content/glossary.ts'
 import { getVisual } from '../../content/visuals/index.ts'
@@ -7,11 +6,12 @@ import { VIA_PATH } from '../lib/journey.ts'
 import { PATH, PATH_ORDER, pathPosition } from '../lib/learningPath.ts'
 import { useRead } from '../lib/progress.ts'
 import type { TopicNode } from '../lib/types.ts'
-import { paragraphs } from '../visuals/auto.ts'
+import { resolveLink } from '../lib/links.ts'
+import { plain } from '../lib/quote.ts'
 import { primerNeighbours, useNextStep } from './journeyUi.tsx'
 
 /** Card height shared by the Previous and Next cards and the stage ribbon, so the end row lines up. */
-export const END_ROW_H = 'h-[104px]'
+export const END_ROW_H = 'h-16'
 
 /* ------------------------------------------------------------------ left rail: the stage you are in */
 
@@ -86,15 +86,15 @@ export function prevStep(id: string): TopicNode | undefined {
   return primerNeighbours(id).prev
 }
 
-const card = `${END_ROW_H} box-border flex w-full flex-col justify-center gap-1 rounded-2xl px-4`
+const card = `${END_ROW_H} box-border flex w-full min-w-0 flex-col justify-center gap-0.5 rounded-xl px-4`
 
 export function PrevCard({ node }: { node: TopicNode }) {
   const prev = prevStep(node.id)
   if (!prev) return <div className={END_ROW_H} aria-hidden />
   return (
-    <Link to={`/topic/${prev.id}`} state={PATH_ORDER.includes(prev.id) ? VIA_PATH : undefined} className={`${card} border border-line bg-surface shadow-lg shadow-black/20 hover:border-[var(--accent)]`}>
-      <span className="text-xs text-muted">← Previous</span>
-      <span className="line-clamp-2 text-[15px] leading-snug font-semibold">{prev.title}</span>
+    <Link to={`/topic/${prev.id}`} state={PATH_ORDER.includes(prev.id) ? VIA_PATH : undefined} className={`${card} border border-line bg-surface shadow-md shadow-black/15 hover:border-[var(--accent)]`}>
+      <span className="text-[11px] text-muted">← Previous</span>
+      <span className="truncate text-sm font-semibold">{prev.title}</span>
     </Link>
   )
 }
@@ -104,16 +104,16 @@ export function NextCard({ node }: { node: TopicNode }) {
   if (step.kind === 'end')
     return (
       <Link to="/problems" className={`${card} border border-ok/50 bg-ok-soft`}>
-        <span className="text-xs font-semibold text-ok">End of the learning path</span>
-        <span className="text-[15px] leading-snug font-semibold">Practise the problems →</span>
+        <span className="text-[11px] font-semibold text-ok">End of the learning path</span>
+        <span className="truncate text-sm font-semibold">Practise the problems →</span>
       </Link>
     )
   const t = step.target!
   const label = step.kind === 'back' ? 'Back to your path ↩' : step.kind === 'start' ? 'Follow the learning path →' : 'Next on your path →'
   return (
-    <Link to={`/topic/${t.id}`} state={step.kind === 'back' ? undefined : VIA_PATH} className={`${card} bg-[var(--accent)] text-on-accent shadow-lg shadow-black/25 hover:opacity-95`}>
-      <span className="text-xs font-semibold">{label}</span>
-      <span className="line-clamp-2 text-[15px] leading-snug font-bold">{t.title}</span>
+    <Link to={`/topic/${t.id}`} state={step.kind === 'back' ? undefined : VIA_PATH} className={`${card} bg-[var(--accent)] text-on-accent shadow-md shadow-black/20 hover:opacity-95`}>
+      <span className="text-[11px] font-semibold opacity-90">{label}</span>
+      <span className="truncate text-sm font-bold">{t.title}</span>
     </Link>
   )
 }
@@ -127,7 +127,7 @@ export function StageRibbon({ node }: { node: TopicNode }) {
   const pos = pathPosition(node.id)
   if (!pos) {
     return (
-      <section aria-label="End of page" className={`${END_ROW_H} box-border flex items-center justify-center gap-3 rounded-2xl border border-line bg-surface px-5 text-sm text-muted`}>
+      <section aria-label="End of page" className={`${END_ROW_H} box-border flex items-center justify-center gap-3 rounded-xl border border-line bg-surface px-5 text-sm text-muted`}>
         <span aria-hidden className="text-[var(--accent)]">◆</span>
         End of {node.title}
         <span aria-hidden className="text-[var(--accent)]">◆</span>
@@ -139,18 +139,24 @@ export function StageRibbon({ node }: { node: TopicNode }) {
   const here = pos.anchorId
   const next = step.kind === 'next' ? step.target?.id : undefined
   const left = stops.filter((id) => !read.has(id) && id !== here).length
-  const last = topics.nodes[stops[stops.length - 1]]
-  return (
-    <section aria-label={`End of ${node.title}`} className={`${END_ROW_H} box-border flex flex-col justify-center gap-2.5 rounded-2xl border border-line bg-surface px-5`}>
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 text-sm">
-        <span className="font-semibold">
+    return (
+    <section aria-label={`End of ${node.title}`} className={`${END_ROW_H} box-border flex flex-col justify-center gap-2 rounded-xl border border-line bg-surface px-4`}>
+      <div className="flex items-baseline justify-between gap-3 text-[13px] leading-tight">
+        <span className="min-w-0 truncate font-semibold">
           <span aria-hidden className="mr-1.5 text-ok">
             ✓
           </span>
           End of {node.title}
         </span>
-        <span className="text-xs text-muted">
-          Stage {stage.index + 1} · {left === 0 ? 'stage complete' : `${left} to go`}
+        <span className="shrink-0 text-xs text-muted">
+          Stage {stage.index + 1} · {left === 0 ? 'complete' : `${left} to go`}
+          {next && (
+            // On narrow screens the Next button right below says this already.
+            <span className="hidden sm:inline">
+              {' · next: '}
+              <span className="text-link">{topics.nodes[next].title}</span>
+            </span>
+          )}
         </span>
       </div>
       <ol className="flex items-center" aria-label={`Stage ${stage.index + 1} stops`}>
@@ -169,12 +175,12 @@ export function StageRibbon({ node }: { node: TopicNode }) {
                 aria-label={`${t}${isHere ? ' (this page)' : isNext ? ' (next)' : isRead ? ' (read)' : ''}`}
                 className={`grid place-items-center rounded-full transition-transform hover:scale-125 ${
                   isHere
-                    ? 'size-5 bg-ok text-[10px] font-bold text-[#0b1020] ring-4 ring-ok-soft'
+                    ? 'size-4 bg-ok text-[9px] font-bold text-[#0b1020] ring-[3px] ring-ok-soft'
                     : isNext
-                      ? 'size-4 border-[3px] border-[var(--accent)] bg-accent-soft'
+                      ? 'size-3.5 border-[3px] border-[var(--accent)] bg-accent-soft'
                       : isRead
-                        ? 'size-3 bg-ok'
-                        : 'size-3 border-2 border-[var(--node-stroke)]'
+                        ? 'size-2.5 bg-ok'
+                        : 'size-2.5 border-2 border-[var(--node-stroke)]'
                 }`}
               >
                 {isHere && <span aria-hidden>✓</span>}
@@ -193,111 +199,137 @@ export function StageRibbon({ node }: { node: TopicNode }) {
           ]
         })}
       </ol>
-      <div className="flex justify-between gap-3 text-xs text-muted">
-        <span className="truncate">{topics.nodes[stops[0]].title}</span>
-        {next && (
-          <span className="shrink-0">
-            next: <span className="text-link">{topics.nodes[next].title}</span>
-          </span>
-        )}
-        <span className="truncate text-right">{last.title}</span>
-      </div>
     </section>
   )
 }
 
-/* ------------------------------------------------------------------ right rail: margin notes beside the text */
+/* ------------------------------------------------------------------ right rail: a quiet panel of this page's extras */
 
-interface Note {
-  key: string
-  kind: 'term' | 'topic'
-  title: string
-  text: string
-  to?: string
-  color?: string
-  top: number
+const domainOf = (href: string) => {
+  try {
+    return new URL(href).hostname.replace(/^www\./, '')
+  } catch {
+    return ''
+  }
 }
 
-const summaryOf = (id: string) => {
-  const t = getVisual(id)?.summary?.text ?? paragraphs(topics.nodes[id])[0]?.text ?? ''
-  return t.length > 170 ? t.slice(0, 167).replace(/\s+\S*$/, '') + '…' : t
+/** Markdown links, leaving out images. */
+const mdLinks = (md: string) => [...md.matchAll(/(!?)\[([^\]]+)\]\(((?:[^()\s]|\([^)]*\))+)\)/g)].filter((m) => !m[1]).map((m) => ({ title: plain(m[2]), url: m[3] }))
+
+/** What the side panel lists for a topic; also used to drop the duplicates from the main column on wide screens. */
+export function sidePanelItems(node: TopicNode, hideSubtopics: boolean) {
+  const sats = node.childIds.map((c) => topics.nodes[c]).filter((c) => c.kind !== 'topic')
+  const md = [node.markdown, ...sats.map((s) => s.markdown)].join('\n')
+
+  const terms = Object.entries(GLOSSARY)
+    .map(([url, entry]) => ({ url, entry, at: md.indexOf(`](${url})`) }))
+    .filter((t) => t.at >= 0)
+    .sort((a, b) => a.at - b.at)
+
+  const seenUrl = new Set<string>()
+  const reading = sats
+    .filter((s) => s.kind === 'sources' && linksOnly(s.markdown))
+    .flatMap((s) => mdLinks(s.markdown))
+    .filter((l) => !seenUrl.has(l.url) && seenUrl.add(l.url))
+    .map((l) => ({ ...l, r: resolveLink(l.url, topics.source.path) }))
+
+  const v = getVisual(node.id)
+  const subs = node.childIds.map((c) => topics.nodes[c]).filter((c) => c.kind === 'topic')
+  const covered = String(v?.props?.covers ?? '').split(/[|=,]/)
+  const skip = new Set([node.id, ...(hideSubtopics ? subs.map((s) => s.id) : []), ...(v?.tiles?.map((t) => t.topicId) ?? []), ...covered])
+  const linked = mdLinks(node.markdown)
+    .map((l) => resolveLink(l.url, topics.source.path))
+    .flatMap((r) => (r.kind === 'route' && r.to.startsWith('/topic/') ? [r.to.slice(7)] : []))
+  const deeper = [...new Set([...(hideSubtopics ? [] : subs.map((s) => s.id)), ...(v?.related ?? []), ...linked])]
+    .filter((id) => topics.nodes[id] && !skip.has(id))
+    .slice(0, 12)
+    .map((id) => topics.nodes[id])
+
+  return { terms, reading, deeper }
 }
+
+const label = 'mb-1.5 text-[10.5px] font-semibold tracking-wider text-muted uppercase'
 
 /**
- * Notes for the links in the text, placed beside the paragraph that holds them: a short explanation for a linked
- * concept, and a one-line summary for a link to another topic. Measured after layout and kept from overlapping.
+ * The page's extras, kept out of the way of the reading: the terms it explains, further reading and where to go
+ * deeper. Muted and small on purpose; terms open in place.
  */
-export function MarginNotes({ article, rail, node }: { article: RefObject<HTMLElement | null>; rail: RefObject<HTMLElement | null>; node: TopicNode }) {
-  const [notes, setNotes] = useState<Note[]>([])
-  // After mount (not layout): the rail's ref is attached after this component's own layout effects run.
-  useEffect(() => {
-    const a = article.current
-    const r = rail.current
-    if (!a || !r) return
-    const measure = () => {
-      const base = r.getBoundingClientRect().top
-      const limit = r.getBoundingClientRect().height - 150 // keep clear of the Next card
-      const seen = new Set<string>()
-      const out: Note[] = []
-      let floor = 0
-      for (const el of a.querySelectorAll<HTMLAnchorElement>('.primer a')) {
-        const href = el.getAttribute('href') ?? ''
-        let note: Omit<Note, 'top'> | null = null
-        if (el.classList.contains('glossary-term')) {
-          const entry = GLOSSARY[el.dataset.glossary ?? '']
-          if (entry) note = { key: `g:${entry.term}`, kind: 'term', title: entry.term, text: entry.text[0] }
-        } else {
-          const m = /^#\/topic\/([^?#]+)/.exec(href)
-          const id = m?.[1]
-          if (id && id !== node.id && topics.nodes[id] && !node.childIds.includes(id)) {
-            const n = topics.nodes[id]
-            note = { key: `t:${id}`, kind: 'topic', title: n.title, text: summaryOf(id), to: `/topic/${id}`, color: areaColor(n.area) }
-          }
-        }
-        if (!note || seen.has(note.key)) continue
-        seen.add(note.key)
-        const want = el.getBoundingClientRect().top - base - 4
-        const top = Math.max(want, floor)
-        if (top > limit) break
-        out.push({ ...note, top })
-        floor = top + estimateHeight(note) + 16
-        if (out.length >= 14) break
-      }
-      setNotes((prev) => (JSON.stringify(prev) === JSON.stringify(out) ? prev : out))
-    }
-    measure()
-    const ro = new ResizeObserver(measure)
-    ro.observe(a)
-    document.fonts?.ready.then(measure)
-    return () => ro.disconnect()
-  }, [article, rail, node])
-
+export function SidePanel({ node, hideSubtopics }: { node: TopicNode; hideSubtopics: boolean }) {
+  const { terms, reading, deeper } = sidePanelItems(node, hideSubtopics)
+  if (!terms.length && !reading.length && !deeper.length) return null
   return (
-    <div aria-label="Notes beside the text" className="absolute inset-x-0 top-0">
-      {notes.map((n) => (
-        <aside
-          key={n.key}
-          className="absolute inset-x-0 border-l-2 pl-3.5 text-[13px] leading-relaxed"
-          style={{ top: n.top, borderColor: n.kind === 'term' ? 'var(--accent)' : n.color, animation: 'fade-in 240ms ease-out both' }}
-        >
-          <div className="text-[10.5px] font-semibold tracking-wide uppercase" style={{ color: n.kind === 'term' ? 'var(--accent)' : n.color }}>
-            {n.kind === 'term' ? 'Term' : 'Related topic'}
-          </div>
-          {n.to ? (
-            <Link to={n.to} className="mt-0.5 block font-semibold text-ink hover:text-link">
-              {n.title} →
-            </Link>
-          ) : (
-            <div className="mt-0.5 font-semibold">{n.title}</div>
-          )}
-          <p className="mt-1 text-muted">{n.text}</p>
-        </aside>
-      ))}
+    <div aria-label="On this page" className="flex flex-col gap-6 text-[13px] leading-snug text-muted">
+      {terms.length > 0 && (
+        <section>
+          <h2 className={label}>Terms</h2>
+          <ul className="flex flex-col">
+            {terms.map(({ url, entry }) => (
+              <li key={url}>
+                <details className="group rounded-md">
+                  <summary className="flex cursor-pointer list-none items-center gap-1.5 rounded-md py-1 select-none hover:text-ink">
+                    <svg aria-hidden className="size-3 shrink-0 opacity-60 transition-transform group-open:rotate-90" viewBox="0 0 16 16" fill="currentColor">
+                      <path d="M6 3l5 5-5 5z" />
+                    </svg>
+                    <span className="group-open:text-ink">{entry.term}</span>
+                  </summary>
+                  <div className="mb-2 ml-[18px] border-l border-line pl-2.5 text-[12.5px] leading-relaxed">
+                    {entry.text[0]}{' '}
+                    <a href={url} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-link hover:underline">
+                      More ↗
+                    </a>
+                  </div>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {deeper.length > 0 && (
+        <section>
+          <h2 className={label}>Go deeper</h2>
+          <ul className="flex flex-col">
+            {deeper.map((n) => (
+              <li key={n.id}>
+                <Link to={`/topic/${n.id}`} className="flex items-center gap-2 rounded-md py-1 hover:text-ink">
+                  <span aria-hidden className="size-1.5 shrink-0 rounded-full opacity-80" style={{ background: areaColor(n.area) }} />
+                  <span className="min-w-0 truncate">{n.title}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      {reading.length > 0 && (
+        <section>
+          <h2 className={label}>Further reading</h2>
+          <ul className="flex flex-col">
+            {reading.map(({ title, url, r }) =>
+              r.kind === 'route' ? (
+                <li key={url}>
+                  <Link to={r.to} className="block rounded-md py-1 hover:text-ink">
+                    {title} →
+                  </Link>
+                </li>
+              ) : (
+                <li key={url}>
+                  <a href={r.href} target="_blank" rel="noopener noreferrer" className="group block rounded-md py-1 hover:text-ink">
+                    <span className="line-clamp-2">{title}</span>
+                    <span className="text-[11px] opacity-70 group-hover:opacity-100">{domainOf(r.href)} ↗</span>
+                  </a>
+                </li>
+              ),
+            )}
+          </ul>
+        </section>
+      )}
     </div>
   )
 }
 
-/** Rough height of a note (title + wrapped text at ~38 characters a line), for spacing before it is laid out. */
-function estimateHeight(n: Omit<Note, 'top'>): number {
-  return 44 + Math.ceil(n.text.length / 36) * 21
+/** True when a section is nothing but a heading and a list of links, so the side panel can show it in full. */
+export function linksOnly(md: string): boolean {
+  return md
+    .split('\n')
+    .slice(1)
+    .every((l) => !l.trim() || (/^\s*[*-]\s+/.test(l) && l.replace(/^\s*[*-]\s+/, '').replace(/!?\[[^\]]+\]\(((?:[^()\s]|\([^)]*\))+)\)/g, '').trim().length <= 3))
 }
