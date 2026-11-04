@@ -122,12 +122,12 @@ export function TopicPage() {
       {/* Wide screens: path navigator | text | side panel, with Previous / Next fixed at the bottom of the side
           columns. They settle into the end row beside the stage ribbon when you reach the end of the page. */}
       <div
-        className="mx-auto grid w-full max-w-[920px] grid-cols-1 gap-8 px-4 py-6 md:px-6 xl:max-w-[1380px] xl:flex-1 xl:grid-cols-[230px_minmax(0,760px)_270px] xl:justify-center"
+        className="mx-auto grid w-full max-w-[57.5rem] grid-cols-1 gap-8 px-4 py-6 md:px-6 xl:max-w-[86.25rem] xl:flex-1 xl:grid-cols-[14.375rem_minmax(0,47.5rem)_16.875rem] xl:justify-center"
         data-topic-id={node.id}
       >
         {/* Both side panels sit dimmed so the text in the middle has the focus; hovering or tabbing in lifts them. */}
         <aside className="hidden min-w-0 flex-col xl:flex">
-          <div className="sticky top-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-1 opacity-60 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100">
+          <div className="sticky top-4 max-h-[calc(100vh-12.5rem)] overflow-y-auto pr-1 opacity-60 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100">
             <PathNavigator node={node} />
           </div>
           <div className="sticky bottom-0 z-10 -mb-4 mt-auto bg-gradient-to-t from-bg from-60% to-transparent pt-10 pb-4">
@@ -204,7 +204,7 @@ export function TopicPage() {
         </div>
 
         <aside className="hidden min-w-0 flex-col xl:flex">
-          <div className="sticky top-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-1 opacity-60 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100">
+          <div className="sticky top-4 max-h-[calc(100vh-12.5rem)] overflow-y-auto pr-1 opacity-60 transition-opacity duration-200 hover:opacity-100 focus-within:opacity-100">
             <SidePanel node={node} hideSubtopics={hideSubs} />
           </div>
           <div className="sticky bottom-0 z-10 -mb-4 mt-auto bg-gradient-to-t from-bg from-60% to-transparent pt-10 pb-4">

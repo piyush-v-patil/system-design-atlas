@@ -9,10 +9,10 @@ export function ComparisonCard({ data, activeKey }: { data: Comparison; activeKe
     <div className="overflow-hidden rounded-xl border border-line bg-surface">
       {data.title && <h3 className="border-b border-line px-4 py-2.5 text-sm font-semibold">{data.title}</h3>}
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-sm" style={{ minWidth: cols.length * 150 + 110 }}>
+        <table className="w-full border-collapse text-sm" style={{ minWidth: `${(cols.length * 150 + 110) / 16}rem` }}>
           <thead>
             <tr>
-              <th className="w-[110px]" />
+              <th className="w-[6.875rem]" />
               {cols.map((c) => (
                 <th
                   key={c.key}

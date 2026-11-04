@@ -53,7 +53,7 @@ export function PathNavigator({ node }: { node: TopicNode }) {
                 state={VIA_PATH}
                 aria-current={here ? 'page' : undefined}
                 className={`flex items-start gap-2 rounded-lg py-1.5 pr-2 leading-snug ${here ? 'bg-accent-soft font-semibold text-ink shadow-[inset_3px_0_0_var(--accent)]' : isRead ? 'text-muted hover:bg-surface-2 hover:text-ink' : 'text-ink hover:bg-surface-2'}`}
-                style={{ paddingLeft: 8 + indent * 16 }}
+                style={{ paddingLeft: `${0.5 + indent}rem` }}
               >
                 <span aria-hidden className={`mt-px w-3 shrink-0 text-center ${here ? 'text-[var(--accent)]' : isRead ? 'text-ok' : 'text-[var(--node-stroke)]'}`}>
                   {here ? '●' : isRead ? '✓' : '○'}
@@ -168,9 +168,9 @@ export function StageRibbon({ node }: { node: TopicNode }) {
                 aria-label={`${t}${isHere ? ' (this page)' : isNext ? ' (next)' : isRead ? ' (read)' : ''}`}
                 className={`grid place-items-center rounded-full transition-transform hover:scale-125 ${
                   isHere
-                    ? 'size-4 bg-ok text-[9px] font-bold text-[#0b1020] ring-[3px] ring-ok-soft'
+                    ? 'size-4 bg-ok text-[0.5625rem] font-bold text-[#0b1020] ring-[0.1875rem] ring-ok-soft'
                     : isNext
-                      ? 'size-3.5 border-[3px] border-[var(--accent)] bg-accent-soft'
+                      ? 'size-3.5 border-[0.1875rem] border-[var(--accent)] bg-accent-soft'
                       : isRead
                         ? 'size-2.5 bg-ok'
                         : 'size-2.5 border-2 border-[var(--node-stroke)]'
@@ -265,7 +265,7 @@ export function SidePanel({ node, hideSubtopics }: { node: TopicNode; hideSubtop
                     </svg>
                     <span className="group-open:text-ink">{entry.term}</span>
                   </summary>
-                  <div className="mb-2 ml-[18px] border-l border-line pl-2.5 leading-relaxed">
+                  <div className="mb-2 ml-[1.125rem] border-l border-line pl-2.5 leading-relaxed">
                     {entry.text[0]}{' '}
                     <a href={url} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap text-link hover:underline">
                       More ↗

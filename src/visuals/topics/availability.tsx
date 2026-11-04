@@ -238,7 +238,7 @@ export function AvailabilityCalculator({ visual }: VisualProps) {
             </option>
           ))}
         </select>
-        {PRESETS[preset].example && <span className="text-[11px] text-muted">Example values.</span>}
+        {PRESETS[preset].example && <span className="text-[0.6875rem] text-muted">Example values.</span>}
       </div>
 
       <div className="overflow-x-auto rounded-lg bg-bg/60 p-2">
@@ -340,7 +340,7 @@ export function DowntimeTable({ visual, node }: VisualProps) {
           })}
         </tbody>
       </table>
-      <p className="text-[11px] text-muted">Computed with a 365.2425-day year and month = year ÷ 12, which reproduces the table’s other cells. Bars use a log scale.</p>
+      <p className="text-[0.6875rem] text-muted">Computed with a 365.2425-day year and month = year ÷ 12, which reproduces the table’s other cells. Bars use a log scale.</p>
     </div>
   )
 }

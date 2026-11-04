@@ -73,17 +73,17 @@ export function LatencyChart(_: VisualProps) {
             { value: 'human', label: 'Scale to human time (1 ns = 1 s)' },
           ]}
         />
-        <span className="text-[11px] text-muted">Log scale: each grid line is ×10</span>
+        <span className="text-[0.6875rem] text-muted">Log scale: each grid line is ×10</span>
       </div>
       <div className="relative">
-        <div aria-hidden className="pointer-events-none absolute inset-y-0 right-[96px] left-[40%] hidden sm:block">
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 right-[6rem] left-[40%] hidden sm:block">
           {[1, 10, 100, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8].map((v) => (
             <div key={v} className="absolute inset-y-0 border-l border-dashed border-line" style={{ left: `${pct(v)}%` }} />
           ))}
         </div>
         <ul className="relative flex flex-col gap-1">
           {rows.map((r, i) => (
-            <li key={r.line} className="grid grid-cols-[1fr] items-center gap-x-2 text-xs sm:grid-cols-[40%_1fr_88px]">
+            <li key={r.line} className="grid grid-cols-[1fr] items-center gap-x-2 text-xs sm:grid-cols-[40%_1fr_5.5rem]">
               <span className="truncate" title={r.label}>
                 {r.label}
                 <LineRef claim={q(`${r.label} ${r.ns.toLocaleString('en-US')} ns`, r.line)} />
@@ -104,7 +104,7 @@ export function LatencyChart(_: VisualProps) {
         </ul>
       </div>
       {rows.some((r) => r.note) && (
-        <p className="text-[11px] text-muted">Notes from the table: {rows.filter((r) => r.note).map((r) => `${r.label.replace(/\*$/, '')}: ${r.note}`).join(' · ')}</p>
+        <p className="text-[0.6875rem] text-muted">Notes from the table: {rows.filter((r) => r.note).map((r) => `${r.label.replace(/\*$/, '')}: ${r.note}`).join(' · ')}</p>
       )}
       <div>
         <div className="mb-1 text-xs font-semibold">Handy metrics based on these numbers</div>
@@ -173,15 +173,15 @@ export function PowersOfTwo(_: VisualProps) {
       </label>
       <div className="grid gap-2 sm:grid-cols-3">
         <div className="rounded-lg border border-line p-2.5">
-          <div className="text-[11px] text-muted">Exact value</div>
+          <div className="text-[0.6875rem] text-muted">Exact value</div>
           <div className="font-mono text-sm font-semibold break-all">{exact}</div>
         </div>
         <div className="rounded-lg border border-line p-2.5">
-          <div className="text-[11px] text-muted">Approx value</div>
+          <div className="text-[0.6875rem] text-muted">Approx value</div>
           <div className="text-sm font-semibold">{approx}</div>
         </div>
         <div className="rounded-lg border border-line p-2.5">
-          <div className="text-[11px] text-muted">Bytes (1 KB = 1024 B)</div>
+          <div className="text-[0.6875rem] text-muted">Bytes (1 KB = 1024 B)</div>
           <div className="text-sm font-semibold">{bytes}</div>
         </div>
       </div>
@@ -199,7 +199,7 @@ export function PowersOfTwo(_: VisualProps) {
             2^{r.power}
           </button>
         ))}
-        <span className="self-center text-[11px] text-muted">rows from the table</span>
+        <span className="self-center text-[0.6875rem] text-muted">rows from the table</span>
       </div>
     </div>
   )
@@ -268,7 +268,7 @@ export function EnvelopeCalc({ visual }: VisualProps) {
           ['New data in 3 years', humanBytes(bytesMonth * 36)],
         ].map(([k, v]) => (
           <div key={k} className="rounded-lg border border-line p-2.5">
-            <div className="text-[11px] text-muted">{k}</div>
+            <div className="text-[0.6875rem] text-muted">{k}</div>
             <div className="text-lg font-semibold tabular-nums">{v}</div>
           </div>
         ))}
@@ -326,15 +326,15 @@ export function LatencyThroughputVisual(_: VisualProps) {
       </label>
       <div className="grid grid-cols-2 gap-2">
         <div className="rounded-lg border border-line p-2.5">
-          <div className="text-[11px] text-muted">Latency (time per item)</div>
+          <div className="text-[0.6875rem] text-muted">Latency (time per item)</div>
           <div className="text-lg font-semibold tabular-nums">{LAT} s</div>
         </div>
         <div className="rounded-lg border border-line p-2.5">
-          <div className="text-[11px] text-muted">Throughput (items per second)</div>
+          <div className="text-[0.6875rem] text-muted">Throughput (items per second)</div>
           <div className="text-lg font-semibold tabular-nums">{((2 * lanes) / LAT).toFixed(1)}</div>
         </div>
       </div>
-      <p className="text-[11px] text-muted">Times are illustrative. Adding parallel workers raises throughput without changing each item’s latency.</p>
+      <p className="text-[0.6875rem] text-muted">Times are illustrative. Adding parallel workers raises throughput without changing each item’s latency.</p>
     </div>
   )
 }

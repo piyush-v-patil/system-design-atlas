@@ -168,7 +168,7 @@ export function FocusMap({ selectedId, onSelect, markId }: { selectedId?: string
             </span>
           )
         })}
-        <span className="ml-1 inline-flex items-center gap-1 rounded-full border border-line px-1.5 py-px text-[10px]">
+        <span className="ml-1 inline-flex items-center gap-1 rounded-full border border-line px-1.5 py-px text-[0.625rem]">
           <span aria-hidden className="size-1.5 rounded-full" style={{ background: areaColor(focus.area) }} />
           {AREA_LABEL[focus.area]}
         </span>
@@ -200,7 +200,7 @@ export function FocusMap({ selectedId, onSelect, markId }: { selectedId?: string
       </svg>
 
       {!layout.showGrandchildren && layout.nodes.some((n) => n.hidden > 0) && (
-        <p className="pointer-events-none absolute bottom-3 left-3 hidden rounded-md bg-surface/90 px-2 py-1 text-[11px] text-muted sm:block">
+        <p className="pointer-events-none absolute bottom-3 left-3 hidden rounded-md bg-surface/90 px-2 py-1 text-[0.6875rem] text-muted sm:block">
           +N = subtopics. Click a topic to open it.
         </p>
       )}

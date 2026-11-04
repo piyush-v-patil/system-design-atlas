@@ -104,7 +104,7 @@ export function StepList({ steps, s }: { steps: ProcessStep[]; s: Stepper }) {
               className={`flex w-full gap-2.5 rounded-lg border px-2.5 py-1.5 text-left transition-colors ${active ? 'border-[var(--accent)] bg-accent-soft' : 'border-transparent hover:bg-surface-2'}`}
             >
               <span
-                className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${active ? 'bg-[var(--accent)] text-on-accent' : done ? 'bg-surface-2 text-ink' : 'bg-surface-2 text-muted'}`}
+                className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[0.625rem] font-bold ${active ? 'bg-[var(--accent)] text-on-accent' : done ? 'bg-surface-2 text-ink' : 'bg-surface-2 text-muted'}`}
               >
                 {n}
               </span>
