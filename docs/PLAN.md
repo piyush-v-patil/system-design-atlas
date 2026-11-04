@@ -984,3 +984,19 @@ The layout was chosen from mockups on the design canvas.
   - the footer is a one-line credit that still notes the changes.
 - **Small fixes:** the CAP visual's outcome panel prompts "Press Play…" instead of sitting empty, and the learning
   path card's quote no longer starts with a stray "A:".
+
+### Sleeker end row and a quiet side panel (reader feedback)
+
+- **End row at ~60% height.** Previous, Next and the stage ribbon are now 64 px tall (were 104 px). Card titles sit on
+  one truncated line; the ribbon keeps two rows: "✓ End of X" with "Stage N · K to go · next: Y", then the stop dots.
+  The three still line up exactly (measured 739–803 at 1440×900 on three pages). The phone Next button is slimmer to
+  match, and the ribbon drops its "next:" note on phones since the button right below says it.
+- **Right panel.** The notes beside paragraphs left the column mostly empty, so they are replaced by a sticky,
+  muted panel (`SidePanel` in `src/topic/rails.tsx`): **Terms** (the page's glossary terms; click one to read its
+  short explanation in place), **Go deeper** (subtopics, related topics and topics the text links to) and **Further
+  reading** (title plus domain). Small grey text, no colour blocks, so it doesn't pull attention from the reading.
+- **No duplicates on wide screens.** There, the "Go deeper" box and further-reading sections that are only a list of
+  links move out of the main column into the panel. Sections with any other text stay in the main column, and a
+  further-reading section opened from search stays visible. Narrow screens are unchanged, and the server render still
+  carries every section, so the coverage tests are unaffected.
+- Screenshots: `docs/screenshots/sleek-*.png`.

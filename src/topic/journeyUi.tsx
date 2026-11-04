@@ -77,26 +77,26 @@ export function PathStrip({ node, onlyDetour }: { node: TopicNode; onlyDetour?: 
 export function NextNav({ node }: { node: TopicNode }) {
   const step = useNextStep(node.id)
   const { prev, next } = primerNeighbours(node.id)
-  const big = 'flex items-center justify-between gap-3 rounded-xl bg-[var(--accent)] px-4 py-3 text-on-accent hover:opacity-90'
+  const big = 'flex min-h-14 items-center justify-between gap-3 rounded-xl bg-[var(--accent)] px-4 py-2 text-on-accent hover:opacity-90'
   return (
     <nav aria-label="What to read next" className="flex flex-col gap-3 border-t border-line pt-5">
       {step.kind === 'next' && (
         <Link to={`/topic/${step.target!.id}`} state={VIA_PATH} className={big}>
           <span>
-            <span className="block text-xs opacity-85">Next on your learning path</span>
-            <span className="block font-semibold">{step.target!.title}</span>
+            <span className="block text-[11px] opacity-85">Next on your learning path</span>
+            <span className="block text-sm font-semibold">{step.target!.title}</span>
           </span>
-          <span aria-hidden className="text-xl">→</span>
+          <span aria-hidden className="text-base">→</span>
         </Link>
       )}
       {step.kind === 'back' && (
         <>
           <Link to={`/topic/${step.target!.id}`} className={big}>
             <span>
-              <span className="block text-xs opacity-85">Back to your place on the learning path</span>
-              <span className="block font-semibold">{step.target!.title}</span>
+              <span className="block text-[11px] opacity-85">Back to your place on the learning path</span>
+              <span className="block text-sm font-semibold">{step.target!.title}</span>
             </span>
-            <span aria-hidden className="text-xl">↩</span>
+            <span aria-hidden className="text-base">↩</span>
           </Link>
           {step.alt && (
             <p className="text-sm text-muted">
@@ -111,10 +111,10 @@ export function NextNav({ node }: { node: TopicNode }) {
       {step.kind === 'start' && (
         <Link to={`/topic/${step.target!.id}`} state={VIA_PATH} className={big}>
           <span>
-            <span className="block text-xs opacity-85">Follow the learning path</span>
-            <span className="block font-semibold">{step.target!.title}</span>
+            <span className="block text-[11px] opacity-85">Follow the learning path</span>
+            <span className="block text-sm font-semibold">{step.target!.title}</span>
           </span>
-          <span aria-hidden className="text-xl">→</span>
+          <span aria-hidden className="text-base">→</span>
         </Link>
       )}
       {step.kind === 'end' && (

@@ -10,7 +10,7 @@ import type { TopicNode } from '../lib/types.ts'
 import { VisualSection } from '../visuals/VisualSection.tsx'
 import { StepHighlightProvider, useOriginalHighlight } from '../visuals/kit/highlight.tsx'
 import { NextNav, PathStrip } from './journeyUi.tsx'
-import { MarginNotes, NextCard, PathNavigator, PrevCard, StageRibbon } from './rails.tsx'
+import { linksOnly, NextCard, PathNavigator, PrevCard, SidePanel, StageRibbon } from './rails.tsx'
 
 /** Short sections attached to a topic ("Source(s)…", "Disadvantage(s)…"), read as part of the topic's page. */
 const satellites = (n: TopicNode) => n.childIds.map((c) => topics.nodes[c]).filter((c) => c.kind !== 'topic')
@@ -86,7 +86,7 @@ function GoDeeper({ node, hideSubtopics }: { node: TopicNode; hideSubtopics: boo
 /**
  * A topic, for reading: the introduction, the visual, the rest of the text, then the short attached sections
  * (further reading, disadvantages) and the stage ribbon that ends the page. On wide screens the stage's topics sit on
- * the left, notes for the linked terms and topics on the right, and Previous / Next stay fixed at the bottom.
+ * the left, the page's terms, further reading and related topics on the right, and Previous / Next stay fixed at the bottom.
  */
 export function TopicPage() {
   const { id } = useParams()
@@ -96,7 +96,6 @@ export function TopicPage() {
   const focusId = requested && node && requested.id !== node.id ? requested.id : undefined
   const viaPath = (location.state as { viaPath?: boolean } | null)?.viaPath === true
   const ref = useRef<HTMLElement>(null)
-  const rail = useRef<HTMLElement>(null)
   useOriginalHighlight(ref, [node?.id])
 
   useEffect(() => {
@@ -116,17 +115,18 @@ export function TopicPage() {
   const [lead, rest] = splitLead(text)
   const hasVisual = !!visual && !visual.textOnly
   const prose = 'primer prose prose-sm max-w-none md:prose-base'
+  const hideSubs = !!visual?.tiles?.length || hubWithoutText
 
   return (
     <StepHighlightProvider>
-      {/* Wide screens: path navigator | text | margin notes, with Previous / Next fixed at the bottom of the side
+      {/* Wide screens: path navigator | text | side panel, with Previous / Next fixed at the bottom of the side
           columns. They settle into the end row beside the stage ribbon when you reach the end of the page. */}
       <div
         className="mx-auto grid w-full max-w-[920px] grid-cols-1 gap-8 px-4 py-6 md:px-6 xl:max-w-[1380px] xl:grid-cols-[230px_minmax(0,760px)_270px] xl:justify-center"
         data-topic-id={node.id}
       >
         <aside className="hidden min-w-0 flex-col xl:flex">
-          <div className="sticky top-4 max-h-[calc(100vh-260px)] overflow-y-auto pr-1">
+          <div className="sticky top-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-1">
             <PathNavigator node={node} />
           </div>
           <div className="sticky bottom-0 z-10 -mb-4 mt-auto bg-gradient-to-t from-bg from-60% to-transparent pt-10 pb-4">
@@ -174,7 +174,10 @@ export function TopicPage() {
                 key={s.id}
                 id={`sec-${s.id}`}
                 data-topic-id={s.id}
-                className={`scroll-mt-4 rounded-xl border border-line bg-surface px-4 py-1 ${focusId === s.id ? 'ring-2 ring-[var(--accent)]/60' : ''}`}
+                className={`scroll-mt-4 rounded-xl border border-line bg-surface px-4 py-1 ${focusId === s.id ? 'ring-2 ring-[var(--accent)]/60' : ''} ${
+                  // A plain list of links is shown in the side panel on wide screens.
+                  s.kind === 'sources' && linksOnly(s.markdown) && focusId !== s.id ? 'xl:hidden' : ''
+                }`}
               >
                 <div className={prose}>
                   <h3>{s.title}</h3>
@@ -185,7 +188,9 @@ export function TopicPage() {
             {hubWithoutText && subs.length > 0 && <SubtopicList items={subs} title="In this section" />}
           </article>
 
-          <GoDeeper node={node} hideSubtopics={!!visual?.tiles?.length || hubWithoutText} />
+          <div className="xl:hidden">
+            <GoDeeper node={node} hideSubtopics={hideSubs} />
+          </div>
           {/* The ribbon ends the page; on narrow screens the next step follows it (on wide ones it is the fixed card). */}
           <StageRibbon node={node} />
           <div className="xl:hidden">
@@ -193,8 +198,10 @@ export function TopicPage() {
           </div>
         </div>
 
-        <aside ref={rail} className="relative hidden min-w-0 flex-col xl:flex">
-          <MarginNotes article={ref} rail={rail} node={node} />
+        <aside className="hidden min-w-0 flex-col xl:flex">
+          <div className="sticky top-4 max-h-[calc(100vh-200px)] overflow-y-auto pr-1">
+            <SidePanel node={node} hideSubtopics={hideSubs} />
+          </div>
           <div className="sticky bottom-0 z-10 -mb-4 mt-auto bg-gradient-to-t from-bg from-60% to-transparent pt-10 pb-4">
             <NextCard node={node} />
           </div>
