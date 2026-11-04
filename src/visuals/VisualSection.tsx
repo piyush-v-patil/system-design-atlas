@@ -6,12 +6,12 @@ import { registry } from './registry.tsx'
 import { ComparisonCard } from './kit/Comparison.tsx'
 import { ClaimText, ProsCons, UseWhen } from './kit/Claims.tsx'
 
-/** Everything above the Original layer: the visual, use-when, pros/cons, notes and related topics. */
-export function VisualSection({ visual, node }: { visual: TopicVisual; node: TopicNode }) {
+/** The visual layer of a topic: the visual itself, use-when, pros/cons and notes on the source. */
+export function VisualSection({ visual, node, hideSummary }: { visual: TopicVisual; node: TopicNode; hideSummary?: boolean }) {
   const Comp = visual.component ? registry[visual.component] : undefined
   return (
     <section aria-label="Visual card" className="flex flex-col gap-4" data-visual={visual.component ?? visual.diagram}>
-      {visual.summary && (
+      {visual.summary && !hideSummary && (
         <p className="border-l-4 border-[var(--accent)] pl-3 text-[15px] leading-relaxed">
           <ClaimText claim={visual.summary} />
         </p>
@@ -58,25 +58,6 @@ export function VisualSection({ visual, node }: { visual: TopicVisual; node: Top
           {n}
         </p>
       ))}
-      {visual.related && visual.related.length > 0 && (
-        <div>
-          <h3 className="mb-2 text-xs font-semibold tracking-wide text-muted uppercase">Related</h3>
-          <ul className="flex flex-wrap gap-1.5">
-            {visual.related.map((id) => {
-              const r = topics.nodes[id]
-              if (!r) return null
-              return (
-                <li key={id}>
-                  <Link to={`/topic/${id}`} className="inline-flex items-center gap-1.5 rounded-full border border-line px-2.5 py-0.5 text-xs hover:border-[var(--accent)] hover:bg-surface-2">
-                    <span aria-hidden className="size-1.5 rounded-full" style={{ background: areaColor(r.area) }} />
-                    {r.title}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      )}
     </section>
   )
 }

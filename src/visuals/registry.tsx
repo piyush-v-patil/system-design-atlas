@@ -10,7 +10,7 @@ import { FederationVisual, ShardingVisual } from './topics/partitioning.tsx'
 import { CachePathsVisual, CacheStrategyVisual } from './topics/cache.tsx'
 import { AvailabilityCalculator, DowntimeTable } from './topics/availability.tsx'
 import { LearningPathVisual, StudyGuideVisual } from './topics/path.tsx'
-import { ConsList, KeyPoints, ReadingList, TableExplorer } from './topics/lists.tsx'
+import { ConsList, KeyPoints, StudyResource, ReadingList, TableExplorer } from './topics/lists.tsx'
 import { AppLayerVisual, CdnVisual, DnsVisual, LbVsProxyVisual, MicroservicesVisual, ReverseProxyVisual, ServiceDiscoveryVisual } from './topics/networking.tsx'
 import { AcidBase, DataModelVisual, DenormalizationVisual, SqlNoSqlPicker } from './topics/data.tsx'
 import { CacheGranularityVisual, CacheLayersVisual } from './topics/caching.tsx'
@@ -43,6 +43,7 @@ export const registry: Record<string, ComponentType<VisualProps>> = {
   'cons-list': ConsList,
   'reading-list': ReadingList,
   'key-points': KeyPoints,
+  'study-resource': StudyResource,
   'table-explorer': TableExplorer,
   dns: DnsVisual,
   cdn: CdnVisual,

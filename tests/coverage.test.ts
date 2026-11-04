@@ -42,6 +42,8 @@ beforeAll(() => {
     '/',
     '/problems',
     ...topics.order.map((id) => `/topic/${id}`),
+    // The map focused on each section (headings must be one click away from their parent there).
+    ...topics.order.map((id) => `/map/${id}`),
     // A solution shows one interview step at a time: every step (?f=…) is a page of its own.
     ...solutions.flatMap((s) => solutionRoutes(s.id)),
     // An OOD problem opens on its class diagram; the notebook and module are tabs (?view=…).
@@ -83,7 +85,7 @@ describe('coverage', () => {
       else if (!reachable.has(h.slug)) missing.push(`${where} → not in the map tree`)
       // Focus view (default): the root is on the home map; every other heading is drawn when its parent is focused,
       // i.e. it is one click away from its parent on the map.
-      else if (!(node.parentId ? page(`/topic/${node.parentId}`) : mapPage).mapNodeIds.has(h.slug))
+      else if (!(node.parentId ? page(`/map/${node.parentId}`) : mapPage).mapNodeIds.has(h.slug))
         missing.push(`${where} → not drawn on the map when its parent is focused`)
       else {
         const card = page(`/topic/${h.slug}`)

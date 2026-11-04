@@ -3,6 +3,7 @@ import type { VisualProps } from '../registry.tsx'
 import { areaColor, topics } from '../../lib/content.ts'
 import { PATH, PATH_ORDER } from '../../lib/learningPath.ts'
 import { setTimeline, useRead, useTimeline } from '../../lib/progress.ts'
+import { VIA_PATH } from '../../lib/journey.ts'
 import { TIMELINES, type Timeline } from '../../../content/visuals/_shared/path.ts'
 import { ClaimText, LineRef } from '../kit/Claims.tsx'
 import { ModeToggle } from '../kit/Stepper.tsx'
@@ -102,6 +103,7 @@ export function LearningPathVisual({ visual }: VisualProps) {
             <li key={s.id}>
               <Link
                 to={`/topic/${first}`}
+                state={VIA_PATH}
                 className={`flex items-center gap-2.5 rounded-lg border px-2.5 py-2 text-sm hover:border-[var(--accent)] ${highlight === s.id ? 'border-[var(--accent)] bg-accent-soft' : 'border-line'}`}
               >
                 <span className="grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold text-white" style={{ background: areaColor(area) }}>

@@ -4,7 +4,11 @@ import { type TopicVisual } from './types.ts'
 export default {
   topicId: "step-2-review-the-scalability-article",
   diagram: "reference",
-  component: "reading-list",
+  component: "study-resource",
+  props: {
+    kind: "Article series",
+    covers: "Clones=horizontal-scaling|Databases=database|Caches=cache|Asynchronism=asynchronism",
+  },
   related: [
     "horizontal-scaling",
     "database",

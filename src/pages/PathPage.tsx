@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { areaColor, topics } from '../lib/content.ts'
 import { PATH, PATH_ORDER } from '../lib/learningPath.ts'
-import { resetProgress, useRead, useTimeline } from '../lib/progress.ts'
+import { resetProgress, usePathCursor, useRead, useTimeline } from '../lib/progress.ts'
+import { VIA_PATH } from '../lib/journey.ts'
 import { NOT_EVERYTHING, START_BROAD } from '../../content/visuals/_shared/path.ts'
 import { ClaimText } from '../visuals/kit/Claims.tsx'
 import { parseStudyGuide, TimelineToggle } from '../visuals/topics/path.tsx'
@@ -12,6 +13,7 @@ function Chip({ n, read, muted }: { n: TopicNode; read: boolean; muted?: boolean
   return (
     <Link
       to={`/topic/${n.id}`}
+      state={VIA_PATH}
       className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-sm transition-colors hover:border-[var(--accent)] hover:bg-surface-2 ${read ? 'border-[var(--ok)]/50 bg-[var(--ok-soft)]' : 'border-line'} ${muted ? 'opacity-70' : ''}`}
     >
       {read ? (
@@ -31,7 +33,8 @@ export function PathPage() {
   const t = useTimeline()
   const breadthAll = PATH.flatMap((s) => s.breadth)
   const breadthRead = breadthAll.filter((id) => read.has(id)).length
-  const next = PATH_ORDER.find((id) => !read.has(id) && !PATH.some((s) => s.depth.includes(id))) ?? PATH_ORDER[0]
+  const cursor = usePathCursor()
+  const next = cursor ?? PATH_ORDER[0]
   const study = parseStudyGuide()
   const practiceValue = (anchor: string) => study.find((r) => r.anchor === anchor)?.values[t]
   const { hash } = useLocation()
@@ -63,8 +66,8 @@ export function PathPage() {
           <div className="h-2 w-48 rounded-full bg-surface-2">
             <div className="h-2 rounded-full bg-[var(--ok)] transition-all" style={{ width: `${(100 * breadthRead) / breadthAll.length}%` }} />
           </div>
-          <Link to={`/topic/${next}`} className="rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:opacity-90">
-            {read.size === 0 ? 'Start' : 'Continue'}: {topics.nodes[next].title} →
+          <Link to={`/topic/${next}`} state={VIA_PATH} className="rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:opacity-90">
+            {cursor ? 'Back to your place' : 'Start'}: {topics.nodes[next].title} →
           </Link>
           {read.size > 0 && (
             <button onClick={resetProgress} className="text-xs text-muted hover:text-bad">

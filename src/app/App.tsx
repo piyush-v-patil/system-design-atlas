@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { NavLink, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { MapPage } from '../pages/MapPage.tsx'
+import { TopicPage } from '../topic/TopicPage.tsx'
 import { SolutionPage } from '../pages/SolutionPage.tsx'
 import { OodPage } from '../pages/OodPage.tsx'
 import { ProblemsPage } from '../pages/ProblemsPage.tsx'
@@ -9,6 +10,7 @@ import { ThemeToggle } from './ThemeToggle.tsx'
 import { Footer } from './Footer.tsx'
 
 function Header() {
+  const { pathname } = useLocation()
   const nav = ({ isActive }: { isActive: boolean }) =>
     `rounded-md px-2.5 py-1.5 ${isActive ? 'bg-surface-2 font-semibold text-ink' : 'text-muted hover:text-ink'}`
   return (
@@ -21,7 +23,7 @@ function Header() {
         <span className="hidden sm:inline">System Design Atlas</span>
       </NavLink>
       <nav aria-label="Main" className="flex items-center gap-1 text-sm">
-        <NavLink to="/" end className={({ isActive }) => nav({ isActive: isActive || false })}>
+        <NavLink to="/" end className={({ isActive }) => nav({ isActive: isActive || pathname.startsWith('/map/') })}>
           Map
         </NavLink>
         <NavLink to="/path" className={nav}>
@@ -40,7 +42,7 @@ function Header() {
 
 function Layout() {
   const { pathname } = useLocation()
-  const fullBleed = pathname === '/' || pathname.startsWith('/topic/')
+  const fullBleed = pathname === '/' || pathname.startsWith('/map/')
   const mainRef = useRef<HTMLElement>(null)
   // A new page starts at the top (query-string changes, e.g. a solution's step, keep the position).
   useEffect(() => {
@@ -66,7 +68,8 @@ export function AppRoutes() {
     <Routes>
       <Route element={<Layout />}>
         <Route index element={<MapPage />} />
-        <Route path="topic/:id" element={<MapPage />} />
+        <Route path="map/:id" element={<MapPage />} />
+        <Route path="topic/:id" element={<TopicPage />} />
         <Route path="path" element={<PathPage />} />
         <Route path="problems" element={<ProblemsPage />} />
         <Route path="solutions/:id" element={<SolutionPage />} />

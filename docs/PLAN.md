@@ -819,3 +819,39 @@ map, and a generic card with the Original layer only.
     - Online chat: `PrivateChat` calls `Chat.__init__` without `chat_id`.
 - **Housekeeping:** navigating to a new page now scrolls to the top; query-string changes, such as switching
   steps, keep your position.
+
+### Reading revision (after Phase 4 review)
+
+Feedback: the first screen was crowded; topic text was hidden behind a collapsed panel; the lecture page looked empty;
+the performance vs scalability chart was unclear; "Source(s)" pages felt incomplete; and the two different "Next"
+buttons led readers off their path with no way back.
+
+- **Topics are now reading pages** (`/topic/:id`), with no map beside them.
+  - The visual (animation or diagram) is on the left, sticky; the Primer's text is on the right, always open.
+  - A layout switch offers **Visual + text** (the default), **Map + text** (a map of this part of the Primer, with
+    the current topic marked) or **Text only**. The choice is remembered.
+- **Short attached sections are part of their topic's page.** "Source(s) and further reading" and "Disadvantage(s)"
+  sit under the topic's text; the disadvantages visual sits under the topic's visual. Their old links still work:
+  they open the topic, scrolled to that section and highlighted.
+- **Less on screen.**
+  - Subtopics and related topics are folded into one "Go deeper" panel, with anything the page already links to
+    left out.
+  - The visual's lead quote is hidden, since the same sentence is now visible in the text.
+- **One next step.**
+  - Every page ends with a single prominent button: the next stop on the learning path.
+  - The Primer's own previous/next order is a quiet text line underneath.
+- **Your place on the path is remembered.**
+  - Following the path moves your place forward.
+  - Opening another topic (a related link, the map, or search) is a *detour*: the page says so and offers
+    **Back to your path**, plus "continue the path from here" if you'd rather switch.
+  - The home map's "Pick up where you left off" and the path page's button return to your place.
+  - Tested in `tests/journey.test.ts`.
+- **The map is for finding your way** (`/` and `/map/:id`). Clicking a topic focuses it and shows a short preview
+  with **Read this topic**.
+- **Visual fixes:**
+  - The lecture and article pages open on the resource itself (a large link to the video or article), then "what it
+    covers", each item pointing to where the Atlas covers it. That mapping is ours, and labelled as such.
+  - Nested bullet lists stay under their parent instead of being scattered across a grid.
+  - Performance vs scalability is now three steps (one user, heavy load, adding resources), with every line labelled
+    directly. Each step highlights its sentence in the text alongside.
+- **Coverage:** the test now renders every topic page and every map view. It is unchanged at 100%.
