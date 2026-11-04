@@ -48,6 +48,10 @@ export interface TopicVisual {
   comparison?: Comparison
   /** A lead sentence from the source shown above the visual. */
   summary?: Claim
+  /** Extra quoted points shown under a key-points visual. */
+  points?: Claim[]
+  /** Small multiples / hub tiles linking to subtopics, each with a quoted one-liner. */
+  tiles?: { topicId: string; claim: Claim }[]
   useWhen?: Claim
   pros?: Claim[]
   cons?: Claim[]

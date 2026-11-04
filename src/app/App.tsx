@@ -3,6 +3,7 @@ import { MapPage } from '../pages/MapPage.tsx'
 import { SolutionPage } from '../pages/SolutionPage.tsx'
 import { OodPage } from '../pages/OodPage.tsx'
 import { ProblemsPage } from '../pages/ProblemsPage.tsx'
+import { PathPage } from '../pages/PathPage.tsx'
 import { ThemeToggle } from './ThemeToggle.tsx'
 import { Footer } from './Footer.tsx'
 
@@ -21,6 +22,9 @@ function Header() {
       <nav aria-label="Main" className="flex items-center gap-1 text-sm">
         <NavLink to="/" end className={({ isActive }) => nav({ isActive: isActive || false })}>
           Map
+        </NavLink>
+        <NavLink to="/path" className={nav}>
+          Learning path
         </NavLink>
         <NavLink to="/problems" className={nav}>
           Problems
@@ -57,6 +61,7 @@ export function AppRoutes() {
       <Route element={<Layout />}>
         <Route index element={<MapPage />} />
         <Route path="topic/:id" element={<MapPage />} />
+        <Route path="path" element={<PathPage />} />
         <Route path="problems" element={<ProblemsPage />} />
         <Route path="solutions/:id" element={<SolutionPage />} />
         <Route path="ood/:id" element={<OodPage />} />

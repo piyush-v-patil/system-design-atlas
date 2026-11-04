@@ -1,4 +1,7 @@
+import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { PathBar } from './PathBar.tsx'
+import { markRead } from '../lib/progress.ts'
 import type { TopicNode } from '../lib/types.ts'
 import { AREA_LABEL, areaColor, meta, oods, prevNext, solutionByReadmeTopic, topics } from '../lib/content.ts'
 import { getVisual } from '../../content/visuals/index.ts'
@@ -97,6 +100,7 @@ export function TopicCard({
 }) {
   const { prev, next } = prevNext(node.id)
   const visual = getVisual(node.id)
+  useEffect(() => markRead(node.id), [node.id])
   return (
     <StepHighlightProvider>
     <article className="flex flex-col gap-5" aria-labelledby="card-title" data-topic-id={node.id}>
@@ -137,6 +141,7 @@ export function TopicCard({
         </div>
       </header>
 
+      <PathBar node={node} />
       <PracticeLinks node={node} />
       {visual && <VisualSection key={`visual-${node.id}`} visual={visual} node={node} />}
       <ChildLinks node={node} />

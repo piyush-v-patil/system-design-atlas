@@ -41,8 +41,10 @@ export function buildSolution(
   const readmeTitle = readmeTitles.get(dir)
   if (!readmeTitle) throw new Error(`README table has no row for ${dir}`)
   // The README introduces each problem with an H3 whose body links to the solution.
+  // Only headings under "System design interview questions with solutions" count: other sections (e.g. "Step 3:
+  // Design core components") also link to solutions as examples.
   const readmeTopicId = topics.order.find(
-    (id) => topics.nodes[id].depth === 3 && topics.nodes[id].urls.includes(path),
+    (id) => topics.nodes[id].parentId === 'system-design-interview-questions-with-solutions' && topics.nodes[id].urls.includes(path),
   )
   if (!readmeTopicId) throw new Error(`No README heading links to ${path}`)
 

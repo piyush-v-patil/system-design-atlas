@@ -5,6 +5,33 @@ import { RadialMap } from '../map/RadialMap.tsx'
 import { FocusMap } from '../map/FocusMap.tsx'
 import { OutlineView } from '../map/OutlineView.tsx'
 import { TopicCard } from '../card/TopicCard.tsx'
+import { Link } from 'react-router-dom'
+import { useRead } from '../lib/progress.ts'
+import { PATH, PATH_ORDER } from '../lib/learningPath.ts'
+import { topics } from '../lib/content.ts'
+
+/** Shown on the home map: tells newcomers where to begin and returning readers where they left off. */
+function StartHere() {
+  const read = useRead()
+  const next = PATH_ORDER.find((id) => !read.has(id) && !PATH.some((s) => s.depth.includes(id))) ?? PATH_ORDER[0]
+  const started = read.size > 0
+  return (
+    <div className="absolute right-3 bottom-16 z-10 max-w-[19rem] rounded-xl border border-line bg-surface/95 p-3 text-sm shadow-lg backdrop-blur md:top-3 md:bottom-auto">
+      <div className="font-semibold">{started ? 'Pick up where you left off' : 'New to system design?'}</div>
+      <p className="mt-0.5 text-xs text-muted">
+        {started ? 'Your next stop on the learning path:' : 'Follow the learning path: the Primer’s own order, from the basics to practice.'}
+      </p>
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        <Link to={`/topic/${next}`} className="rounded-lg bg-[var(--accent)] px-2.5 py-1.5 text-xs font-medium text-white hover:opacity-90">
+          {started ? topics.nodes[next].title : 'Start: ' + topics.nodes[next].title} →
+        </Link>
+        <Link to="/path" className="rounded-lg border border-line px-2.5 py-1.5 text-xs font-medium hover:bg-surface-2">
+          See the whole path
+        </Link>
+      </div>
+    </div>
+  )
+}
 
 type View = 'focus' | 'map' | 'outline'
 const VIEWS: { value: View; label: string }[] = [
@@ -91,6 +118,8 @@ export function MapPage() {
           </div>
         )}
       </section>
+
+      {!id && <StartHere />}
 
       {id && !node && (
         <aside className="absolute inset-x-3 bottom-3 rounded-xl border border-line bg-surface p-4 text-sm shadow-lg md:static md:w-[420px] md:rounded-none md:border-y-0 md:border-r-0">

@@ -11,10 +11,14 @@ export function CodeSteps({ code, lang = 'python', active, title }: { code: stri
   useEffect(() => {
     if (cache) return
     let live = true
-    import('../../../content/highlight.json').then((m) => {
-      cache = m.default as Highlights
-      if (live) setHl(cache)
-    })
+    import('../../../content/highlight.json')
+      .then((m) => {
+        cache = m.default as Highlights
+        if (live) setHl(cache)
+      })
+      .catch(() => {
+        /* stay plain if the chunk can't load */
+      })
     return () => {
       live = false
     }

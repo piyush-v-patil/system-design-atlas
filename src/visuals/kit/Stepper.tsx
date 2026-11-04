@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { ProcessStep } from '../../../content/visuals/types.ts'
 import { LineRef } from './Claims.tsx'
 import { useStepHighlight } from './highlight.tsx'
@@ -16,8 +16,9 @@ export interface Stepper {
 }
 
 /** Step 0 is the starting state; steps 1..count each correspond to one ProcessStep. */
-export function useStepper(count: number, interval = 2400): Stepper {
-  const [step, setStep] = useState(0)
+/** Autoplay waits `interval` ms per step: long enough for multi-hop packet animations (≤ ~2.7 s) to finish. */
+export function useStepper(count: number, interval = 3000, initial = 0): Stepper {
+  const [step, setStep] = useState(initial)
   const [playing, setPlaying] = useState(false)
   useEffect(() => {
     if (!playing) return
@@ -28,7 +29,10 @@ export function useStepper(count: number, interval = 2400): Stepper {
     const t = setTimeout(() => setStep((s) => s + 1), step === 0 ? 250 : interval)
     return () => clearTimeout(t)
   }, [playing, step, count, interval])
+  const lastCount = useRef(count)
   useEffect(() => {
+    if (lastCount.current === count) return
+    lastCount.current = count
     setStep(0)
     setPlaying(false)
   }, [count])
@@ -146,7 +150,7 @@ export function ProcessPlayer({
       {header}
       <div className="rounded-lg bg-bg/60 p-1">{children}</div>
       <StepControls s={stepper} />
-      <p className="min-h-[1.25rem] text-sm font-medium" aria-live="polite">
+      <p key={stepper.step} className="min-h-[1.25rem] text-sm font-medium" style={{ animation: 'fade-up 250ms ease-out both' }} aria-live="polite">
         {current ? current.caption : 'Press Play, or Step through one line of the text at a time.'}
       </p>
       {aside}

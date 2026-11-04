@@ -318,3 +318,48 @@ body {
     opacity: 1;
   }
 }
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes lt-move {
+  from {
+    transform: translateX(72px);
+  }
+  to {
+    transform: translateX(488px);
+  }
+}
+.lt-item {
+  animation-name: lt-move;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.diagram .fade-in {
+  animation: fade-in 260ms ease-out both;
+}

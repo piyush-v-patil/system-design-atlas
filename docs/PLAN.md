@@ -691,3 +691,69 @@ map, and a generic card with the Original layer only.
 - The radial dendrogram stays available as **Whole map**, next to **Outline**.
 - **Coverage test:** "reachable from the map" now means each heading is drawn in the Focus view when its parent
   is focused, i.e. one click from its parent.
+
+### Phase 3: visual cards for every remaining topic
+
+- **Every one of the 172 topics now has a visual card** (`tests/visuals.test.ts` enforces this).
+- **Learning path (new).** This answers "what should I study, and when?". `/path` lays out 10 stages in the
+  Primer's own order: its "start here" section, then "high-level trade-offs", then "DNS, CDNs, and load
+  balancers", then the index order, ending with practice drawn from the study guide. Each stage quotes the
+  Primer's reason for coming next. A short/medium/long timeline selector quotes the study guide and controls
+  how much depth is shown; the split of each stage into breadth vs depth is our reading of the guide, and the
+  page says so.
+  - Every card shows its stage, how many core topics in that stage are read, and the next stop.
+  - The home map shows "Start here" or "Continue".
+  - The study-guide table is parsed from the source into a timeline checklist.
+  - Progress is stored only in the browser, and every storage access is guarded.
+- **Auto-generated visuals** (built from each section's own text, `src/visuals/auto.ts`). All 21 "Disadvantage(s)"
+  sections become drawback lists, and all 30 "Source(s)" sections become reading lists typed by resource kind.
+  Bullet lists become key points or checklists, and source tables become searchable explorers with filters.
+- **New hand-built visuals:**
+  - DNS lookup and record types
+  - CDN push/pull, with a comparison and "choose when"
+  - Reverse proxy benefits
+  - Load balancer vs reverse proxy
+  - Web/platform layers
+  - Microservices
+  - Service discovery
+  - ACID and BASE
+  - NoSQL data models (the wide-column and graph examples reuse the data in the Primer's own images)
+  - SQL-or-NoSQL picker (tick the Primer's reasons)
+  - Denormalization
+  - Cache layers
+  - Query-level vs object-level caching
+  - The async flow (from the Primer's diagram)
+  - Message and task queues
+  - Back-pressure simulation
+  - OSI layers (from the Primer's image)
+  - HTTP verb explorer (parsed from the Primer's table)
+  - TCP vs UDP (lost and out-of-order packets)
+  - RPC (following the Primer's diagram)
+  - REST
+  - RPC vs REST calls (the Primer's table, one operation at a time)
+  - Latency chart (15 rows parsed from the source, log scale, "1 ns = 1 s")
+  - Powers-of-two converter
+  - Back-of-the-envelope calculator (the solutions' own conversion guide)
+  - Performance vs scalability
+  - Latency vs throughput
+  - The 4 interview steps
+  - A problem gallery, and a problem card for each of the 8 problems
+  - An OOD gallery
+- **Accuracy:**
+  - **998 quoted claims** in the metadata are verified verbatim at their cited lines.
+  - **74 paraphrases** are marked ≈ in the UI.
+  - **1,219 auto-derived claims and links** are re-checked against the source.
+  - The latency, powers-of-two and study-guide parsers are pinned by tests.
+  - Illustrative values (curves, rates, sample data, IPs) are labelled as such on screen.
+- **Smoothness:**
+  - Autoplay waits 3 s per step (3.2 s for the TCP handshake), so multi-hop packet sequences finish before the
+    next step starts.
+  - Badges and captions fade in instead of popping, and step captions cross-fade.
+  - Bars and lists animate in.
+  - Reduced-motion users get static visuals.
+- **Fixed during review:**
+  - **Phase 1 bug:** Pastebin's README entry was matched to "Step 3: Design core components", which also links to
+    that solution. Matching is now restricted to the questions section, with a test.
+  - If the code-highlighting chunk fails to load, code now falls back to plain text instead of throwing.
+  - Several diagram layout overlaps.
+- The metadata for Phase 3 is generated from `scripts/visuals-spec/phase3.py` (one spec, 89 files).

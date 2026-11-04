@@ -146,7 +146,7 @@ const TONE = {
 export function Badge({ x, y, text, tone }: { x: number; y: number; text: string; tone: keyof typeof TONE }) {
   const w = text.length * 6 + 12
   return (
-    <g transform={`translate(${x - w / 2},${y - 9})`}>
+    <g transform={`translate(${x - w / 2},${y - 9})`} className="fade-in">
       <rect width={w} height={16} rx={8} fill={TONE[tone][0]} stroke={TONE[tone][1]} strokeWidth={1} />
       <text x={w / 2} y={11.5} fontSize={10} fontWeight={600} textAnchor="middle" style={{ fill: TONE[tone][1] }}>
         {text}
@@ -292,7 +292,7 @@ export function Diagram({ width, height, title, children }: { width: number; hei
 export function Caption({ x, y, children, anchor = 'middle', tone }: { x: number; y: number; children: ReactNode; anchor?: 'start' | 'middle' | 'end'; tone?: 'ok' | 'bad' | 'warn' | 'muted' }) {
   const color = tone === 'muted' || !tone ? undefined : `var(--${tone})`
   return (
-    <text x={x} y={y} fontSize={11} textAnchor={anchor} className={tone === 'muted' ? 'muted' : undefined} style={color ? { fill: color, fontWeight: 600 } : undefined}>
+    <text x={x} y={y} fontSize={11} textAnchor={anchor} className={`fade-in${tone === 'muted' ? ' muted' : ''}`} style={color ? { fill: color, fontWeight: 600 } : undefined}>
       {children}
     </text>
   )

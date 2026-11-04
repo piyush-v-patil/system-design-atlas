@@ -29,7 +29,13 @@ function useHighlights(): Highlights | null {
   const [h, setH] = useState<Highlights | null>(highlightCache)
   useEffect(() => {
     if (highlightCache) return
-    highlightPromise ??= import('../../content/highlight.json').then((m) => (highlightCache = m.default as Highlights))
+    // If the highlight chunk can't load (offline, flaky network), code simply stays plain.
+    highlightPromise ??= import('../../content/highlight.json')
+      .then((m) => (highlightCache = m.default as Highlights))
+      .catch(() => {
+        highlightPromise = null
+        return {} as Highlights
+      })
     let live = true
     highlightPromise.then((v) => live && setH(v))
     return () => {

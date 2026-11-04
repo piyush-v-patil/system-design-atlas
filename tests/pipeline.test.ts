@@ -21,6 +21,14 @@ describe('pipeline', () => {
     }
   })
 
+  it('links each solution to its own README problem heading', () => {
+    for (const s of solutions) {
+      expect(topics.nodes[s.readmeTopicId].parentId).toBe('system-design-interview-questions-with-solutions')
+      expect(topics.nodes[s.readmeTopicId].urls).toContain(s.source.path)
+    }
+    expect(new Set(solutions.map((s) => s.readmeTopicId)).size).toBe(8)
+  })
+
   it('keeps the 4-step structure for every solution', () => {
     for (const s of solutions) expect(s.steps.map((x) => x.step)).toEqual([1, 2, 3, 4, 5])
   })
