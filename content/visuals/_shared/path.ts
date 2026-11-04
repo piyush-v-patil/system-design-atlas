@@ -103,4 +103,4 @@ export const TIMELINES: Record<Timeline, { label: string; claim: Claim }> = {
 }
 
 export const START_BROAD = q('Start broad and go deeper in a few areas. It helps to know a little about various key system design topics.', 202)
-export const NOT_EVERYTHING = q("A: No, you don't need to know everything here to prepare for the interview.", 190)
+export const NOT_EVERYTHING = q("No, you don't need to know everything here to prepare for the interview.", 190)

@@ -1,4 +1,4 @@
-import { githubBlob, oodByDir, solutionByDir, topics } from './content.ts'
+import { githubBlob, oodRefByDir, solutionRefByDir, topics } from './content.ts'
 
 export type ResolvedLink =
   | { kind: 'route'; to: string; source: string }
@@ -44,9 +44,9 @@ export function resolveLink(href: string, docPath: string): ResolvedLink {
   const dir = docPath.includes('/') ? docPath.slice(0, docPath.lastIndexOf('/')) : ''
   const path = normalize(dir ? `${dir}/${pathPart}` : pathPart)
   const sol = /^solutions\/system_design\/([^/]+)\/README\.md$/.exec(path)
-  if (sol && solutionByDir.has(sol[1])) return { kind: 'route', to: `/solutions/${solutionByDir.get(sol[1])!.id}`, source }
+  if (sol && solutionRefByDir.has(sol[1])) return { kind: 'route', to: `/solutions/${solutionRefByDir.get(sol[1])!.id}`, source }
   const ood = /^solutions\/object_oriented_design\/([^/]+)\/[^/]+\.ipynb$/.exec(path)
-  if (ood && oodByDir.has(ood[1])) return { kind: 'route', to: `/ood/${oodByDir.get(ood[1])!.id}`, source }
+  if (ood && oodRefByDir.has(ood[1])) return { kind: 'route', to: `/ood/${oodRefByDir.get(ood[1])!.id}`, source }
   if (path === 'README.md' && !hash) return { kind: 'route', to: `/topic/${topics.rootId}`, source }
   return { kind: 'external', href: githubBlob(path) + (hash ? `#${hash}` : ''), source }
 }

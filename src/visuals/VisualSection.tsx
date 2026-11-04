@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import type { TopicVisual } from '../../content/visuals/types.ts'
 import type { TopicNode } from '../lib/types.ts'
@@ -16,7 +17,11 @@ export function VisualSection({ visual, node, hideSummary }: { visual: TopicVisu
           <ClaimText claim={visual.summary} />
         </p>
       )}
-      {Comp && <Comp visual={visual} node={node} />}
+      {Comp && (
+        <Suspense fallback={<div className="h-40 rounded-xl border border-line bg-surface" aria-hidden />}>
+          <Comp visual={visual} node={node} />
+        </Suspense>
+      )}
       {visual.tiles && visual.tiles.length > 0 && (
         <ul className="grid gap-2 sm:grid-cols-2">
           {visual.tiles.map((t, i) => {
@@ -52,12 +57,7 @@ export function VisualSection({ visual, node, hideSummary }: { visual: TopicVisu
       {visual.comparison && <ComparisonCard data={visual.comparison} activeKey={visual.props?.activeColumn as string | undefined} />}
       {visual.useWhen && <UseWhen claim={visual.useWhen} />}
       <ProsCons pros={visual.pros} cons={visual.cons} />
-      {visual.notes?.map((n, i) => (
-        <p key={i} className="rounded-lg border border-[var(--warn)]/50 bg-[var(--warn-soft)] px-3 py-2 text-xs leading-relaxed">
-          <strong className="text-warn">Note: </strong>
-          {n}
-        </p>
-      ))}
+      {/* visual.notes are accuracy flags for maintainers (docs/PLAN.md); they are not shown to readers. */}
     </section>
   )
 }

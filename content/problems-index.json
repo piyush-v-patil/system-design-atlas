@@ -1,0 +1,145 @@
+{
+ "solutions": [
+  {
+   "id": "pastebin",
+   "dir": "pastebin",
+   "title": "Design Pastebin.com (or Bit.ly)",
+   "readmeTitle": "Design Pastebin.com (or Bit.ly)",
+   "readmeTopicId": "design-pastebincom-or-bitly"
+  },
+  {
+   "id": "twitter",
+   "dir": "twitter",
+   "title": "Design the Twitter timeline and search",
+   "readmeTitle": "Design the Twitter timeline and search (or Facebook feed and search)",
+   "readmeTopicId": "design-the-twitter-timeline-and-search-or-facebook-feed-and-search"
+  },
+  {
+   "id": "web-crawler",
+   "dir": "web_crawler",
+   "title": "Design a web crawler",
+   "readmeTitle": "Design a web crawler",
+   "readmeTopicId": "design-a-web-crawler"
+  },
+  {
+   "id": "mint",
+   "dir": "mint",
+   "title": "Design Mint.com",
+   "readmeTitle": "Design Mint.com",
+   "readmeTopicId": "design-mintcom"
+  },
+  {
+   "id": "social-graph",
+   "dir": "social_graph",
+   "title": "Design the data structures for a social network",
+   "readmeTitle": "Design the data structures for a social network",
+   "readmeTopicId": "design-the-data-structures-for-a-social-network"
+  },
+  {
+   "id": "query-cache",
+   "dir": "query_cache",
+   "title": "Design a key-value cache to save the results of the most recent web server queries",
+   "readmeTitle": "Design a key-value store for a search engine",
+   "readmeTopicId": "design-a-key-value-store-for-a-search-engine"
+  },
+  {
+   "id": "sales-rank",
+   "dir": "sales_rank",
+   "title": "Design Amazon's sales rank by category feature",
+   "readmeTitle": "Design Amazon's sales ranking by category feature",
+   "readmeTopicId": "design-amazons-sales-ranking-by-category-feature"
+  },
+  {
+   "id": "scaling-aws",
+   "dir": "scaling_aws",
+   "title": "Design a system that scales to millions of users on AWS",
+   "readmeTitle": "Design a system that scales to millions of users on AWS",
+   "readmeTopicId": "design-a-system-that-scales-to-millions-of-users-on-aws"
+  }
+ ],
+ "oods": [
+  {
+   "id": "hash-table",
+   "dir": "hash_table",
+   "title": "Design a hash map",
+   "readmeTitle": "Design a hash map",
+   "classes": [
+    "Item",
+    "HashTable"
+   ]
+  },
+  {
+   "id": "lru-cache",
+   "dir": "lru_cache",
+   "title": "Design an LRU cache",
+   "readmeTitle": "Design a least recently used cache",
+   "classes": [
+    "Node",
+    "LinkedList",
+    "Cache"
+   ]
+  },
+  {
+   "id": "call-center",
+   "dir": "call_center",
+   "title": "Design a call center",
+   "readmeTitle": "Design a call center",
+   "classes": [
+    "Rank",
+    "Employee",
+    "Operator",
+    "Supervisor",
+    "Director",
+    "CallState",
+    "Call",
+    "CallCenter"
+   ]
+  },
+  {
+   "id": "deck-of-cards",
+   "dir": "deck_of_cards",
+   "title": "Design a deck of cards",
+   "readmeTitle": "Design a deck of cards",
+   "classes": [
+    "Suit",
+    "Card",
+    "BlackJackCard",
+    "Hand",
+    "BlackJackHand",
+    "Deck"
+   ]
+  },
+  {
+   "id": "parking-lot",
+   "dir": "parking_lot",
+   "title": "Design a parking lot",
+   "readmeTitle": "Design a parking lot",
+   "classes": [
+    "VehicleSize",
+    "Vehicle",
+    "Motorcycle",
+    "Car",
+    "Bus",
+    "ParkingLot",
+    "Level",
+    "ParkingSpot"
+   ]
+  },
+  {
+   "id": "online-chat",
+   "dir": "online_chat",
+   "title": "Design an online chat",
+   "readmeTitle": "Design a chat server",
+   "classes": [
+    "UserService",
+    "User",
+    "Chat",
+    "PrivateChat",
+    "GroupChat",
+    "Message",
+    "AddRequest",
+    "RequestStatus"
+   ]
+  }
+ ]
+}

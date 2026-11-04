@@ -18,18 +18,18 @@ function StartHere() {
   const started = read.size > 0 && cursor !== null
   const target = cursor ?? PATH_ORDER[0]
   return (
-    <div className="absolute right-3 bottom-16 z-10 max-w-[20rem] rounded-xl border border-line bg-surface/95 p-4 text-sm shadow-lg backdrop-blur md:top-3 md:bottom-auto">
+    <div className="absolute inset-x-3 bottom-3 z-10 rounded-xl border border-line bg-surface/95 p-3 text-sm shadow-lg backdrop-blur sm:p-4 md:inset-x-auto md:top-3 md:right-3 md:bottom-auto md:max-w-[20rem]">
       <div className="font-semibold">{started ? 'Pick up where you left off' : 'New to system design?'}</div>
-      <p className="mt-1 text-xs text-muted">
+      <p className="mt-1 hidden text-xs text-muted sm:block">
         {started
           ? 'Your place on the learning path:'
           : 'Follow the learning path, from the basics to practice. Or click any topic on the map.'}
       </p>
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        <Link to={`/topic/${target}`} state={VIA_PATH} className="rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white hover:opacity-90">
+      <div className="mt-2 flex flex-wrap gap-1.5 sm:mt-3">
+        <Link to={`/topic/${target}`} state={VIA_PATH} className="btn btn-sm btn-primary">
           {started ? topics.nodes[target].title : 'Start reading'} →
         </Link>
-        <Link to="/path" className="rounded-lg border border-line px-3 py-1.5 text-xs font-medium hover:bg-surface-2">
+        <Link to="/path" className="btn btn-sm btn-secondary">
           See the whole path
         </Link>
       </div>
@@ -68,7 +68,7 @@ function Preview({ id, onClose }: { id: string; onClose: () => void }) {
       </div>
       {lead && <p className="mt-2 line-clamp-4 text-sm leading-relaxed">{lead}</p>}
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        <Link to={`/topic/${target}`} className="rounded-lg bg-[var(--accent)] px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
+        <Link to={`/topic/${target}`} className="btn btn-primary">
           Read this topic →
         </Link>
         {subs > 0 && <span className="text-xs text-muted">{subs} subtopics: they are around it on the map</span>}

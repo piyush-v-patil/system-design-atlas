@@ -1,7 +1,8 @@
 import topicsJson from '../../content/topics.json'
 import imagesJson from '../../content/images.json'
 import metaJson from '../../content/meta.json'
-import type { Area, ContentMeta, ImagesFile, OodFile, SectionDocument, SolutionFile, TopicNode, TopicsFile } from './types.ts'
+import problemsIndex from '../../content/problems-index.json'
+import type { Area, ContentMeta, ImagesFile, SectionDocument, TopicNode, TopicsFile } from './types.ts'
 
 import scopeJson from '../../content/scope.json'
 
@@ -32,22 +33,30 @@ export const topics: TopicsFile = {
 export const images = imagesJson as unknown as ImagesFile
 export const meta = metaJson as unknown as ContentMeta
 
-const solutionModules = import.meta.glob<SolutionFile>('../../content/solutions/*.json', { eager: true, import: 'default' })
-const oodModules = import.meta.glob<OodFile>('../../content/ood/*.json', { eager: true, import: 'default' })
-
-export const solutions: SolutionFile[] = Object.values(solutionModules).sort(
-  (a, b) => topics.nodes[a.readmeTopicId].order - topics.nodes[b.readmeTopicId].order,
-)
-export const oods: OodFile[] = Object.values(oodModules)
-// Keep the README table order for OOD problems.
-const oodOrder = topics.nodes['object-oriented-design-interview-questions-with-solutions'].markdown
-oods.sort((a, b) => oodOrder.indexOf(a.source.path) - oodOrder.indexOf(b.source.path))
-
-export const solutionById = new Map(solutions.map((s) => [s.id, s]))
-export const oodById = new Map(oods.map((o) => [o.id, o]))
-export const solutionByDir = new Map(solutions.map((s) => [s.dir, s]))
-export const oodByDir = new Map(oods.map((o) => [o.dir, o]))
-export const solutionByReadmeTopic = new Map(solutions.map((s) => [s.readmeTopicId, s]))
+/**
+ * A small index of the problems (ids, titles, folders). Pages that only link to a problem use this; the full solution
+ * and notebook files are in src/lib/problems.ts and load only with the pages that show them.
+ */
+export interface SolutionRef {
+  id: string
+  dir: string
+  title: string
+  readmeTitle: string
+  readmeTopicId: string
+}
+export interface OodRef {
+  id: string
+  dir: string
+  title: string
+  readmeTitle: string
+  /** Class names defined in the notebook's code, in order. */
+  classes: string[]
+}
+export const solutionRefs: SolutionRef[] = problemsIndex.solutions
+export const oodRefs: OodRef[] = problemsIndex.oods
+export const solutionRefByDir = new Map(solutionRefs.map((s) => [s.dir, s]))
+export const oodRefByDir = new Map(oodRefs.map((o) => [o.dir, o]))
+export const solutionRefByReadmeTopic = new Map(solutionRefs.map((s) => [s.readmeTopicId, s]))
 
 export const rootId = topics.rootId
 export const getTopic = (id: string | undefined): TopicNode | undefined => (id ? topics.nodes[id] : undefined)

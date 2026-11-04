@@ -923,3 +923,64 @@ That is 12 headings in all.
 - **The solution page's "Reference diagram" panel is removed.**
 - **Coverage:** the test counts hidden images separately, fails if one still renders anywhere, and still checks the
   2 remaining images and their credits.
+
+### Side panels and the end of the page (mockups A + C + option 2, ribbon)
+
+The layout was chosen from mockups on the design canvas.
+- **Wide screens (≥1280 px) use three columns:**
+  - **Left:** the current stage's topics, ticked as you read them, with the current one highlighted (`PathNavigator`).
+  - **Centre:** the reading column.
+  - **Right:** margin notes placed beside the paragraph that holds each link: a short explanation for each linked
+    concept (from `content/glossary.ts`) and a one-line summary for each link to another topic. They are measured
+    after layout, kept from overlapping, and fade out behind the Next card.
+- **Previous / Next cards:**
+  - Each is exactly the width of its side column and 104 px high.
+  - They stay fixed 16 px above the bottom of the screen while you scroll.
+  - At the end of the page they settle into the same row as the stage ribbon, which is the same height, so the three
+    line up (checked by measurement).
+- **The stage ribbon ends every page:**
+  - the stage's stops (done, this one, next, still to come), each a link;
+  - "End of <topic>" and how many stops are left.
+- **Narrow screens:** one column. The ribbon ends the page, followed by the big Next button and the reading-order line.
+- **Maintainer notes:** accuracy notes on visuals (`visual.notes`) are no longer shown to readers; they stay in the
+  data and in this document.
+
+### Phase 5: search, faster loading, deploy (flashcards dropped at the reader's request)
+
+- **Search.** Open it with Ctrl/Cmd+K, "/" or the header button.
+  - It covers all 160 topics, the 8 problems, the 6 OOD problems and the 38 explained terms. A term opens the topic
+    that links it.
+  - Every query word must start a word in the title or text; title matches rank first.
+  - Matches are highlighted, and body matches show a snippet.
+  - Arrow keys move through results, Enter opens one, Esc closes.
+  - The index and palette load on first use.
+  - `tests/search.test.ts` checks that every topic is found in the top 3 by its own title and that common queries
+    rank the obvious answer first.
+- **Faster loading.**
+  - Pages are lazy chunks.
+  - The full solution and notebook files moved to `src/lib/problems.ts`, which only the problem pages, the problem
+    card and search load. Everything else uses a small generated `content/problems-index.json`.
+  - First visit: ~200 kB gzipped instead of ~445 kB (614 kB uncompressed JS instead of 1.7 MB).
+  - Tests render pages synchronously through `AppRoutes({ pages })`.
+- **Deploy.** `.github/workflows/deploy.yml` runs on every push to `master` and on demand:
+  - checkout with the Primer submodule, `npm ci`, `npm test` (including coverage), `npm run build`;
+  - then it publishes `dist/` to GitHub Pages.
+  - These steps were verified in a fresh clone.
+  - **One-time setup:** Settings → Pages → Source: GitHub Actions.
+- Progress tracking and the learning path were already in place.
+
+### Formatting pass
+
+- **One button system** (`.btn` plus `-primary` / `-secondary` / `-ghost`, and `-sm` / `-lg` sizes, in `index.css`),
+  used by the animation controls, simulators, map cards, the path page and the solution builder. Disabled buttons
+  are dimmed and show a not-allowed cursor; every button has a focus ring.
+- **Readable text on indigo.** A new `--on-accent` token puts white on the deep light-mode indigo and near-black on
+  the pale dark-mode one; the old white-on-pale-indigo failed contrast.
+- **Phones:**
+  - the header reads "Map · Path · Problems" on one line;
+  - mode toggles keep one even row;
+  - the map's welcome card is a compact bar along the bottom, and the zoom buttons are hidden (pinch and drag
+    work);
+  - the footer is a one-line credit that still notes the changes.
+- **Small fixes:** the CAP visual's outcome panel prompts "Press Play…" instead of sitting empty, and the learning
+  path card's quote no longer starts with a stray "A:".

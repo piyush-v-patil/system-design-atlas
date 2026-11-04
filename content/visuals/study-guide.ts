@@ -7,7 +7,7 @@ export default {
   component: "study-guide",
   summary: q("Suggested topics to review based on your interview timeline (short, medium, long).", 184),
   points: [
-    q("A: No, you don't need to know everything here to prepare for the interview.", 190),
+    q("No, you don't need to know everything here to prepare for the interview.", 190),
     q("More experienced candidates are generally expected to know more about system design.", 200),
     q("Start broad and go deeper in a few areas. It helps to know a little about various key system design topics.", 202),
   ],

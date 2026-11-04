@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
-import { oods, solutions } from '../lib/content.ts'
-import { ClassThumb, SolutionThumb } from '../solutions/ProblemThumb.tsx'
+import { oodRefs, solutionRefs } from '../lib/content.ts'
+import { ClassThumb } from '../ood/ClassThumb.tsx'
+import { SolutionThumb } from '../solutions/ProblemThumb.tsx'
 
 export function ProblemsPage() {
   return (
@@ -10,7 +11,7 @@ export function ProblemsPage() {
 
       <h2 className="mt-8 mb-3 text-lg font-semibold">System design</h2>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {solutions.map((s) => {
+        {solutionRefs.map((s) => {
           return (
             <li key={s.id}>
               <Link to={`/solutions/${s.id}`} className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface hover:border-[var(--accent)]">
@@ -24,7 +25,7 @@ export function ProblemsPage() {
 
       <h2 className="mt-10 mb-3 text-lg font-semibold">Object-oriented design</h2>
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {oods.map((o) => (
+        {oodRefs.map((o) => (
           <li key={o.id}>
             <Link to={`/ood/${o.id}`} className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface hover:border-[var(--accent)]">
               <ClassThumb id={o.id} />

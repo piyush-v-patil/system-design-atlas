@@ -59,7 +59,7 @@ export function StepTabs({ b, frame, setFrame }: { b: Builder; frame: number; se
                 aria-current={on ? 'step' : undefined}
                 className={`flex h-full w-full flex-col items-center gap-0.5 rounded-lg px-1 py-1.5 text-center sm:flex-row sm:gap-2 sm:px-2 sm:text-left ${on ? 'bg-surface font-semibold text-ink shadow-sm' : 'text-muted hover:text-ink'}`}
               >
-                <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${on ? 'bg-[var(--accent)] text-white' : s < current ? 'bg-ok-soft text-ok' : 'bg-surface text-muted'}`}>
+                <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${on ? 'bg-[var(--accent)] text-on-accent' : s < current ? 'bg-ok-soft text-ok' : 'bg-surface text-muted'}`}>
                   {s <= 4 ? s : '+'}
                 </span>
                 <span className="leading-tight">{STEP_NAMES[s]}</span>
@@ -92,11 +92,11 @@ function FrameNav({ b, frame, setFrame }: { b: Builder; frame: number; setFrame:
   const label = (i: number) => (i === b.frames.length ? STEP_NAMES[5] : b.frames[i].step === 4 && b.frames.filter((f) => f.step === 4).length > 1 ? b.frames[i].label : `Step ${b.frames[i].step}: ${b.frames[i].label}`)
   return (
     <div className="flex items-center justify-between gap-2 text-sm">
-      <button type="button" disabled={frame === 0} onClick={() => setFrame(frame - 1)} className="rounded-lg border border-line bg-surface px-3 py-1.5 hover:bg-surface-2 disabled:opacity-40">
+      <button type="button" disabled={frame === 0} onClick={() => setFrame(frame - 1)} className="btn btn-secondary">
         ← Back
       </button>
       {frame < b.frames.length && (
-        <button type="button" onClick={() => setFrame(frame + 1)} className="rounded-lg border border-[var(--accent)] bg-[var(--accent)] px-3 py-1.5 font-medium text-white hover:opacity-90">
+        <button type="button" onClick={() => setFrame(frame + 1)} className="btn btn-primary">
           Next: {label(frame + 1)} →
         </button>
       )}
@@ -230,7 +230,7 @@ function AdditionsPanel({ b, sol, src, frame, selected, setSelected }: { b: Buil
               type="button"
               onClick={() => setSelected(on ? null : i)}
               aria-pressed={on}
-              className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${on ? 'border-[var(--accent)] bg-[var(--accent)] text-white' : 'border-ok/50 bg-ok-soft text-ok hover:border-ok'}`}
+              className={`rounded-full border px-2.5 py-1 text-xs font-medium transition-colors ${on ? 'border-[var(--accent)] bg-[var(--accent)] text-on-accent' : 'border-ok/50 bg-ok-soft text-ok hover:border-ok'}`}
             >
               {a.nodes.map(name).join(' + ')}
             </button>

@@ -180,14 +180,14 @@ export function LoadBalancerSim(_: VisualProps) {
       <div className="flex flex-wrap items-center gap-1.5 text-xs">
         <button
           onClick={() => setRunning((r) => !r)}
-          className={`rounded-lg border px-2.5 py-1.5 font-medium ${running ? 'border-[var(--accent)] text-[var(--accent)]' : 'border-[var(--accent)] bg-[var(--accent)] text-white'}`}
+          className={`btn btn-sm ${running ? 'btn-secondary' : 'btn-primary'}`}
         >
           {running ? 'Pause traffic' : 'Start traffic'}
         </button>
-        <button onClick={send} className="rounded-lg border border-line px-2.5 py-1.5 font-medium hover:bg-surface-2">
+        <button onClick={send} className="btn btn-sm btn-secondary">
           Send one request
         </button>
-        <button onClick={reset} className="rounded-lg border border-line px-2.5 py-1.5 font-medium hover:bg-surface-2">
+        <button onClick={reset} className="btn btn-sm btn-secondary">
           Reset
         </button>
         <span className="mx-1 h-4 w-px bg-line" />

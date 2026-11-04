@@ -87,7 +87,7 @@ export function HttpVerbsVisual({ node }: VisualProps) {
     <div className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-3 sm:p-4">
       <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="HTTP verb">
         {t.rows.map((r, i) => (
-          <button key={r.line} role="tab" aria-selected={verb === i} onClick={() => setVerb(i)} className={`rounded-lg border px-3 py-1 font-mono text-sm font-bold ${verb === i ? 'border-[var(--accent)] bg-[var(--accent)] text-white' : 'border-line hover:bg-surface-2'}`}>
+          <button key={r.line} role="tab" aria-selected={verb === i} onClick={() => setVerb(i)} className={`rounded-lg border px-3 py-1 font-mono text-sm font-bold ${verb === i ? 'border-[var(--accent)] bg-[var(--accent)] text-on-accent' : 'border-line hover:bg-surface-2'}`}>
             {r.cells[0]}
           </button>
         ))}

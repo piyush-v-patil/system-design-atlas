@@ -10,6 +10,7 @@ import type { TopicNode } from '../lib/types.ts'
 import { VisualSection } from '../visuals/VisualSection.tsx'
 import { StepHighlightProvider, useOriginalHighlight } from '../visuals/kit/highlight.tsx'
 import { NextNav, PathStrip } from './journeyUi.tsx'
+import { MarginNotes, NextCard, PathNavigator, PrevCard, StageRibbon } from './rails.tsx'
 
 /** Short sections attached to a topic ("Source(s)…", "Disadvantage(s)…"), read as part of the topic's page. */
 const satellites = (n: TopicNode) => n.childIds.map((c) => topics.nodes[c]).filter((c) => c.kind !== 'topic')
@@ -83,8 +84,9 @@ function GoDeeper({ node, hideSubtopics }: { node: TopicNode; hideSubtopics: boo
 }
 
 /**
- * A topic, for reading, in one column: the introduction, the visual, the rest of the text, then the short attached
- * sections (further reading, disadvantages) and one clear next step.
+ * A topic, for reading: the introduction, the visual, the rest of the text, then the short attached sections
+ * (further reading, disadvantages) and the stage ribbon that ends the page. On wide screens the stage's topics sit on
+ * the left, notes for the linked terms and topics on the right, and Previous / Next stay fixed at the bottom.
  */
 export function TopicPage() {
   const { id } = useParams()
@@ -94,6 +96,7 @@ export function TopicPage() {
   const focusId = requested && node && requested.id !== node.id ? requested.id : undefined
   const viaPath = (location.state as { viaPath?: boolean } | null)?.viaPath === true
   const ref = useRef<HTMLElement>(null)
+  const rail = useRef<HTMLElement>(null)
   useOriginalHighlight(ref, [node?.id])
 
   useEffect(() => {
@@ -116,54 +119,86 @@ export function TopicPage() {
 
   return (
     <StepHighlightProvider>
-      <div className="mx-auto flex w-full max-w-[920px] flex-col gap-5 px-4 py-6 md:px-6" data-topic-id={node.id}>
-        <header className="flex flex-col gap-2">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <Breadcrumbs node={node} />
-            <Link to={`/map/${node.id}`} className="text-xs text-muted hover:text-ink hover:underline">
-              Show on the map
-            </Link>
+      {/* Wide screens: path navigator | text | margin notes, with Previous / Next fixed at the bottom of the side
+          columns. They settle into the end row beside the stage ribbon when you reach the end of the page. */}
+      <div
+        className="mx-auto grid w-full max-w-[920px] grid-cols-1 gap-8 px-4 py-6 md:px-6 xl:max-w-[1380px] xl:grid-cols-[230px_minmax(0,760px)_270px] xl:justify-center"
+        data-topic-id={node.id}
+      >
+        <aside className="hidden min-w-0 flex-col xl:flex">
+          <div className="sticky top-4 max-h-[calc(100vh-260px)] overflow-y-auto pr-1">
+            <PathNavigator node={node} />
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight text-balance">{node.title}</h1>
-          <div className="flex flex-wrap items-center gap-2">
-            <AreaChip node={node} />
+          <div className="sticky bottom-0 z-10 -mb-4 mt-auto bg-gradient-to-t from-bg from-60% to-transparent pt-10 pb-4">
+            <PrevCard node={node} />
           </div>
-        </header>
-        <PathStrip node={node} />
-        <PracticeLinks node={node} />
+        </aside>
 
-        <article ref={ref} className="flex flex-col gap-6" aria-label={node.title}>
-          {/* With a visual, it sits after the introduction; without one, the text reads straight through. */}
-          {(isRoot && !isBlank(topics.preamble)) || !isBlank(lead) ? (
-            <div className={prose}>
-              {isRoot && <PrimerMarkdown markdown={topics.preamble} docPath={topics.source.path} />}
-              <PrimerMarkdown markdown={hasVisual ? lead : text} docPath={topics.source.path} />
+        <div className="flex min-w-0 flex-col gap-5">
+          <header className="flex flex-col gap-2">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <Breadcrumbs node={node} />
+              <Link to={`/map/${node.id}`} className="text-xs text-muted hover:text-ink hover:underline">
+                Show on the map
+              </Link>
             </div>
-          ) : null}
-          {hasVisual && <VisualSection key={`visual-${node.id}`} visual={visual!} node={node} hideSummary />}
-          {hasVisual && !isBlank(rest) && (
-            <div className={prose}>
-              <PrimerMarkdown markdown={rest} docPath={topics.source.path} />
+            <h1 className="text-3xl font-semibold tracking-tight text-balance">{node.title}</h1>
+            <div className="flex flex-wrap items-center gap-2">
+              <AreaChip node={node} />
             </div>
-          )}
-          {satellites(node).map((s) => (
-            <section
-              key={s.id}
-              id={`sec-${s.id}`}
-              data-topic-id={s.id}
-              className={`scroll-mt-4 rounded-xl border border-line bg-surface px-4 py-1 ${focusId === s.id ? 'ring-2 ring-[var(--accent)]/60' : ''}`}
-            >
+          </header>
+          <div className="xl:hidden">
+            <PathStrip node={node} />
+          </div>
+          <div className="hidden xl:block">
+            <PathStrip node={node} onlyDetour />
+          </div>
+          <PracticeLinks node={node} />
+
+          <article ref={ref} className="flex flex-col gap-6" aria-label={node.title}>
+            {/* With a visual, it sits after the introduction; without one, the text reads straight through. */}
+            {(isRoot && !isBlank(topics.preamble)) || !isBlank(lead) ? (
               <div className={prose}>
-                <h3>{s.title}</h3>
-                <PrimerMarkdown markdown={s.markdown} docPath={topics.source.path} />
+                {isRoot && <PrimerMarkdown markdown={topics.preamble} docPath={topics.source.path} />}
+                <PrimerMarkdown markdown={hasVisual ? lead : text} docPath={topics.source.path} />
               </div>
-            </section>
-          ))}
-          {hubWithoutText && subs.length > 0 && <SubtopicList items={subs} title="In this section" />}
-        </article>
+            ) : null}
+            {hasVisual && <VisualSection key={`visual-${node.id}`} visual={visual!} node={node} hideSummary />}
+            {hasVisual && !isBlank(rest) && (
+              <div className={prose}>
+                <PrimerMarkdown markdown={rest} docPath={topics.source.path} />
+              </div>
+            )}
+            {satellites(node).map((s) => (
+              <section
+                key={s.id}
+                id={`sec-${s.id}`}
+                data-topic-id={s.id}
+                className={`scroll-mt-4 rounded-xl border border-line bg-surface px-4 py-1 ${focusId === s.id ? 'ring-2 ring-[var(--accent)]/60' : ''}`}
+              >
+                <div className={prose}>
+                  <h3>{s.title}</h3>
+                  <PrimerMarkdown markdown={s.markdown} docPath={topics.source.path} />
+                </div>
+              </section>
+            ))}
+            {hubWithoutText && subs.length > 0 && <SubtopicList items={subs} title="In this section" />}
+          </article>
 
-        <GoDeeper node={node} hideSubtopics={!!visual?.tiles?.length || hubWithoutText} />
-        <NextNav node={node} />
+          <GoDeeper node={node} hideSubtopics={!!visual?.tiles?.length || hubWithoutText} />
+          {/* The ribbon ends the page; on narrow screens the next step follows it (on wide ones it is the fixed card). */}
+          <StageRibbon node={node} />
+          <div className="xl:hidden">
+            <NextNav node={node} />
+          </div>
+        </div>
+
+        <aside ref={rail} className="relative hidden min-w-0 flex-col xl:flex">
+          <MarginNotes article={ref} rail={rail} node={node} />
+          <div className="sticky bottom-0 z-10 -mb-4 mt-auto bg-gradient-to-t from-bg from-60% to-transparent pt-10 pb-4">
+            <NextCard node={node} />
+          </div>
+        </aside>
       </div>
     </StepHighlightProvider>
   )

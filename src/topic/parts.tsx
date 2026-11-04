@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { TopicNode } from '../lib/types.ts'
-import { AREA_LABEL, areaColor, oods, solutionByReadmeTopic, topics } from '../lib/content.ts'
+import { AREA_LABEL, areaColor, oodRefs, solutionRefByReadmeTopic, topics } from '../lib/content.ts'
 
 export function AreaChip({ node }: { node: TopicNode }) {
   return (
@@ -31,17 +31,17 @@ export function Breadcrumbs({ node }: { node: TopicNode }) {
 }
 
 export function PracticeLinks({ node }: { node: TopicNode }) {
-  const sol = solutionByReadmeTopic.get(node.id)
+  const sol = solutionRefByReadmeTopic.get(node.id)
   if (sol)
     return (
-      <Link to={`/solutions/${sol.id}`} className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:opacity-90">
+      <Link to={`/solutions/${sol.id}`} className="btn btn-primary self-start">
         Open the solution walkthrough →
       </Link>
     )
   if (node.id === 'object-oriented-design-interview-questions-with-solutions')
     return (
       <ul className="grid gap-1.5 sm:grid-cols-2">
-        {oods.map((o) => (
+        {oodRefs.map((o) => (
           <li key={o.id}>
             <Link to={`/ood/${o.id}`} className="block rounded-lg border border-line px-3 py-2 text-sm hover:border-[var(--accent)] hover:bg-surface-2">
               {o.readmeTitle} →

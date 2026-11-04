@@ -1,7 +1,7 @@
 /** OOD class diagrams: the parser reads the notebook code faithfully and every curated association is real. */
 import { describe, expect, it } from 'vitest'
 import { classDiagrams } from '../content/class-diagrams/index.ts'
-import { oods } from '../src/lib/content.ts'
+import { oods } from '../src/lib/problems.ts'
 import { layoutClasses } from '../src/ood/ClassDiagram.tsx'
 import { parsePython } from '../src/ood/parsePython.ts'
 

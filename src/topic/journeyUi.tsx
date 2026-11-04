@@ -24,11 +24,12 @@ export function useNextStep(id: string): { kind: 'next' | 'back' | 'start' | 'en
 }
 
 /** Compact "where am I on the learning path" strip, with the way back after a detour. */
-export function PathStrip({ node }: { node: TopicNode }) {
+export function PathStrip({ node, onlyDetour }: { node: TopicNode; onlyDetour?: boolean }) {
   const read = useRead()
   const step = useNextStep(node.id)
   const pos = pathPosition(node.id)
   const onPath = PATH_ORDER.includes(node.id)
+  if (onlyDetour && step.kind !== 'back') return null
   if (step.kind === 'back')
     return (
       <div className="flex flex-col gap-1 rounded-xl border border-[var(--accent)]/50 bg-accent-soft/40 px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between">
@@ -53,7 +54,7 @@ export function PathStrip({ node }: { node: TopicNode }) {
   const done = stage.breadth.filter((id) => read.has(id) || id === node.id).length
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-line bg-surface-2/60 px-3 py-2 text-sm sm:flex-row sm:items-center">
-      <Link to={`/path#stage-${stage.id}`} className="shrink-0 self-start rounded-full bg-[var(--accent)] px-2 py-0.5 text-xs font-semibold text-white hover:opacity-90 sm:self-auto">
+      <Link to={`/path#stage-${stage.id}`} className="shrink-0 self-start rounded-full bg-[var(--accent)] px-2 py-0.5 text-xs font-semibold text-on-accent hover:opacity-90 sm:self-auto">
         Stage {stage.index + 1} of {PATH.length}
       </Link>
       <span className="min-w-0 flex-1">
@@ -76,7 +77,7 @@ export function PathStrip({ node }: { node: TopicNode }) {
 export function NextNav({ node }: { node: TopicNode }) {
   const step = useNextStep(node.id)
   const { prev, next } = primerNeighbours(node.id)
-  const big = 'flex items-center justify-between gap-3 rounded-xl bg-[var(--accent)] px-4 py-3 text-white hover:opacity-90'
+  const big = 'flex items-center justify-between gap-3 rounded-xl bg-[var(--accent)] px-4 py-3 text-on-accent hover:opacity-90'
   return (
     <nav aria-label="What to read next" className="flex flex-col gap-3 border-t border-line pt-5">
       {step.kind === 'next' && (

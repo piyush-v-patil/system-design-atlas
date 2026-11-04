@@ -244,10 +244,10 @@ export function BackPressureSim(_: VisualProps) {
         </Diagram>
       </div>
       <div className="flex flex-wrap items-center gap-2 text-sm">
-        <button onClick={() => setRunning((r) => !r)} className={`rounded-lg border px-2.5 py-1.5 text-xs font-medium ${running ? 'border-[var(--accent)] text-[var(--accent)]' : 'border-[var(--accent)] bg-[var(--accent)] text-white'}`}>
+        <button onClick={() => setRunning((r) => !r)} className={`btn btn-sm ${running ? 'btn-secondary' : 'btn-primary'}`}>
           {running ? 'Pause' : 'Run'}
         </button>
-        <button onClick={reset} className="rounded-lg border border-line px-2.5 py-1.5 text-xs font-medium hover:bg-surface-2">
+        <button onClick={reset} className="btn btn-sm btn-secondary">
           Reset
         </button>
         <span className="tabular-nums">queue {stats.q}</span>
