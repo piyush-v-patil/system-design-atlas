@@ -556,6 +556,25 @@ with open(os.path.join(ROOT, '_shared', 'phase3.ts'), 'w') as f:
     for name, val in SHARED.items():
         f.write(f"export const {name}: {types.get(name, 'Comparison')} = {ts(val)}\n\n")
 
+# Sections removed from the Atlas (content/scope.json): no visual, and no links pointing at them.
+with open(os.path.join(ROOT, '..', 'scope.json')) as f:
+    scope_roots = set(json.load(f)['removedSections'])
+with open(os.path.join(ROOT, '..', 'topics.json')) as f:
+    _t = json.load(f)
+REMOVED = set()
+def _drop(i):
+    REMOVED.add(i)
+    for c in _t['nodes'][i]['childIds']: _drop(c)
+for r in scope_roots: _drop(r)
+for tid in list(V):
+    if tid in REMOVED:
+        del V[tid]
+        path = os.path.join(ROOT, f'{tid}.ts')
+        if os.path.exists(path): os.remove(path)
+for v in V.values():
+    if 'related' in v: v['related'] = [r for r in v['related'] if r not in REMOVED]
+    if 'tiles' in v: v['tiles'] = [t for t in v['tiles'] if t['topicId'] not in REMOVED]
+
 shared_names = set(SHARED) | {'capComparison'}
 for tid, v in V.items():
     body = ts(v)

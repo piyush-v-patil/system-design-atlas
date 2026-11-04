@@ -9,6 +9,5 @@ export default {
   related: [
     "study-guide",
     "how-to-approach-a-system-design-interview-question",
-    "index-of-system-design-topics",
   ],
 } satisfies TopicVisual

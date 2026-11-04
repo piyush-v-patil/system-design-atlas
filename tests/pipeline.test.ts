@@ -1,13 +1,13 @@
 /** The content pipeline is lossless: generated JSON reproduces the source files byte-for-byte. */
 import { describe, expect, it } from 'vitest'
-import { topics, solutions, oods, images } from '../src/lib/content.ts'
+import { allTopics, removedTopicIds, solutions, oods, images } from '../src/lib/content.ts'
 import { joinSections } from '../scripts/util/markdown.ts'
 import { notebooks, read } from './helpers/source.ts'
 import { resolveLink } from '../src/lib/links.ts'
 
 describe('pipeline', () => {
   it('README.md is reproduced byte-for-byte from content/topics.json', () => {
-    expect(joinSections(topics)).toBe(read('README.md'))
+    expect(joinSections(allTopics)).toBe(read('README.md'))
   })
 
   it.each(solutions.map((s) => [s.dir, s] as const))('solution %s is reproduced byte-for-byte', (_dir, s) => {
@@ -23,8 +23,8 @@ describe('pipeline', () => {
 
   it('links each solution to its own README problem heading', () => {
     for (const s of solutions) {
-      expect(topics.nodes[s.readmeTopicId].parentId).toBe('system-design-interview-questions-with-solutions')
-      expect(topics.nodes[s.readmeTopicId].urls).toContain(s.source.path)
+      expect(allTopics.nodes[s.readmeTopicId].parentId).toBe('system-design-interview-questions-with-solutions')
+      expect(allTopics.nodes[s.readmeTopicId].urls).toContain(s.source.path)
     }
     expect(new Set(solutions.map((s) => s.readmeTopicId)).size).toBe(8)
   })
@@ -36,7 +36,9 @@ describe('pipeline', () => {
   it('every in-README #anchor resolves to a topic route', () => {
     const anchors = [...read('README.md').matchAll(/\]\(#([^)]+)\)/g)].map((m) => m[1])
     expect(anchors.length).toBeGreaterThan(80)
-    for (const a of anchors) expect(resolveLink(`#${a}`, 'README.md')).toMatchObject({ kind: 'route', to: `/topic/${a}` })
+    for (const a of anchors)
+      if (removedTopicIds.has(a)) expect(resolveLink(`#${a}`, 'README.md')).toMatchObject({ kind: 'external' })
+      else expect(resolveLink(`#${a}`, 'README.md')).toMatchObject({ kind: 'route', to: `/topic/${a}` })
   })
 
   it('links from solutions back into the Primer become topic routes', () => {

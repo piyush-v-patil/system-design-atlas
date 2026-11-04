@@ -14,8 +14,9 @@ export function Footer({ compact = false }: { compact?: boolean }) {
         <a className={a} href={meta.license.url} target="_blank" rel="noopener noreferrer">
           {meta.license.name}
         </a>
-        . Changes were made: the text is split into topics and presented with new visuals; the original text is kept
-        unchanged in every card{compact ? '.' : ', and each image keeps its original source credit.'}{' '}
+        . Changes were made: the text is split into topics and presented with new visuals, and sections about the
+        repository itself (motivation, contributing, credits, contact, license, and the like) are left out; the text of every
+        topic shown is unchanged{compact ? '.' : ', and each image keeps its original source credit.'}{' '}
         <span className="whitespace-nowrap">
           Source commit{' '}
           <a className={a} href={`${meta.repo}/tree/${meta.commit}`} target="_blank" rel="noopener noreferrer">

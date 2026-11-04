@@ -1,0 +1,13 @@
+{
+  "about": "Primer sections left out of the Atlas at the reader's request: they are about the repository itself, not about system design. Each id removes that heading and everything under it. The source and the pipeline output stay complete; only the app hides them.",
+  "removedSections": [
+    "motivation",
+    "anki-flashcards",
+    "contributing",
+    "index-of-system-design-topics",
+    "under-development",
+    "credits",
+    "contact-info",
+    "license"
+  ]
+}

@@ -12,16 +12,21 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { topics, solutions, oods, images } from '../src/lib/content.ts'
+import { allTopics, removedTopicIds, topics, solutions, oods, images } from '../src/lib/content.ts'
+import scope from '../content/scope.json'
 import { buildMapTree, type MapDatum } from '../src/map/mapData.ts'
 import { inspect, type RenderedPage } from './helpers/render.tsx'
 import { builders } from '../content/builders/index.ts'
 import { headingsOf, notebooks, notebookUrls, read, solutionDirs, urlsOf, type SourceUrl } from './helpers/source.ts'
 
 const PUBLIC = join(import.meta.dirname, '../public')
-const CHECKS = 5
+const CHECKS = 6
 const report: Record<string, { checked: number; missing: string[] }> = {}
 const record = (check: string, checked: number, missing: string[]) => (report[check] = { checked, missing })
+
+/** README lines that belong to sections left out of the Atlas on purpose (content/scope.json). */
+const removedRanges = [...removedTopicIds].map((id) => allTopics.nodes[id].sourceLines)
+const inRemoved = (file: string, line: number) => file === 'README.md' && removedRanges.some(([a, b]) => line >= a && line <= b)
 
 const pages = new Map<string, RenderedPage>()
 const page = (path: string) => {
@@ -77,8 +82,13 @@ describe('coverage', () => {
     const mapPage = page('/')
 
     const missing: string[] = []
+    const leftOut: string[] = []
     for (const h of headings) {
       const where = `README.md:${h.line} "${'#'.repeat(h.depth)} ${h.title}"`
+      if (removedTopicIds.has(h.slug)) {
+        leftOut.push(where)
+        continue
+      }
       const node = topics.nodes[h.slug]
       if (!node) missing.push(`${where} → no topic node "${h.slug}"`)
       else if (node.title !== h.title) missing.push(`${where} → node title "${node.title}"`)
@@ -93,9 +103,13 @@ describe('coverage', () => {
           missing.push(`${where} → card does not render`)
       }
     }
-    if (topics.order.length !== headings.length)
-      missing.push(`topic count ${topics.order.length} ≠ heading count ${headings.length}`)
-    record('README headings → map nodes → cards', headings.length, missing)
+    if (allTopics.order.length !== headings.length)
+      missing.push(`topic count ${allTopics.order.length} ≠ heading count ${headings.length}`)
+    // Only the sections named in content/scope.json (and their subsections) may be left out.
+    const expected = allTopics.order.filter((id) => scope.removedSections.some((r) => allTopics.nodes[id].pathIds.includes(r)))
+    if (leftOut.length !== expected.length) missing.push(`left out ${leftOut.length} headings, scope.json names ${expected.length}`)
+    record(`Left out on purpose (content/scope.json; not counted below)`, leftOut.length, [])
+    record('README headings → map nodes → cards', headings.length - leftOut.length, missing)
     expect(missing).toEqual([])
   })
 
@@ -132,6 +146,7 @@ describe('coverage', () => {
     const missing: string[] = []
     const seen = new Set<string>()
     for (const u of urls) {
+      if (inRemoved(u.file, u.line)) continue
       const key = `${u.context}|${u.url}`
       if (seen.has(key)) continue
       seen.add(key)
@@ -157,6 +172,7 @@ describe('coverage', () => {
     const missing: string[] = []
     const checked = new Set<string>()
     for (const r of refs) {
+      if (inRemoved(r.file, r.line)) continue
       if (checked.has(r.url)) continue
       checked.add(r.url)
       const where = `${r.file}:${r.line} ${r.url}`

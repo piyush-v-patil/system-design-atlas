@@ -31,5 +31,5 @@ export default {
   notes: [
     'The Primer says “A sharding function based on consistent hashing can reduce the amount of transferred data” and links to an article, but does not explain consistent hashing. The rebalancing step uses simple range splits and does not model consistent hashing.',
   ],
-  related: ['federation', 'denormalization', 'master-slave-replication', 'under-development'],
+  related: ['federation', 'denormalization', 'master-slave-replication'],
 } satisfies TopicVisual

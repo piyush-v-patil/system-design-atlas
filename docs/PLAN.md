@@ -855,3 +855,25 @@ buttons led readers off their path with no way back.
   - Performance vs scalability is now three steps (one user, heavy load, adding resources), with every line labelled
     directly. Each step highlights its sentence in the text alongside.
 - **Coverage:** the test now renders every topic page and every map view. It is unchanged at 100%.
+
+### Scope: sections left out (at the reader's request)
+
+The Atlas now leaves out the Primer sections that are about the repository rather than system design:
+- Motivation (and its 3 subsections)
+- Anki flashcards (and "Coding Resource: Interactive Coding Challenges")
+- Contributing
+- Index of system design topics (the map replaces it)
+- Under development
+- Credits
+- Contact info
+- License
+
+That is 12 headings in all.
+- **How:** the list is in `content/scope.json`. The source and the pipeline output stay complete and byte-for-byte;
+  only the app hides these sections.
+- **Links:** links into them from kept text now go to the section on GitHub.
+- **Footer:** it says these sections are left out, as CC BY 4.0 requires changes to be indicated. The license link and
+  attribution stay on every page.
+- **Coverage:** the test reports these 12 headings as "left out on purpose" and fails if anything else goes missing.
+  The rest is 160/160 headings, 510/510 URL checks and 55/55 images.
+- **To bring a section back,** remove its id from `content/scope.json` and re-run `python3 scripts/visuals-spec/phase3.py`.
