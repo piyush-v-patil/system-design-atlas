@@ -223,7 +223,7 @@ export function RadialMap({
                 />
                 {level === 0 ? (
                   <text className="lbl-h2" y={26} textAnchor="middle">
-                    {n.node.title}
+                    {n.node.parentId ? n.node.title : 'System Design Atlas'}
                   </text>
                 ) : n.isLeaf ? (
                   <text

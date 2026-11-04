@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { ProcessStep } from '../../../content/visuals/types.ts'
 import { useStepHighlight } from './highlight.tsx'
+import { FitBox, FullscreenButton, useFullscreen } from './Fullscreen.tsx'
 
 export interface Stepper {
   step: number
@@ -120,7 +121,10 @@ export function StepList({ steps, s }: { steps: ProcessStep[]; s: Stepper }) {
   )
 }
 
-/** Diagram + controls + live caption + step list, wired to the Original-panel highlight. */
+/**
+ * Diagram + controls + live caption + step list, wired to the Original-panel highlight. Full screen enlarges the
+ * diagram to fill the screen, with the controls under it and the step list beside it (below it on narrow screens).
+ */
 export function ProcessPlayer({
   steps,
   stepper,
@@ -140,16 +144,36 @@ export function ProcessPlayer({
     setText(current && current.source.basis === 'quoted' ? current.source.text : null)
   }, [current, setText])
   useEffect(() => () => setText(null), [setText])
+  const box = useRef<HTMLDivElement>(null)
+  const fs = useFullscreen(box)
+  const on = fs.active
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-3 sm:p-4">
-      {header}
-      <div className="rounded-lg bg-bg/60 p-1">{children}</div>
-      <StepControls s={stepper} />
-      <p key={stepper.step} className="min-h-[1.25rem] text-sm font-medium" style={{ animation: 'fade-up 250ms ease-out both' }} aria-live="polite">
-        {current ? current.caption : 'Press Play, or Step through one line of the text at a time.'}
-      </p>
-      {aside}
-      <StepList steps={steps} s={stepper} />
+    <div
+      ref={box}
+      className={`flex bg-surface ${
+        on ? `h-full w-full flex-col gap-4 overflow-hidden p-4 lg:flex-row lg:gap-6 lg:p-6 ${fs.pinned ? 'fixed inset-0 z-50' : ''}` : 'flex-col gap-3 rounded-xl border border-line p-3 sm:p-4'
+      }`}
+      aria-label={on ? 'Animation, full screen' : undefined}
+    >
+      <div className={`flex min-w-0 flex-col gap-3 ${on ? 'min-h-0 flex-1' : ''}`}>
+        <div className="flex items-start gap-2">
+          <div className="min-w-0 flex-1">{header}</div>
+          <FullscreenButton active={on} onClick={fs.toggle} />
+        </div>
+        <FitBox active={on}>
+          <div className="rounded-lg bg-bg/60 p-1">{children}</div>
+        </FitBox>
+        <StepControls s={stepper} />
+        <p key={stepper.step} className={`min-h-[1.25rem] font-medium ${on ? 'text-base' : 'text-sm'}`} style={{ animation: 'fade-up 250ms ease-out both' }} aria-live="polite">
+          {current ? current.caption : 'Press Play, or Step through one line of the text at a time.'}
+        </p>
+      </div>
+      <div className={on ? 'flex max-h-[38vh] min-h-0 flex-col gap-3 overflow-y-auto lg:max-h-none lg:w-[24rem] lg:shrink-0' : 'contents'}>
+        {on && <div className="text-label font-semibold tracking-wider text-muted uppercase">Steps</div>}
+        {/* Extra notes come after the steps in full screen, so the steps stay at the top. */}
+        <div className={on ? 'order-last' : 'contents'}>{aside}</div>
+        <StepList steps={steps} s={stepper} />
+      </div>
     </div>
   )
 }

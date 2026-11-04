@@ -79,7 +79,8 @@ export function DnsVisual({ visual, node }: VisualProps) {
           </>
         )}
         {st === 5 && <Packet key="c" path={line(...cw)} to={cw[1]} label="GET" />}
-        <Caption x={540} y={252} anchor="end" tone="muted">
+        {/* Top left is empty at every step; at the bottom it collided with the "not in my cache" badge. */}
+        <Caption x={12} y={18} anchor="start" tone="muted">
           IP shown is a documentation example
         </Caption>
       </Diagram>

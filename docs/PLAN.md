@@ -1041,3 +1041,23 @@ The layout was chosen from mockups on the design canvas.
   already scaled by their viewBox and were left as they are. On wide screens the reading text is now 12.8px and the
   smallest labels about 9px, the same as 80% zoom gave before.
 - Screenshots: `docs/screenshots/scale-80-*.png`.
+
+### Home page is the learning path (mockup H1-D), and full-screen animations (reader feedback)
+
+- **Home (`/`) is now a contents page** (`src/pages/HomePage.tsx`): the ten stages numbered 01 to 10, each with
+  its core topics as links. Read topics are ticked and dimmed, the next one is marked, the current stage is
+  highlighted, and long stages show "+N more". Beside it are a Continue card (or Start, before anything is read),
+  "Explore the map", "Practise", a link to the full plan with optional depth (`/path`) and Reset progress. On phones
+  the Continue card comes first, then the contents, then the other links.
+- **The map moved to `/map`** (and `/map/:id`). The header is now Learn · Map · Problems. The map's centre reads
+  "System Design Atlas" instead of the source guide's title; the credit stays in the footer. Coverage tests check
+  the map at `/map` and render the home page too.
+- **Full screen for animations** (`src/visuals/kit/Fullscreen.tsx`, used by `ProcessPlayer`): a Full screen button
+  on every step-through animation, which covers 12 topic animations plus the problem walkthroughs' flows (26
+  players in all). In full screen the diagram is scaled to fill the space with its controls and caption under it,
+  and the step list sits beside it (below it on narrow screens), the current step highlighted. Extra notes come
+  after the steps. Esc or the button exits. Where the browser has no Fullscreen API (iPhone Safari), the player is
+  pinned over the page instead. Switching keeps the animation's state.
+- Fixed in passing: on the DNS animation, "not in my cache" overlapped the "IP shown is a documentation example"
+  note; the note now sits in the empty top-left corner.
+- Screenshots: `docs/screenshots/home-contents*.png`, `fs-*.png`.

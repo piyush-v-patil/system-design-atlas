@@ -54,6 +54,7 @@ let allText = ''
 beforeAll(() => {
   const routes = [
     '/',
+    '/map',
     '/problems',
     ...topics.order.map((id) => `/topic/${id}`),
     // The map focused on each section (headings must be one click away from their parent there).
@@ -88,7 +89,7 @@ describe('coverage', () => {
     const reachable = new Set<string>()
     const walk = (d: MapDatum) => (reachable.add(d.id), d.children?.forEach(walk))
     walk(buildMapTree(topics))
-    const mapPage = page('/')
+    const mapPage = page('/map')
 
     const missing: string[] = []
     const leftOut: string[] = []

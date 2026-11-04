@@ -37,12 +37,11 @@ function Header({ onSearch }: { onSearch: () => void }) {
         <span className="hidden sm:inline">System Design Atlas</span>
       </NavLink>
       <nav aria-label="Main" className="flex items-center gap-0.5 text-sm whitespace-nowrap sm:gap-1">
-        <NavLink to="/" end className={({ isActive }) => nav({ isActive: isActive || pathname.startsWith('/map/') })}>
-          Map
+        <NavLink to="/" end className={({ isActive }) => nav({ isActive: isActive || pathname === '/path' })}>
+          Learn
         </NavLink>
-        <NavLink to="/path" className={nav}>
-          <span className="sm:hidden">Path</span>
-          <span className="hidden sm:inline">Learning path</span>
+        <NavLink to="/map" className={nav}>
+          Map
         </NavLink>
         <NavLink to="/problems" className={nav}>
           Problems
@@ -70,7 +69,7 @@ function Header({ onSearch }: { onSearch: () => void }) {
 
 function Layout() {
   const { pathname } = useLocation()
-  const fullBleed = pathname === '/' || pathname.startsWith('/map/')
+  const fullBleed = pathname === '/map' || pathname.startsWith('/map/')
   const mainRef = useRef<HTMLElement>(null)
   const [searching, setSearching] = useState(false)
   const openSearch = useRef(() => setSearching(true)).current
@@ -99,8 +98,9 @@ function Layout() {
   )
 }
 
-/** The pages. Each loads as its own chunk the first time it is opened, so the first visit downloads only the map. */
+/** The pages. Each loads as its own chunk the first time it is opened, so the first visit downloads only the home page. */
 export interface Pages {
+  HomePage: ComponentType
   MapPage: ComponentType
   TopicPage: ComponentType
   SolutionPage: ComponentType
@@ -110,6 +110,7 @@ export interface Pages {
 }
 const lazyPage = <K extends keyof Pages>(load: () => Promise<Record<K, ComponentType>>, name: K) => lazy(() => load().then((m) => ({ default: m[name] })))
 export const LAZY_PAGES: Pages = {
+  HomePage: lazyPage(() => import('../pages/HomePage.tsx'), 'HomePage'),
   MapPage: lazyPage(() => import('../pages/MapPage.tsx'), 'MapPage'),
   TopicPage: lazyPage(() => import('../topic/TopicPage.tsx'), 'TopicPage'),
   SolutionPage: lazyPage(() => import('../pages/SolutionPage.tsx'), 'SolutionPage'),
@@ -124,7 +125,7 @@ function Loading() {
 
 /** `pages` is replaceable so tests can render every page synchronously. */
 export function AppRoutes({ pages = LAZY_PAGES }: { pages?: Pages }) {
-  const { MapPage, TopicPage, SolutionPage, OodPage, ProblemsPage, PathPage } = pages
+  const { HomePage, MapPage, TopicPage, SolutionPage, OodPage, ProblemsPage, PathPage } = pages
   const page = (P: ComponentType) => (
     <Suspense fallback={<Loading />}>
       <P />
@@ -133,7 +134,8 @@ export function AppRoutes({ pages = LAZY_PAGES }: { pages?: Pages }) {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={page(MapPage)} />
+        <Route index element={page(HomePage)} />
+        <Route path="map" element={page(MapPage)} />
         <Route path="map/:id" element={page(MapPage)} />
         <Route path="topic/:id" element={page(TopicPage)} />
         <Route path="path" element={page(PathPage)} />

@@ -110,7 +110,7 @@ export function MapPage() {
 
   useEffect(() => {
     if (!node) return
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && navigate('/')
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && navigate('/map')
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [node, navigate])
@@ -142,7 +142,7 @@ export function MapPage() {
           </div>
         )}
       </section>
-      {node ? <Preview id={node.id} onClose={() => navigate('/')} /> : id ? <p className="absolute top-14 left-3 text-sm">No topic with id “{id}”.</p> : <StartHere />}
+      {node ? <Preview id={node.id} onClose={() => navigate('/map')} /> : id ? <p className="absolute top-14 left-3 text-sm">No topic with id “{id}”.</p> : <StartHere />}
     </div>
   )
 }
