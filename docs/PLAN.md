@@ -923,3 +923,24 @@ That is 12 headings in all.
 - **The solution page's "Reference diagram" panel is removed.**
 - **Coverage:** the test counts hidden images separately, fails if one still renders anywhere, and still checks the
   2 remaining images and their credits.
+
+### Side panels and the end of the page (mockups A + C + option 2, ribbon)
+
+The layout was chosen from mockups on the design canvas.
+- **Wide screens (≥1280 px) use three columns:**
+  - **Left:** the current stage's topics, ticked as you read them, with the current one highlighted (`PathNavigator`).
+  - **Centre:** the reading column.
+  - **Right:** margin notes placed beside the paragraph that holds each link: a short explanation for each linked
+    concept (from `content/glossary.ts`) and a one-line summary for each link to another topic. They are measured
+    after layout, kept from overlapping, and fade out behind the Next card.
+- **Previous / Next cards:**
+  - Each is exactly the width of its side column and 104 px high.
+  - They stay fixed 16 px above the bottom of the screen while you scroll.
+  - At the end of the page they settle into the same row as the stage ribbon, which is the same height, so the three
+    line up (checked by measurement).
+- **The stage ribbon ends every page:**
+  - the stage's stops (done, this one, next, still to come), each a link;
+  - "End of <topic>" and how many stops are left.
+- **Narrow screens:** one column. The ribbon ends the page, followed by the big Next button and the reading-order line.
+- **Maintainer notes:** accuracy notes on visuals (`visual.notes`) are no longer shown to readers; they stay in the
+  data and in this document.

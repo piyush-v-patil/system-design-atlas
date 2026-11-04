@@ -26,6 +26,7 @@ export function GlossaryLink({ href, entry, children }: { href: string; entry: G
         target="_blank"
         rel="noopener noreferrer"
         aria-expanded={open}
+        data-glossary={href}
         className="glossary-term cursor-help decoration-dotted underline-offset-4"
         onClick={(e) => {
           if (e.metaKey || e.ctrlKey || e.shiftKey) return

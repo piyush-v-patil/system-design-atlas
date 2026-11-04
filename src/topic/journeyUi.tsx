@@ -24,11 +24,12 @@ export function useNextStep(id: string): { kind: 'next' | 'back' | 'start' | 'en
 }
 
 /** Compact "where am I on the learning path" strip, with the way back after a detour. */
-export function PathStrip({ node }: { node: TopicNode }) {
+export function PathStrip({ node, onlyDetour }: { node: TopicNode; onlyDetour?: boolean }) {
   const read = useRead()
   const step = useNextStep(node.id)
   const pos = pathPosition(node.id)
   const onPath = PATH_ORDER.includes(node.id)
+  if (onlyDetour && step.kind !== 'back') return null
   if (step.kind === 'back')
     return (
       <div className="flex flex-col gap-1 rounded-xl border border-[var(--accent)]/50 bg-accent-soft/40 px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between">

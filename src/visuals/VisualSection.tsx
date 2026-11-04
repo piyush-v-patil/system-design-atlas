@@ -52,12 +52,7 @@ export function VisualSection({ visual, node, hideSummary }: { visual: TopicVisu
       {visual.comparison && <ComparisonCard data={visual.comparison} activeKey={visual.props?.activeColumn as string | undefined} />}
       {visual.useWhen && <UseWhen claim={visual.useWhen} />}
       <ProsCons pros={visual.pros} cons={visual.cons} />
-      {visual.notes?.map((n, i) => (
-        <p key={i} className="rounded-lg border border-[var(--warn)]/50 bg-[var(--warn-soft)] px-3 py-2 text-xs leading-relaxed">
-          <strong className="text-warn">Note: </strong>
-          {n}
-        </p>
-      ))}
+      {/* visual.notes are accuracy flags for maintainers (docs/PLAN.md); they are not shown to readers. */}
     </section>
   )
 }
