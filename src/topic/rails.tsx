@@ -15,7 +15,7 @@ export const END_ROW_H = 'h-16'
 
 /* ------------------------------------------------------------------ left rail: the stage you are in */
 
-/** The current stage's topics, ticked as you read them; the current one highlighted. */
+/** The current stage's topics: ✓ once read, ● for this page, ○ still to read. */
 export function PathNavigator({ node }: { node: TopicNode }) {
   const read = useRead()
   const pos = pathPosition(node.id)
@@ -34,20 +34,13 @@ export function PathNavigator({ node }: { node: TopicNode }) {
   const base = Math.min(...stage.breadth.map((id) => topics.nodes[id].level))
   // The stage's core topics, plus the current page if it is a detailed (depth) topic.
   const items = [...new Set([...stage.breadth, node.id])].filter((id) => PATH_ORDER.includes(id)).sort((a, b) => topics.nodes[a].order - topics.nodes[b].order)
-  const done = stage.breadth.filter((id) => read.has(id)).length
   return (
     <nav aria-label="Learning path" className="flex flex-col gap-2 text-[13px]">
       <Link to={`/path#stage-${stage.id}`} className="text-[11px] font-semibold tracking-wide text-muted uppercase hover:text-ink">
         Stage {stage.index + 1} of {PATH.length}
       </Link>
       <div className="text-sm leading-snug font-semibold">{stage.title}</div>
-      <div className="h-1.5 rounded-full bg-line" aria-hidden>
-        <div className="h-1.5 rounded-full bg-ok transition-all" style={{ width: `${(done / stage.breadth.length) * 100}%` }} />
-      </div>
-      <div className="text-xs text-muted">
-        {done} of {stage.breadth.length} core topics read
-      </div>
-      <ol className="mt-1 flex flex-col gap-0.5">
+      <ol className="mt-2 flex flex-col gap-0.5">
         {items.map((id) => {
           const n = topics.nodes[id]
           const here = id === node.id
@@ -59,10 +52,10 @@ export function PathNavigator({ node }: { node: TopicNode }) {
                 to={`/topic/${id}`}
                 state={VIA_PATH}
                 aria-current={here ? 'page' : undefined}
-                className={`flex items-start gap-2 rounded-lg py-1.5 pr-2 leading-snug ${here ? 'bg-accent-soft font-semibold text-ink shadow-[inset_3px_0_0_var(--accent)]' : isRead ? 'text-muted hover:bg-surface-2' : 'hover:bg-surface-2'}`}
-                style={{ paddingLeft: 8 + indent * 14 }}
+                className={`flex items-start gap-2 rounded-lg py-1.5 pr-2 leading-snug ${here ? 'bg-accent-soft font-semibold text-ink shadow-[inset_3px_0_0_var(--accent)]' : isRead ? 'text-muted hover:bg-surface-2 hover:text-ink' : 'text-ink hover:bg-surface-2'}`}
+                style={{ paddingLeft: 8 + indent * 16 }}
               >
-                <span aria-hidden className={`mt-px w-3 shrink-0 text-center ${here ? 'text-[var(--accent)]' : isRead ? 'text-ok' : 'text-line'}`}>
+                <span aria-hidden className={`mt-px w-3 shrink-0 text-center ${here ? 'text-[var(--accent)]' : isRead ? 'text-ok' : 'text-[var(--node-stroke)]'}`}>
                   {here ? '●' : isRead ? '✓' : '○'}
                 </span>
                 <span>{n.title}</span>
