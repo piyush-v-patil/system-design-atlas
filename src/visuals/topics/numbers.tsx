@@ -4,8 +4,8 @@ import { topics } from '../../lib/content.ts'
 import { bulletsAfter } from '../auto.ts'
 import { Diagram } from '../kit/svg.tsx'
 import { ClaimText, LineRef } from '../kit/Claims.tsx'
-import { ModeToggle, ProcessPlayer, useStepper } from '../kit/Stepper.tsx'
-import { q, type ProcessStep } from '../../../content/visuals/types.ts'
+import { ModeToggle } from '../kit/Stepper.tsx'
+import { q } from '../../../content/visuals/types.ts'
 
 /* ------------------------------------------------------------------ latency numbers */
 
@@ -187,7 +187,7 @@ export function PowersOfTwo(_: VisualProps) {
       </div>
       {primer && (
         <p className="text-xs text-ok">
-          ✓ In the Primer’s table: {primer.exact}
+          ✓ In the table: {primer.exact}
           {primer.approx && ` · ${primer.approx}`}
           {primer.bytes && ` · ${primer.bytes}`}
           <LineRef claim={q(`${primer.power} ${primer.exact}`, primer.line)} />
@@ -199,7 +199,7 @@ export function PowersOfTwo(_: VisualProps) {
             2^{r.power}
           </button>
         ))}
-        <span className="self-center text-[11px] text-muted">the Primer’s rows</span>
+        <span className="self-center text-[11px] text-muted">rows from the table</span>
       </div>
     </div>
   )
@@ -282,7 +282,7 @@ export function EnvelopeCalc({ visual }: VisualProps) {
         </button>
       </div>
       <div className="rounded-lg bg-surface-2/60 p-2.5 text-xs">
-        <div className="mb-1 font-semibold">The Primer’s handy conversion guide (used in every solution)</div>
+        <div className="mb-1 font-semibold">Handy conversion guide (used in every solution)</div>
         <ul className="grid gap-0.5 sm:grid-cols-2">
           {visual.points?.map((c, i) => (
             <li key={i}>
@@ -296,113 +296,6 @@ export function EnvelopeCalc({ visual }: VisualProps) {
 }
 
 /* ------------------------------------------------------------------ performance vs scalability */
-
-export function PerfScaleVisual({ node, visual }: VisualProps) {
-  const bl = bulletsAfter(topics.nodes[node.id], 'Another way to look at performance vs scalability:')
-  const steps: ProcessStep[] = [
-    bl[0] && { caption: 'With one user, the system with a performance problem is already slow.', source: bl[0].claim },
-    bl[1] && { caption: 'Under heavy load, the system with a scalability problem slows down, though it was fast for one user.', source: bl[1].claim },
-    visual.summary && { caption: 'A scalable system: add resources and performance grows in proportion.', source: visual.summary },
-  ].filter(Boolean) as ProcessStep[]
-  const stepper = useStepper(steps.length, 3600)
-  const st = stepper.step
-  const focus = st === 1 ? 'perf' : st === 2 ? 'scale' : st === 3 ? 'ok' : null
-  // Illustrative response-time curves against load (no numbers come from the Primer).
-  const W = 360
-  const H = 150
-  const X0 = 48
-  const Y0 = 24
-  const xs = Array.from({ length: 41 }, (_, i) => i / 40)
-  const curves = {
-    perf: { f: (x: number) => 0.72 + 0.1 * x, color: 'var(--bad)', label: ['Performance problem', 'slow even for one user'] },
-    scale: { f: (x: number) => 0.12 + 0.82 * Math.pow(x, 3), color: 'var(--warn)', label: ['Scalability problem', 'fast alone, slow under load'] },
-    ok: { f: (x: number) => 0.12 + 0.06 * x, color: 'var(--ok)', label: ['Scalable', 'resources added as load grows'] },
-  }
-  const px = (x: number) => X0 + x * W
-  const py = (y: number) => Y0 + H - y * H
-  const path = (f: (x: number) => number) => xs.map((x, i) => `${i ? 'L' : 'M'}${px(x)} ${py(f(x))}`).join('')
-  const markerX = st === 1 ? 0 : st === 2 ? 1 : null
-  // Labels sit at the right end of each line, spaced so they never overlap.
-  const labelY = { scale: py(curves.scale.f(1)) + 4, perf: py(curves.perf.f(1)) + 22, ok: py(curves.ok.f(1)) + 4 }
-  // Second chart: work served as servers are added.
-  const servers = [1, 2, 3, 4, 5, 6, 7, 8]
-  const sx = (n: number) => X0 + ((n - 1) / 7) * W
-  const sy = (v: number) => Y0 + 120 - (v / 8) * 120
-  const linear = servers.map((n, i) => `${i ? 'L' : 'M'}${sx(n)} ${sy(n)}`).join('')
-  const flat = servers.map((n, i) => `${i ? 'L' : 'M'}${sx(n)} ${sy(2.6 * (1 - Math.exp(-(n - 1) / 1.6)) + 1)}`).join('')
-  const dim = (k: keyof typeof curves) => (focus && focus !== k ? 0.22 : 1)
-  return (
-    <ProcessPlayer steps={steps} stepper={stepper}>
-      <div className="flex flex-col gap-1">
-        <Diagram width={560} height={210} title="Response time as the number of users grows, for three systems">
-          <text x={X0} y={14} fontSize={11} fontWeight={600}>
-            Response time as users grow
-          </text>
-          <line x1={X0} y1={Y0 + H} x2={X0 + W} y2={Y0 + H} stroke="var(--border)" />
-          <line x1={X0} y1={Y0} x2={X0} y2={Y0 + H} stroke="var(--border)" />
-          <text x={X0 - 6} y={Y0 + 8} fontSize={10} textAnchor="end" className="muted">
-            slow
-          </text>
-          <text x={X0 - 6} y={Y0 + H} fontSize={10} textAnchor="end" className="muted">
-            fast
-          </text>
-          <text x={X0} y={Y0 + H + 16} fontSize={10} className="muted">
-            one user
-          </text>
-          <text x={X0 + W} y={Y0 + H + 16} fontSize={10} textAnchor="end" className="muted">
-            heavy load
-          </text>
-          {markerX !== null && (
-            <g className="fade-in">
-              <rect x={px(markerX) - (markerX ? 30 : 0)} y={Y0} width={30} height={H} fill="var(--accent-soft)" opacity={0.6} />
-            </g>
-          )}
-          {(Object.keys(curves) as (keyof typeof curves)[]).map((k) => (
-            <g key={k} opacity={dim(k)} style={{ transition: 'opacity 300ms' }}>
-              <path d={path(curves[k].f)} fill="none" stroke={curves[k].color} strokeWidth={focus === k ? 3.2 : 2.4} strokeLinecap="round" />
-              <text x={X0 + W + 8} y={labelY[k]} fontSize={10.5} fontWeight={700} style={{ fill: curves[k].color }}>
-                {curves[k].label[0]}
-              </text>
-              <text x={X0 + W + 8} y={labelY[k] + 12} fontSize={9.5} className="muted">
-                {curves[k].label[1]}
-              </text>
-            </g>
-          ))}
-        </Diagram>
-        <div style={{ opacity: st === 0 || st === 3 ? 1 : 0.35, transition: 'opacity 300ms' }}>
-          <Diagram width={560} height={170} title="Work served as servers are added: proportional for a scalable system, levelling off otherwise">
-            <text x={X0} y={14} fontSize={11} fontWeight={600}>
-              Work served as resources are added
-            </text>
-            <line x1={X0} y1={Y0 + 120} x2={X0 + W} y2={Y0 + 120} stroke="var(--border)" />
-            <line x1={X0} y1={Y0} x2={X0} y2={Y0 + 120} stroke="var(--border)" />
-            <text x={X0} y={Y0 + 136} fontSize={10} className="muted">
-              1 server
-            </text>
-            <text x={X0 + W} y={Y0 + 136} fontSize={10} textAnchor="end" className="muted">
-              8 servers
-            </text>
-            <path d={linear} fill="none" stroke="var(--ok)" strokeWidth={st === 3 ? 3.2 : 2.4} strokeLinecap="round" />
-            <path d={flat} fill="none" stroke="var(--warn)" strokeWidth={2.2} strokeDasharray="5 4" strokeLinecap="round" />
-            <text x={X0 + W + 8} y={sy(8) + 4} fontSize={10.5} fontWeight={700} style={{ fill: 'var(--ok)' }}>
-              Scalable
-            </text>
-            <text x={X0 + W + 8} y={sy(8) + 16} fontSize={9.5} className="muted">
-              grows in proportion
-            </text>
-            <text x={X0 + W + 8} y={sy(3.5) + 4} fontSize={10.5} fontWeight={700} style={{ fill: 'var(--warn)' }}>
-              Not scalable
-            </text>
-            <text x={X0 + W + 8} y={sy(3.5) + 16} fontSize={9.5} className="muted">
-              more servers stop helping
-            </text>
-          </Diagram>
-        </div>
-        <p className="px-1 text-[11px] text-muted">The curves are illustrative: the Primer gives the definitions, not numbers.</p>
-      </div>
-    </ProcessPlayer>
-  )
-}
 
 /* ------------------------------------------------------------------ latency vs throughput */
 

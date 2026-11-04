@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import type { ProcessStep } from '../../../content/visuals/types.ts'
-import { LineRef } from './Claims.tsx'
 import { useStepHighlight } from './highlight.tsx'
 
 export interface Stepper {
@@ -112,10 +111,7 @@ export function StepList({ steps, s }: { steps: ProcessStep[]; s: Stepper }) {
               </span>
               <span className="min-w-0">
                 <span className={`block font-medium ${active || done ? '' : 'text-muted'}`}>{st.caption}</span>
-                <span className="block text-xs leading-snug text-muted">
-                  {st.source.basis === 'quoted' ? `“${st.source.text}”` : st.source.text}
-                  <LineRef claim={st.source} />
-                </span>
+                {st.source.text !== st.caption && <span className="block text-xs leading-snug text-muted">{st.source.text}</span>}
               </span>
             </button>
           </li>

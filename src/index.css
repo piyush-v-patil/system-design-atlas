@@ -141,6 +141,9 @@ body {
   display: inline-block;
   margin: 0.5rem auto;
   max-width: 100%;
+  /* Diagrams read best at a moderate size in the single reading column. */
+  max-height: 380px;
+  width: auto;
   height: auto;
   border-radius: 0.375rem;
 }
@@ -398,4 +401,30 @@ body {
   .builder .bgroup {
     animation: none;
   }
+}
+
+/* Problem thumbnails: the whole diagram scaled to fit its box. */
+.thumb svg.diagram {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+}
+
+/* Glossary terms open an explanation in place, so no "leaves the site" arrow. */
+.primer a.glossary-term::after,
+.primer .glossary-pop a::after {
+  content: none;
+}
+
+/* Video thumbnails fill their player box; the text-image styles above don't apply. */
+.primer img.video-thumb,
+.dark .primer img.video-thumb {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  background: none;
+  border-radius: 0;
 }

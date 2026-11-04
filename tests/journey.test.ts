@@ -21,7 +21,7 @@ describe('learning path journey', () => {
     expect(getPathCursor()).toBe(perf)
     expect(isDetour('load-balancer', perf)).toBe(true)
     // background pages off the path are detours too
-    expect(isDetour('motivation', perf)).toBe(true)
+    expect(isDetour('study-guide', perf)).toBe(true)
     // the next stop is not a detour
     expect(isDetour(PATH_ORDER[PATH_ORDER.indexOf(perf) + 1], perf)).toBe(false)
   })

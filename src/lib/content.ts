@@ -3,7 +3,32 @@ import imagesJson from '../../content/images.json'
 import metaJson from '../../content/meta.json'
 import type { Area, ContentMeta, ImagesFile, OodFile, SectionDocument, SolutionFile, TopicNode, TopicsFile } from './types.ts'
 
-export const topics = topicsJson as unknown as TopicsFile
+import scopeJson from '../../content/scope.json'
+
+/** Every README heading, exactly as the pipeline produced it (byte-for-byte with the source). */
+export const allTopics = topicsJson as unknown as TopicsFile
+
+/** Headings left out of the Atlas (content/scope.json): each listed section and everything under it. */
+export const removedTopicIds: ReadonlySet<string> = (() => {
+  const out = new Set<string>()
+  const drop = (id: string) => {
+    out.add(id)
+    allTopics.nodes[id].childIds.forEach(drop)
+  }
+  scopeJson.removedSections.forEach(drop)
+  return out
+})()
+
+/** The topics the app shows: the README without the removed sections. */
+export const topics: TopicsFile = {
+  ...allTopics,
+  order: allTopics.order.filter((id) => !removedTopicIds.has(id)),
+  nodes: Object.fromEntries(
+    Object.entries(allTopics.nodes)
+      .filter(([id]) => !removedTopicIds.has(id))
+      .map(([id, n]) => [id, { ...n, childIds: n.childIds.filter((c) => !removedTopicIds.has(c)) }]),
+  ),
+}
 export const images = imagesJson as unknown as ImagesFile
 export const meta = metaJson as unknown as ContentMeta
 

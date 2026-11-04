@@ -215,7 +215,7 @@ export function LoadBalancerSim(_: VisualProps) {
         <span className="text-ink">“Preventing requests from going to unhealthy servers”</span>
         <LineRef claim={q('Preventing requests from going to unhealthy servers', 670)} />
         ). {method === 'session' && <>Each client sticks to one server (“Session persistence”<LineRef claim={q('Session persistence', 680)} />). </>}
-        {method === 'wrr' && <>Weights are yours to set; the Primer does not give values. </>}
+        {method === 'wrr' && <>Weights are yours to set. </>}
         {unhealthy && <span className="text-bad">Unhealthy servers receive no requests.</span>}
       </p>
     </div>

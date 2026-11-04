@@ -124,7 +124,7 @@ export function LearningPathVisual({ visual }: VisualProps) {
         })}
       </ol>
       <p className="text-[11px] text-muted">
-        {PATH_ORDER.length} topics in the Primer’s order. Progress is saved in this browser when you open a card.
+        {PATH_ORDER.length} topics, in reading order. Progress is saved in this browser as you read.
       </p>
     </div>
   )

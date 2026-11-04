@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { VisualProps } from '../registry.tsx'
-import { imageSrc, oods, solutionByReadmeTopic, solutions, topics } from '../../lib/content.ts'
-import type { SectionNode, SolutionFile, TopicNode } from '../../lib/types.ts'
+import { oods, solutionByReadmeTopic, solutions, topics } from '../../lib/content.ts'
+import { SolutionThumb } from '../../solutions/ProblemThumb.tsx'
+import type { SectionNode, TopicNode } from '../../lib/types.ts'
 import { bullets } from '../auto.ts'
 import { LineRef } from '../kit/Claims.tsx'
 
@@ -67,23 +68,14 @@ export function InterviewSteps({ visual }: VisualProps) {
   )
 }
 
-function stepImage(sol: SolutionFile, step: 2 | 4): string | undefined {
-  const id = sol.steps.find((s) => s.step === step)!.nodeId
-  const all = [sol.nodes[id], ...sol.nodes[id].childIds.map((c) => sol.nodes[c])]
-  return all.flatMap((n) => n.images)[0]
-}
-
 export function ProblemGallery(_: VisualProps) {
   return (
     <ul className="grid grid-cols-2 gap-2 sm:grid-cols-4">
       {solutions.map((s, i) => {
-        const img = stepImage(s, 4)
         return (
           <li key={s.id} style={{ animation: `fade-up 300ms ease-out ${i * 50}ms both` }}>
             <Link to={`/solutions/${s.id}`} className="group flex h-full flex-col overflow-hidden rounded-xl border border-line bg-surface hover:border-[var(--accent)]">
-              <span className="grid aspect-square place-items-center overflow-hidden bg-white p-1.5">
-                {img && <img src={imageSrc(img).src} alt="" loading="lazy" className="max-h-full max-w-full object-contain transition-transform duration-300 group-hover:scale-105" />}
-              </span>
+              <SolutionThumb id={s.id} />
               <span className="p-2 text-xs font-medium leading-snug group-hover:text-link">{s.readmeTitle}</span>
             </Link>
           </li>
@@ -112,10 +104,9 @@ export function ProblemCard({ node }: VisualProps) {
     <div className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-3 sm:p-4">
       <div className="grid grid-cols-2 gap-2">
         {imgs.map((im) => {
-          const ref = stepImage(sol, im.step)
           return (
             <figure key={im.step} className="m-0 overflow-hidden rounded-lg border border-line">
-              <div className="grid aspect-[4/3] place-items-center bg-white p-1.5">{ref && <img src={imageSrc(ref).src} alt={`${sol.title}: ${im.label}`} loading="lazy" className="max-h-full max-w-full object-contain" />}</div>
+              <SolutionThumb id={sol.id} stage={im.step === 2 ? 'basic' : 'final'} />
               <figcaption className="border-t border-line px-2 py-1 text-[11px] text-muted">{im.label}</figcaption>
             </figure>
           )

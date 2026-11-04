@@ -20,7 +20,7 @@ export function Breadcrumbs({ node }: { node: TopicNode }) {
         {ancestors.map((id, i) => (
           <li key={id} className="flex items-center gap-1">
             <Link to={`/topic/${id}`} className="hover:text-ink hover:underline">
-              {i === 0 ? 'Primer' : topics.nodes[id].title}
+              {i === 0 ? 'Home' : topics.nodes[id].title}
             </Link>
             <span aria-hidden>›</span>
           </li>

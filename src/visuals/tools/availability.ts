@@ -79,10 +79,10 @@ export const comp = (name: string, pct: number): AvItem => ({ id: uid(), kind: '
 export const group = (mode: 'series' | 'parallel', children: AvItem[]): AvGroup => ({ id: uid(), kind: 'group', mode, children })
 
 export const PRESETS: Record<string, { label: string; build: () => AvGroup; example?: boolean }> = {
-  series: { label: 'Primer: Foo and Bar in sequence', build: () => group('series', [comp('Foo', 99.9), comp('Bar', 99.9)]) },
-  parallel: { label: 'Primer: Foo and Bar in parallel', build: () => group('parallel', [comp('Foo', 99.9), comp('Bar', 99.9)]) },
-  three: { label: 'Primer: three 9s', build: () => group('series', [comp('Service', 99.9)]) },
-  four: { label: 'Primer: four 9s', build: () => group('series', [comp('Service', 99.99)]) },
+  series: { label: 'Example: Foo and Bar in sequence', build: () => group('series', [comp('Foo', 99.9), comp('Bar', 99.9)]) },
+  parallel: { label: 'Example: Foo and Bar in parallel', build: () => group('parallel', [comp('Foo', 99.9), comp('Bar', 99.9)]) },
+  three: { label: 'Example: three 9s', build: () => group('series', [comp('Service', 99.9)]) },
+  four: { label: 'Example: four 9s', build: () => group('series', [comp('Service', 99.99)]) },
   stack: {
     label: 'Web stack (example values)',
     example: true,

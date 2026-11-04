@@ -118,7 +118,7 @@ function WideModel() {
     </g>
   )
   return (
-    <Diagram width={560} height={232} title="Wide column store: row key, column families of name/value columns, from the Primer's example">
+    <Diagram width={560} height={232} title="Wide column store: row key, column families of name/value columns">
       {cell(20, 20, 520, 'companies', 'var(--accent-soft)', true)}
       <rect x={20} y={46} width={90} height={104} fill="var(--surface-2)" stroke="var(--border)" />
       <text x={65} y={104} fontSize={22} fontWeight={700} textAnchor="middle">
@@ -151,7 +151,7 @@ function WideModel() {
         ColumnFamily&lt;RowKey, Columns&lt;ColKey, Value, Timestamp&gt;&gt;
       </text>
       <Caption x={280} y={224} tone="muted">
-        example data from the Primer’s image (source: SQL &amp; NoSQL, a brief history)
+        example data (source: SQL &amp; NoSQL, a brief history)
       </Caption>
     </Diagram>
   )
@@ -161,7 +161,7 @@ function WideModel() {
 function GraphModel() {
   const N = { alice: [110, 150] as [number, number], bob: [440, 60] as [number, number], chess: [400, 200] as [number, number] }
   return (
-    <Diagram width={560} height={250} title="Graph database: records are nodes, relationships are edges, from the Primer's example">
+    <Diagram width={560} height={250} title="Graph database: records are nodes, relationships are edges">
       <Wire d={curve([150, 136], [400, 70], -20)} state="active" label="knows" labelAt={[270, 82]} />
       <Wire d={curve([400, 82], [152, 148], -20)} state="idle" label="knows" labelAt={[290, 128]} />
       <Wire d={curve([150, 168], [356, 204], 18)} state="active" label="is_member" labelAt={[240, 210]} />
@@ -184,7 +184,7 @@ function GraphModel() {
         </g>
       ))}
       <Caption x={280} y={244} tone="muted">
-        example data from the Primer’s image (source: Wikipedia, Graph database)
+        example data (source: Wikipedia, Graph database)
       </Caption>
     </Diagram>
   )
@@ -260,7 +260,7 @@ export function SqlNoSqlPicker({ node }: VisualProps) {
           </span>
         ))}
       </div>
-      <p className="text-[11px] text-muted">A tally of the Primer’s reasons, not a rule: weigh what matters most for your system.</p>
+      <p className="text-[11px] text-muted">A tally of the reasons, not a rule: weigh what matters most for your system.</p>
     </div>
   )
 }

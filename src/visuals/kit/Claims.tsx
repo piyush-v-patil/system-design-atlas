@@ -1,37 +1,16 @@
 import type { Claim } from '../../../content/visuals/types.ts'
-import { githubBlob } from '../../lib/content.ts'
 
-/** Line reference that links to the cited lines on GitHub at the pinned commit. */
-export function LineRef({ claim }: { claim: Claim }) {
-  const [a, b] = claim.lines
-  const doc = claim.doc ?? 'README.md'
-  return (
-    <a
-      href={githubBlob(doc, claim.lines)}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="ml-1 font-mono text-[10px] whitespace-nowrap text-muted no-underline hover:text-link hover:underline"
-      title={`${claim.basis === 'quoted' ? 'Quoted from' : 'Paraphrased from'} ${doc} line${a === b ? '' : 's'} ${a}${a === b ? '' : `–${b}`}`}
-    >
-      L{a}
-      {a === b ? '' : `–${b}`}
-    </a>
-  )
+/**
+ * Claims keep their source lines for the accuracy tests (tests/visuals.test.ts), but the app presents the text as its
+ * own: the line reference is not shown. Kept as a component so call sites stay unchanged.
+ */
+export function LineRef(_: { claim: Claim }) {
+  return null
 }
 
-/** A claim from the source. Paraphrases are marked so they can be reviewed against the original text. */
+/** A sentence of the topic's text, shown as part of the page. */
 export function ClaimText({ claim, className = '' }: { claim: Claim; className?: string }) {
-  return (
-    <span className={className}>
-      {claim.basis === 'paraphrased' && (
-        <span className="mr-1 rounded bg-surface-2 px-1 text-[10px] font-medium text-muted" title="Paraphrased: not a verbatim quote">
-          ≈
-        </span>
-      )}
-      {claim.text}
-      <LineRef claim={claim} />
-    </span>
-  )
+  return <span className={className}>{claim.text}</span>
 }
 
 export function UseWhen({ claim }: { claim: Claim }) {

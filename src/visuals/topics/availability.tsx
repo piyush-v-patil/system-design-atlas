@@ -238,7 +238,7 @@ export function AvailabilityCalculator({ visual }: VisualProps) {
             </option>
           ))}
         </select>
-        {PRESETS[preset].example && <span className="text-[11px] text-muted">Example values, not from the Primer.</span>}
+        {PRESETS[preset].example && <span className="text-[11px] text-muted">Example values.</span>}
       </div>
 
       <div className="overflow-x-auto rounded-lg bg-bg/60 p-2">
@@ -260,7 +260,7 @@ export function AvailabilityCalculator({ visual }: VisualProps) {
               <tr className="text-left text-xs text-muted">
                 <th className="py-1 font-medium">Downtime per</th>
                 <th className="py-1 font-medium">Computed</th>
-                {primer.length > 0 && <th className="py-1 font-medium">Primer’s table</th>}
+                {primer.length > 0 && <th className="py-1 font-medium">Table</th>}
               </tr>
             </thead>
             <tbody className="tabular-nums">
@@ -282,7 +282,7 @@ export function AvailabilityCalculator({ visual }: VisualProps) {
             </tbody>
           </table>
           {primer.some((r) => Math.abs(r.seconds - dt[r.period]) > 0.6) && (
-            <p className="text-xs text-warn">⚠ The Primer’s weekly figure doesn’t match the arithmetic (0.01% × 7 days = 60.48 s). Its other cells match.</p>
+            <p className="text-xs text-warn">⚠ The table’s weekly figure doesn’t match the arithmetic (0.01% × 7 days = 60.48 s). Its other cells match.</p>
           )}
         </div>
       </div>
@@ -315,7 +315,7 @@ export function DowntimeTable({ visual, node }: VisualProps) {
         <thead>
           <tr className="text-left text-xs text-muted">
             <th className="py-1 font-medium">Per</th>
-            <th className="py-1 font-medium">Primer</th>
+            <th className="py-1 font-medium">Table</th>
             <th className="py-1 font-medium">Computed</th>
             <th className="w-2/5 py-1 font-medium" aria-hidden />
           </tr>
@@ -340,7 +340,7 @@ export function DowntimeTable({ visual, node }: VisualProps) {
           })}
         </tbody>
       </table>
-      <p className="text-[11px] text-muted">Computed with a 365.2425-day year and month = year ÷ 12, which reproduces the Primer’s other cells. Bars use a log scale.</p>
+      <p className="text-[11px] text-muted">Computed with a 365.2425-day year and month = year ÷ 12, which reproduces the table’s other cells. Bars use a log scale.</p>
     </div>
   )
 }

@@ -32,12 +32,15 @@ export function ArchitectureCanvas({
   focus,
   hop,
   title,
+  thumb,
 }: {
   builder: Builder
   frame: number
   focus?: ReadonlySet<string>
   hop?: ActiveHop | null
   title: string
+  /** Static thumbnail: no "new" highlights, scales to fit its box. */
+  thumb?: boolean
 }) {
   const byId = new Map(b.nodes.map((n) => [n.id, n]))
   const nodes = b.nodes.filter((n) => visibleAt(n, frame))
@@ -45,7 +48,7 @@ export function ArchitectureCanvas({
   const groups = (b.groups ?? []).filter((g) => visibleAt(g, frame))
   const hopIds = hop ? new Set([hop.a, hop.b]) : null
   const lit = hopIds ?? (focus && focus.size ? focus : null)
-  const isNew = (n: BNode) => frame > 0 && (n.from === frame || n.relabel?.from === frame)
+  const isNew = (n: BNode) => !thumb && frame > 0 && (n.from === frame || n.relabel?.from === frame)
 
   const nodeState = (n: BNode): NodeState => {
     if (lit) return lit.has(n.id) ? 'active' : 'dim'
@@ -65,8 +68,8 @@ export function ArchitectureCanvas({
   }
 
   return (
-    <div className="builder overflow-x-auto">
-      <div style={{ minWidth: Math.min(b.width, 560) }}>
+    <div className={thumb ? 'builder pointer-events-none size-full' : 'builder overflow-x-auto'}>
+      <div className={thumb ? 'size-full' : undefined} style={thumb ? undefined : { minWidth: Math.min(b.width, 560) }}>
         <Diagram width={b.width} height={b.height} title={title}>
           {groups.map((g) => {
             const bx = groupBox(b, g)
@@ -89,7 +92,7 @@ export function ArchitectureCanvas({
             const c = connect(a, z, e.bend, e.via)
             const onHop = hop && ((e.a === hop.a && e.b === hop.b) || (e.a === hop.b && e.b === hop.a))
             const faded = lit && !onHop && !(focus?.has(e.a) && focus?.has(e.b))
-            const fresh = frame > 0 && edgeFrom(b, e) === frame
+            const fresh = !thumb && frame > 0 && edgeFrom(b, e) === frame
             return (
               <g key={`${e.a}-${e.b}`} className={fresh ? 'bedge-new' : undefined}>
                 <Wire d={c.d} state={onHop ? 'active' : faded ? 'faded' : 'idle'} arrow={e.style === 'dashed' ? 'none' : 'end'} dash={e.style ? DASH[e.style] : undefined} />
@@ -121,7 +124,7 @@ export function ArchitectureCanvas({
               </g>
             )
           })}
-          {b.legend && (
+          {b.legend && !thumb && (
             <g transform={`translate(12,${b.height - 12 - b.legend.length * 16})`} fontSize={10.5}>
               {b.legend.map((l, i) => (
                 <g key={l.label} transform={`translate(0,${i * 16})`}>

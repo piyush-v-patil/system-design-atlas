@@ -855,3 +855,71 @@ buttons led readers off their path with no way back.
   - Performance vs scalability is now three steps (one user, heavy load, adding resources), with every line labelled
     directly. Each step highlights its sentence in the text alongside.
 - **Coverage:** the test now renders every topic page and every map view. It is unchanged at 100%.
+
+### Scope: sections left out (at the reader's request)
+
+The Atlas now leaves out the Primer sections that are about the repository rather than system design:
+- Motivation (and its 3 subsections)
+- Anki flashcards (and "Coding Resource: Interactive Coding Challenges")
+- Contributing
+- Index of system design topics (the map replaces it)
+- Under development
+- Credits
+- Contact info
+- License
+
+That is 12 headings in all.
+- **How:** the list is in `content/scope.json`. The source and the pipeline output stay complete and byte-for-byte;
+  only the app hides these sections.
+- **Links:** links into them from kept text now go to the section on GitHub.
+- **Footer:** it says these sections are left out, as CC BY 4.0 requires changes to be indicated. The license link and
+  attribution stay on every page.
+- **Coverage:** the test reports these 12 headings as "left out on purpose" and fails if anything else goes missing.
+  The rest is 160/160 headings, 510/510 URL checks and 55/55 images.
+- **To bring a section back,** remove its id from `content/scope.json` and re-run `python3 scripts/visuals-spec/phase3.py`.
+
+### Presentation revision (reader feedback)
+
+- **The text reads as the Atlas's own.**
+  - The pages no longer show "From The System Design Primer" headers, README line references, "≈" paraphrase marks,
+    "Original text" labels or "the Primer says" captions.
+  - Credit stays in the footer on every page, as CC BY 4.0 requires, and image credits stay under each image.
+  - The claim and line data still exist and are still checked by the tests; they just aren't shown.
+- **One reading column.** Each topic reads top to bottom:
+  - its introduction;
+  - the visual, at full width;
+  - the rest of the text;
+  - further reading and disadvantages.
+
+  This ends the lopsided two-column layout. Images in the text are capped at 380 px high.
+- **Videos play in the page.** All 11 YouTube links get a click-to-play player, and nothing loads from YouTube until
+  the reader presses play. The link stays above the player.
+- **Linked concepts are explained in place.** Clicking one of 38 linked terms (TCP, B-tree, LRU, Little's law,
+  MD5…) opens a short explanation of one or two paragraphs, with "Read more" for the full article.
+  - The explanations are written in our own words (`content/glossary.ts`). Wikipedia's text is CC BY-SA, which
+    would add share-alike terms.
+  - Longer external links (articles, papers, talks) stay as links.
+  - `tests/glossary.test.ts` checks that every entry matches a link in the text and stays short.
+- **Performance vs scalability is text only.** The animation was removed as unhelpful; its two sentences say it
+  plainly.
+- **Problem images are consistent and generated:**
+  - each system design problem shows its own final architecture diagram;
+  - each OOD problem shows its class diagram;
+  - all drawn in the app's style.
+
+  The scanned diagrams remain inside each solution's walkthrough and under "Reference diagram".
+
+### Source images only where needed
+
+- **53 of the 55 source images are now hidden** wherever the Atlas draws the same idea itself:
+  - 31 topic images, each covered by a hand-built visual (CAP, DNS, CDN, load balancer, reverse proxy, application
+    layer, replication, federation, sharding, data models, caching strategies, async, OSI, TCP/UDP, RPC, latency
+    chart and others);
+  - the problem images, replaced by the generated architecture diagrams;
+  - all 20 solution diagrams, which the step-through builders redraw.
+- **Each image goes together with its "Source:" credit line.** The list is `content/scope.json` → `hiddenImages`;
+  the files and credits stay in `content/images.json`.
+- **Kept:** the database overview and the real-world architectures diagram, which no Atlas visual replaces.
+- **The solution page's "Reference diagram" panel is removed.**
+- **Coverage:** the test counts hidden images separately, fails if one still renders anywhere, and still checks the
+  2 remaining images and their credits.

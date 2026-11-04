@@ -91,7 +91,7 @@ describe('visual metadata', () => {
   it('gives every topic a visual card', () => {
     const missing = topics.order.filter((id) => {
       const v = getVisual(id)
-      return !v || !(v.component || v.comparison || v.tiles?.length)
+      return !v || !(v.component || v.comparison || v.tiles?.length || v.textOnly)
     })
     expect(missing).toEqual([])
   })
@@ -201,7 +201,7 @@ describe('learning path', () => {
       const n = topics.nodes[id]
       return n.kind === 'topic' && ['fundamentals', 'networking', 'data', 'caching', 'async', 'communication', 'security', 'appendix'].includes(n.area)
     })
-    expect(content.filter((id) => !onPath.has(id))).toEqual(['under-development'])
+    expect(content.filter((id) => !onPath.has(id))).toEqual([])
     // Stage order follows the Primer: trade-offs before DNS/CDN/LB, before databases, before caching…
     expect(PATH.map((s) => s.id)).toEqual(['start', 'tradeoffs', 'traffic', 'data', 'cache', 'async', 'communication', 'security', 'numbers', 'practice'])
   })

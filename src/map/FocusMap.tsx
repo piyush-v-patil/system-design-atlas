@@ -159,10 +159,10 @@ export function FocusMap({ selectedId, onSelect, markId }: { selectedId?: string
             <span key={id} className="flex items-center gap-1">
               {i > 0 && <span aria-hidden>›</span>}
               {last ? (
-                <span className="font-semibold text-ink">{i === 0 ? 'Primer' : n.title}</span>
+                <span className="font-semibold text-ink">{i === 0 ? 'Home' : n.title}</span>
               ) : (
                 <button className="hover:text-ink hover:underline" onClick={() => onSelect(id)}>
-                  {i === 0 ? 'Primer' : n.title}
+                  {i === 0 ? 'Home' : n.title}
                 </button>
               )}
             </span>

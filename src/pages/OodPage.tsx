@@ -86,10 +86,7 @@ function ClassView({ ood }: { ood: OodFile }) {
         </section>
         <section className="min-w-0 rounded-xl border border-line bg-surface lg:sticky lg:top-4" aria-label="Notebook code">
           <div className="flex items-center justify-between gap-2 border-b border-line px-3 py-2 text-xs">
-            <span className="font-semibold">Original code</span>
-            <a className="text-muted hover:underline" href={githubBlob(ood.source.path)} target="_blank" rel="noopener noreferrer">
-              {ood.source.path} ↗
-            </a>
+            <span className="font-semibold">Code</span>
           </div>
           <div ref={codeBox} className="relative max-h-[70vh] overflow-auto p-2">
             <CodeSteps code={code} active={active} />
@@ -120,14 +117,14 @@ export function OodPage() {
         › Object-oriented design
       </nav>
       <h1 className="text-3xl font-semibold tracking-tight">{ood.title}</h1>
-      {ood.readmeTitle !== ood.title && <p className="mt-1 text-sm text-muted">Listed in the Primer as “{ood.readmeTitle}”</p>}
+      
 
       <div className="mt-5 flex flex-wrap items-center gap-3 border-b border-line text-sm" role="tablist">
         <button role="tab" aria-selected={tab === 'classes'} onClick={() => setTab('classes')} className={`-mb-px border-b-2 px-1 pb-2 ${tab === 'classes' ? 'border-[var(--accent)] font-semibold' : 'border-transparent text-muted'}`}>
           Class diagram + code
         </button>
         <button role="tab" aria-selected={tab === 'notebook'} onClick={() => setTab('notebook')} className={`-mb-px border-b-2 px-1 pb-2 ${tab === 'notebook' ? 'border-[var(--accent)] font-semibold' : 'border-transparent text-muted'}`}>
-          Notebook (as linked from the Primer)
+          Notebook
         </button>
         {ood.module && (
           <button role="tab" aria-selected={tab === 'module'} onClick={() => setTab('module')} className={`-mb-px border-b-2 px-1 pb-2 ${tab === 'module' ? 'border-[var(--accent)] font-semibold' : 'border-transparent text-muted'}`}>
@@ -140,11 +137,6 @@ export function OodPage() {
         <ClassView key={ood.id} ood={ood} />
       ) : tab === 'notebook' ? (
         <article className="primer prose prose-sm mt-4 max-w-none md:prose-base" data-ood-id={ood.id}>
-          <p className="text-xs text-muted not-prose">
-            <a className="hover:underline" href={githubBlob(ood.source.path)} target="_blank" rel="noopener noreferrer">
-              {ood.source.path} ↗
-            </a>
-          </p>
           <PrimerMarkdown markdown={ood.markdown} docPath={ood.source.path} />
         </article>
       ) : (

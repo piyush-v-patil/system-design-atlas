@@ -311,7 +311,7 @@ export function MicroservicesVisual({ visual }: VisualProps) {
           </g>
         ))}
         {st === 2 && <Packet key="m1" path={line(pos[2], pos[3])} to={pos[3]} label="call" />}
-        {st === 3 && <Caption x={280} y={128} tone="muted">example services from the Primer (Pinterest)</Caption>}
+        {st === 3 && <Caption x={280} y={128} tone="muted">example services (Pinterest)</Caption>}
         {st === 4 && <Caption x={280} y={128} tone="warn">one service redeploys; the rest keep running</Caption>}
       </Diagram>
     </ProcessPlayer>

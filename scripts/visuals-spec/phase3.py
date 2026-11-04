@@ -191,8 +191,8 @@ add('next-steps', diagram='guide', component='learning-path', props={'stage': 't
     tiles=[tile('performance-vs-scalability', Q('If you have a performance problem, your system is slow for a single user.', 418)),
            tile('latency-vs-throughput', Q('Generally, you should aim for maximal throughput with acceptable latency.', 432)),
            tile('availability-vs-consistency', Q("You'll need to make a software tradeoff between consistency and availability.", 454))])
-add('performance-vs-scalability', diagram='comparison', component='perf-scale',
-    summary=Q('A service is scalable if it results in increased performance in a manner proportional to resources added.', 414),
+# Text only, at the reader's request: the two definitions say it best; an animation added nothing.
+add('performance-vs-scalability', diagram='guide', textOnly=True,
     related=['latency-vs-throughput', 'horizontal-scaling', 'load-balancer'])
 add('latency-vs-throughput', diagram='comparison', component='latency-throughput',
     summary=Q('Generally, you should aim for maximal throughput with acceptable latency.', 432),
@@ -555,6 +555,25 @@ with open(os.path.join(ROOT, '_shared', 'phase3.ts'), 'w') as f:
              'cacheLayerSteps': 'ProcessStep[]', 'interviewSummary': 'Claim'}
     for name, val in SHARED.items():
         f.write(f"export const {name}: {types.get(name, 'Comparison')} = {ts(val)}\n\n")
+
+# Sections removed from the Atlas (content/scope.json): no visual, and no links pointing at them.
+with open(os.path.join(ROOT, '..', 'scope.json')) as f:
+    scope_roots = set(json.load(f)['removedSections'])
+with open(os.path.join(ROOT, '..', 'topics.json')) as f:
+    _t = json.load(f)
+REMOVED = set()
+def _drop(i):
+    REMOVED.add(i)
+    for c in _t['nodes'][i]['childIds']: _drop(c)
+for r in scope_roots: _drop(r)
+for tid in list(V):
+    if tid in REMOVED:
+        del V[tid]
+        path = os.path.join(ROOT, f'{tid}.ts')
+        if os.path.exists(path): os.remove(path)
+for v in V.values():
+    if 'related' in v: v['related'] = [r for r in v['related'] if r not in REMOVED]
+    if 'tiles' in v: v['tiles'] = [t for t in v['tiles'] if t['topicId'] not in REMOVED]
 
 shared_names = set(SHARED) | {'capComparison'}
 for tid, v in V.items():

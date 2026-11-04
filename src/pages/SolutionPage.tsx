@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { getBuilder } from '../../content/builders/index.ts'
-import { githubBlob, solutionById, solutions, topics } from '../lib/content.ts'
-import { SectionBody } from '../card/OriginalPanel.tsx'
+import { solutionById, solutions } from '../lib/content.ts'
+import { SectionBody } from '../card/SectionBody.tsx'
 import type { SectionNode, SolutionFile } from '../lib/types.ts'
 import { SolutionBuilder } from '../solutions/SolutionBuilder.tsx'
 import { StepHighlightProvider, useOriginalHighlight } from '../visuals/kit/highlight.tsx'
@@ -22,13 +22,11 @@ function OriginalColumn({ sol, stepId, subId, label }: { sol: SolutionFile; step
   const root = sol.nodes[sol.rootId]
   const step = sol.nodes[stepId]
   const sections = whole ? subtree(sol, sol.rootId).slice(1) : subId ? [step, ...subtree(sol, subId)] : subtree(sol, stepId)
-  const last = sections[sections.length - 1]
-  const lines: [number, number] = whole ? [1, last.sourceLines[1]] : [step.sourceLines[0], last.sourceLines[1]]
   return (
     <div className="rounded-xl border border-line bg-surface">
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-4 py-2.5">
         <h2 className="text-sm font-semibold">
-          Original text <span className="font-normal text-muted">· {whole ? 'whole solution' : label}</span>
+          Walkthrough <span className="font-normal text-muted">· {whole ? 'whole solution' : label}</span>
         </h2>
         <label className="inline-flex cursor-pointer items-center gap-1.5 text-xs text-muted">
           <input type="checkbox" className="accent-[var(--accent)]" checked={whole} onChange={(e) => setWhole(e.target.checked)} />
@@ -36,10 +34,6 @@ function OriginalColumn({ sol, stepId, subId, label }: { sol: SolutionFile; step
         </label>
       </div>
       <div className="px-4 pt-2 pb-4">
-        <a className="text-xs text-muted underline-offset-2 hover:underline" href={githubBlob(sol.source.path, lines)} target="_blank" rel="noopener noreferrer">
-          {sol.source.path} · lines {lines[0]}–{lines[1]}
-          {subId && !whole ? ' (with the step’s introduction)' : ''} ↗
-        </a>
         <article ref={ref} className="primer prose prose-sm mt-2 max-w-none" data-solution-id={sol.id}>
           {whole && <SectionBody doc={sol} node={root} baseLevel={0} showHeading={false} />}
           {sections.map((s, i) => (
@@ -63,7 +57,6 @@ export function SolutionPage() {
   const b = getBuilder(sol.id)!
   const root = sol.nodes[sol.rootId]
   const idx = solutions.indexOf(sol)
-  const readmeTopic = topics.nodes[sol.readmeTopicId]
   const frame = Math.max(0, Math.min(b.frames.length, Number(params.get('f') ?? 0) || 0))
   const setFrame = (f: number) => setParams((p) => (f ? p.set('f', String(f)) : p.delete('f'), p), { replace: true })
 
@@ -86,16 +79,7 @@ export function SolutionPage() {
         </nav>
         <h1 className="text-2xl font-semibold tracking-tight text-balance sm:text-3xl">{root.title}</h1>
         <p className="mt-1 text-sm text-muted">
-          {sol.readmeTitle !== root.title && (
-            <>
-              Listed in the Primer as{' '}
-              <Link to={`/topic/${readmeTopic.id}`} className="text-link hover:underline">
-                “{sol.readmeTitle}”
-              </Link>
-              .{' '}
-            </>
-          )}
-          Step through the interview: each step adds to the diagram, and the Primer’s text for that step is alongside.
+          Step through the interview: each step adds to the diagram, with the walkthrough for that step alongside.
         </p>
 
         <div className="mt-5 grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
