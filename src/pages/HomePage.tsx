@@ -1,12 +1,27 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { oodRefs, solutionRefs, topics } from '../lib/content.ts'
 import { VIA_PATH } from '../lib/journey.ts'
 import { PATH, PATH_ORDER, pathPosition, type PathStage } from '../lib/learningPath.ts'
 import { resetProgress, usePathCursor, useRead } from '../lib/progress.ts'
 
-/** Topics shown per stage before "+N more". */
-const SHOWN = 8
+/**
+ * A stage's topics in reading order, each core topic with the detailed topics under it (any depth). Every topic on
+ * the path appears once; tests/home.test.ts checks the home page links them all.
+ */
+function stageGroups(stage: PathStage): { core: string; deeper: string[] }[] {
+  const core = new Set(stage.breadth)
+  const coreOf = (id: string): string | undefined => {
+    for (let p = topics.nodes[id].parentId; p; p = topics.nodes[p].parentId) if (core.has(p)) return p
+  }
+  const deeper = new Map(stage.breadth.map((id) => [id, [] as string[]]))
+  const loose: string[] = []
+  for (const id of [...stage.depth].sort((a, b) => topics.nodes[a].order - topics.nodes[b].order)) {
+    const c = coreOf(id)
+    if (c) deeper.get(c)!.push(id)
+    else loose.push(id)
+  }
+  return [...stage.breadth.map((id) => ({ core: id, deeper: deeper.get(id)! })), ...loose.map((id) => ({ core: id, deeper: [] }))]
+}
 
 /** The home page: the learning path as a book's contents page, with a Continue card beside it. */
 export function HomePage() {
@@ -52,7 +67,10 @@ export function HomePage() {
           </Link>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-1 text-ui text-muted">
             <Link to="/path" className="hover:text-ink hover:underline">
-              Full plan, with optional depth
+              Full plan and timelines
+            </Link>
+            <Link to="/topic/study-guide" className="hover:text-ink hover:underline">
+              Study guide
             </Link>
             {read.size > 0 && (
               <button type="button" onClick={resetProgress} className="hover:text-ink hover:underline">
@@ -94,21 +112,43 @@ function ContinueCard({ id, started }: { id: string; started: boolean }) {
   )
 }
 
+function TopicLink({ id, read, next, small }: { id: string; read: ReadonlySet<string>; next: string; small?: boolean }) {
+  const isRead = read.has(id)
+  const isNext = id === next
+  return (
+    <Link
+      to={`/topic/${id}`}
+      state={VIA_PATH}
+      className={`inline-flex items-center gap-1.5 text-ui hover:text-link hover:underline ${isNext ? 'font-semibold text-ink' : isRead ? 'text-muted' : small ? 'text-ink/65' : 'text-ink/85'}`}
+    >
+      {isRead ? (
+        <span className="text-ok" aria-label="read">
+          ✓
+        </span>
+      ) : isNext ? (
+        <span className="size-1.5 rounded-full bg-[var(--accent)]" aria-label="next" />
+      ) : null}
+      {topics.nodes[id].title}
+    </Link>
+  )
+}
+
 function Stage({ stage, read, next, current }: { stage: PathStage; read: ReadonlySet<string>; next: string; current: boolean }) {
-  const [open, setOpen] = useState(false)
   const ids = stage.breadth
   const done = ids.filter((id) => read.has(id)).length
   const complete = done === ids.length
-  const shown = open || ids.length <= SHOWN + 1 ? ids : ids.slice(0, SHOWN)
   const first = ids.find((id) => !read.has(id)) ?? ids[0]
+  const groups = stageGroups(stage)
+  const total = ids.length + stage.depth.length
+  // Progress counts the core topics, as everywhere else; the detailed ones are optional reading.
   const status = complete ? (
     <span className="text-ok">Done</span>
   ) : done > 0 || current ? (
     <span className="text-[var(--accent)]">
-      {done} of {ids.length} read
+      {done} of {ids.length} {stage.depth.length ? 'core ' : ''}read
     </span>
   ) : (
-    `${ids.length} topic${ids.length === 1 ? '' : 's'}`
+    `${total} topic${total === 1 ? '' : 's'}`
   )
   return (
     <li
@@ -126,35 +166,25 @@ function Stage({ stage, read, next, current }: { stage: PathStage; read: Readonl
           <span className="sr-only">Stage {stage.index + 1}: </span>
           {stage.title}
         </Link>
+        {/* Core topics flow inline; one with detailed topics gets a line of its own, with them indented under it. */}
         <ul className="mt-1 flex flex-wrap gap-x-3.5 gap-y-1">
-          {shown.map((id) => {
-            const isRead = read.has(id)
-            const isNext = id === next
-            return (
-              <li key={id}>
-                <Link
-                  to={`/topic/${id}`}
-                  state={VIA_PATH}
-                  className={`inline-flex items-center gap-1.5 text-ui hover:text-link hover:underline ${isNext ? 'font-semibold text-ink' : isRead ? 'text-muted' : 'text-ink/85'}`}
-                >
-                  {isRead ? (
-                    <span className="text-ok" aria-label="read">
-                      ✓
-                    </span>
-                  ) : isNext ? (
-                    <span className="size-1.5 rounded-full bg-[var(--accent)]" aria-label="next" />
-                  ) : null}
-                  {topics.nodes[id].title}
-                </Link>
+          {groups.map(({ core, deeper }) =>
+            deeper.length ? (
+              <li key={core} className="basis-full">
+                <TopicLink id={core} read={read} next={next} />
+                <ul className="mt-0.5 mb-1 ml-1 flex flex-wrap gap-x-3 gap-y-0.5 border-l border-line pl-3" aria-label={`Inside ${topics.nodes[core].title}`}>
+                  {deeper.map((id) => (
+                    <li key={id}>
+                      <TopicLink id={id} read={read} next={next} small />
+                    </li>
+                  ))}
+                </ul>
               </li>
-            )
-          })}
-          {shown.length < ids.length && (
-            <li>
-              <button type="button" onClick={() => setOpen(true)} className="text-ui text-muted hover:text-ink hover:underline">
-                +{ids.length - shown.length} more
-              </button>
-            </li>
+            ) : (
+              <li key={core}>
+                <TopicLink id={core} read={read} next={next} />
+              </li>
+            ),
           )}
         </ul>
       </div>

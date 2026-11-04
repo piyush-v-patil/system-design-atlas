@@ -1061,3 +1061,14 @@ The layout was chosen from mockups on the design canvas.
 - Fixed in passing: on the DNS animation, "not in my cache" overlapped the "IP shown is a documentation example"
   note; the note now sits in the empty top-left corner.
 - Screenshots: `docs/screenshots/home-contents*.png`, `fs-*.png`.
+
+### Home page lists every topic (reader feedback)
+
+- The contents page showed only each stage's core topics, so detailed ones (Sharding, Master-slave replication, the
+  NoSQL store types, the cache update strategies and so on) were missing from it, and long stages were cut off at
+  "+N more". It now lists every topic on the path: core topics flow inline, and a core topic with detailed topics
+  under it gets its own line with them indented beneath it, at any depth. Nothing is collapsed. Study guide, the only
+  topic not on the path, is linked beside the contents.
+- Stage counts now include the detailed topics ("19 topics" for Databases); progress still counts core topics, and
+  says "core" where a stage has detailed ones ("4 of 13 core read").
+- `tests/home.test.ts` checks that the home page links every topic on the path, plus the study guide.
