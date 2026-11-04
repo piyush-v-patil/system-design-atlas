@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { NavLink, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { MapPage } from '../pages/MapPage.tsx'
 import { SolutionPage } from '../pages/SolutionPage.tsx'
@@ -40,13 +41,18 @@ function Header() {
 function Layout() {
   const { pathname } = useLocation()
   const fullBleed = pathname === '/' || pathname.startsWith('/topic/')
+  const mainRef = useRef<HTMLElement>(null)
+  // A new page starts at the top (query-string changes, e.g. a solution's step, keep the position).
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0 })
+  }, [pathname])
   return (
     <div className="flex h-full flex-col">
       <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-surface focus:p-2">
         Skip to content
       </a>
       <Header />
-      <main id="main" className={`flex min-h-0 flex-1 flex-col ${fullBleed ? '' : 'overflow-y-auto'}`}>
+      <main ref={mainRef} id="main" className={`flex min-h-0 flex-1 flex-col ${fullBleed ? '' : 'overflow-y-auto'}`}>
         <Outlet />
         {!fullBleed && <Footer />}
       </main>

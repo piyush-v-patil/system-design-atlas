@@ -1,7 +1,7 @@
 import topicsJson from '../../content/topics.json'
 import imagesJson from '../../content/images.json'
 import metaJson from '../../content/meta.json'
-import type { Area, ContentMeta, ImagesFile, OodFile, SolutionFile, TopicNode, TopicsFile } from './types.ts'
+import type { Area, ContentMeta, ImagesFile, OodFile, SectionDocument, SolutionFile, TopicNode, TopicsFile } from './types.ts'
 
 export const topics = topicsJson as unknown as TopicsFile
 export const images = imagesJson as unknown as ImagesFile
@@ -66,3 +66,7 @@ export function imageSrc(ref: string): { src: string; entry: ImagesFile['entries
   const entry = images.entries[ref]
   return { src: entry ? `${import.meta.env.BASE_URL}${entry.src}` : ref, entry }
 }
+
+/** The full source text of a split document (the pipeline guarantees this is byte-identical to the file). */
+export const sourceText = (doc: SectionDocument): string =>
+  doc.preamble + doc.order.map((id) => doc.nodes[id].headingMarkdown + doc.nodes[id].markdown).join('')

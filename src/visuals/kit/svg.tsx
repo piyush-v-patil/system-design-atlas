@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
 import { usePrefersReducedMotion } from './motion.ts'
 
-export type NodeKind = 'server' | 'db' | 'cache' | 'client' | 'lb' | 'app' | 'dns' | 'queue'
+export type NodeKind = 'server' | 'db' | 'cache' | 'client' | 'lb' | 'app' | 'dns' | 'queue' | 'store' | 'cdn'
 export type NodeState = 'normal' | 'active' | 'down' | 'dim' | 'standby' | 'ok' | 'warn'
 
 const STATE: Record<NodeState, { fill: string; stroke: string; opacity?: number; dash?: string }> = {
@@ -57,6 +57,21 @@ function Glyph({ kind, color }: { kind: NodeKind; color: string }) {
         <g {...s}>
           <circle r={8} />
           <path d="M-8 0h16M0 -8c-3.5 4-3.5 12 0 16M0 -8c3.5 4 3.5 12 0 16" />
+        </g>
+      )
+    case 'store':
+      return (
+        <g {...s}>
+          <path d="M-8 -6h16l-2 14h-12z" />
+          <path d="M-8 -6c0-2 16-2 16 0" />
+          <path d="M-4 0h8" />
+        </g>
+      )
+    case 'cdn':
+      return (
+        <g {...s}>
+          <path d="M-6 5a4.5 4.5 0 0 1 0.5-9 6 6 0 0 1 11.5 1.5 3.8 3.8 0 0 1 0 7.5z" />
+          <path d="M-3 8.5h6" />
         </g>
       )
     case 'queue':
@@ -120,9 +135,19 @@ export function Node({
       <g transform={`translate(${left + 17},${midY})`}>
         <Glyph kind={kind} color={glyphColor} />
       </g>
-      <text x={textX} y={sub ? midY - 3 : midY + 4} fontSize={12} fontWeight={600}>
-        {label}
-      </text>
+      {label.includes('\n') ? (
+        <text x={textX} y={midY - 3} fontSize={11.5} fontWeight={600}>
+          {label.split('\n').map((l, i) => (
+            <tspan key={i} x={textX} dy={i === 0 ? 0 : 13}>
+              {l}
+            </tspan>
+          ))}
+        </text>
+      ) : (
+        <text x={textX} y={sub ? midY - 3 : midY + 4} fontSize={12} fontWeight={600}>
+          {label}
+        </text>
+      )}
       {sub && (
         <text x={textX} y={midY + 11} fontSize={10} className="muted">
           {sub}
@@ -173,6 +198,7 @@ export function Wire({
   label,
   labelAt,
   dashed,
+  dash,
 }: {
   d: string
   state?: WireState
@@ -180,6 +206,8 @@ export function Wire({
   label?: string
   labelAt?: [number, number]
   dashed?: boolean
+  /** Explicit dash pattern (overrides `dashed`). */
+  dash?: string
 }) {
   const id = useId().replace(/:/g, '')
   const w = WIRE[state]
@@ -195,7 +223,7 @@ export function Wire({
         fill="none"
         stroke={w.stroke}
         strokeWidth={w.width}
-        strokeDasharray={w.dash ?? (dashed ? '4 4' : undefined)}
+        strokeDasharray={w.dash ?? dash ?? (dashed ? '4 4' : undefined)}
         markerEnd={arrow !== 'none' ? `url(#m${id})` : undefined}
         markerStart={arrow === 'both' ? `url(#m${id})` : undefined}
       />

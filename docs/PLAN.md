@@ -757,3 +757,65 @@ map, and a generic card with the Original layer only.
   - If the code-highlighting chunk fails to load, code now falls back to plain text instead of throwing.
   - Several diagram layout overlaps.
 - The metadata for Phase 3 is generated from `scripts/visuals-spec/phase3.py` (one spec, 89 files).
+
+### Phase 4: architecture builders and OOD class diagrams
+
+- **The 8 system design solutions are now step-through builders** (`/solutions/:id`, `?f=` selects the step).
+  - **Tabs:** the four interview steps, plus the talking points. The AWS solution's Step 4 has one sub-tab per
+    stage, Users+ to Users+++++, each matching its own Primer image.
+  - **Step 1:** every "Calculate usage" figure (36 in all) is recomputed from the stated assumptions, using the
+    Primer's 2.5 million seconds per month, and shown next to the quoted figure. ✓ means exact; ≈ shows how far
+    the Primer rounded.
+  - **Step 2** draws the high-level boxes. **Step 3** adds the internal services and plays each use case hop by
+    hop (86 hops in all). Each hop quotes its README line and highlights it in the original text alongside.
+  - **Step 4** pops in the scaling additions. Each addition has the sentence that motivates it and links to the
+    Primer topics for its trade-offs, followed by the solution's own list of talking-point links.
+  - **The split of the Primer's Step 2 image across Steps 2 and 3 is ours**, and the page says so. Together the
+    two steps draw exactly the Primer's basic diagram.
+  - **Original text sits alongside:** the selected step's section (a stage also shows its step's introduction),
+    with a "Show the whole solution" toggle, and the Primer's image under "Compare with the Primer's diagram".
+  - **Deviation from the plan:** Step 1 has no use-case chips. The use cases and constraints are shown verbatim in
+    the original column instead.
+- **Data:** `content/builders/<id>.ts` holds the nodes, edges, groups and routed wires transcribed from the Primer's
+  PNGs, plus flows (line numbers only), math checks and additions. Quotes are cut from the cited line at render
+  time, so they are verbatim by construction.
+- **`tests/builders.test.ts` checks:**
+  - every hop's line names one of its two components;
+  - every recomputed figure is within 6% of the Primer's, and the stated text is at the cited line;
+  - every component added in Step 4 has a reason;
+  - every solution image is reproduced by a frame (20/20);
+  - no two boxes overlap in any frame;
+  - all references are valid.
+- **OOD problems open on a class diagram next to the notebook code** (`?view=notebook|module` for the other tabs).
+  - Classes, enums, abstract classes, inheritance, constants, `__init__` attributes and methods are read from the
+    code by `src/ood/parsePython.ts`.
+  - "Holds" associations are hand-picked from attribute names (`content/class-diagrams/`) and drawn dashed, with a
+    legend that says so.
+  - Clicking a class highlights its lines in the code; clicking a member highlights its line.
+  - `tests/ood.test.ts` pins the parser, checks each association's attribute exists, and checks the layout for
+    overlaps.
+- **Coverage:** the test now renders every step of every solution and every OOD tab. Doing so found that the AWS
+  Step 3 subsections and the "Additional talking points" headings weren't reachable in an early version of the
+  builder; this is fixed. Coverage is again 172/172 headings, 203/203 solution headings, 583/583 URL checks,
+  57/57 images and 14/14 pages.
+- **Accuracy flags found while transcribing** (each also shown under "Notes on the source" on its page):
+  - **F14: social graph.** The final diagram relabels the "Search API" as "Query API"; the text only ever says
+    Search API (L105). The builder shows the rename at Step 4.
+  - **F15: sales rank.** The final diagram connects the Sales Rank Service to the SQL Read Replicas, although the
+    service writes the `sales_rank` table (L98). Separately, the listed transaction fields add up to 42 bytes,
+    which the Primer rounds to ~40.
+  - **F16: Twitter naming.** Step 3 says "Search Index Service" (L117) and "Search Cluster" (L210); the diagrams draw
+    one "Search Service". The basic diagram's "MySQL" is "SQL database" in the text.
+  - **F17: Mint.** The text has the Budget Service call the Notification Service (L145); the diagrams draw that arrow
+    from the Transaction Extraction Service. The builder animates the text's version as a dotted, undrawn hop.
+  - **F18: analytics stores.** Pastebin's diagram says "SQL Analytics" where the text says "Analytics Database". Mint
+    (L372) and Sales Rank (L267) mention an Analytics Database that their diagrams don't draw.
+  - **F19: web crawler.** "Crawling Service" (L283) vs "Crawler Service" elsewhere.
+  - **F20: OOD code, shown unchanged:**
+    - Call center: Supervisor and Director call `super(Operator, self)`, and no subclass passes `call_center`.
+    - Deck of cards: the notebook's `deal_card()` lacks `self` and `remaining_cards` uses a bare `deal_index`; the
+      .py module fixes both.
+    - LRU cache: the notebook's `def get(self, query)` lacks its colon; the module fixes it.
+    - Online chat: `PrivateChat` calls `Chat.__init__` without `chat_id`.
+- **Housekeeping:** navigating to a new page now scrolls to the top; query-string changes, such as switching
+  steps, keep your position.

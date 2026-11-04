@@ -15,6 +15,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { topics, solutions, oods, images } from '../src/lib/content.ts'
 import { buildMapTree, type MapDatum } from '../src/map/mapData.ts'
 import { inspect, type RenderedPage } from './helpers/render.tsx'
+import { builders } from '../content/builders/index.ts'
 import { headingsOf, notebooks, notebookUrls, read, solutionDirs, urlsOf, type SourceUrl } from './helpers/source.ts'
 
 const PUBLIC = join(import.meta.dirname, '../public')
@@ -27,6 +28,12 @@ const page = (path: string) => {
   if (!pages.has(path)) pages.set(path, inspect(path))
   return pages.get(path)!
 }
+const solutionRoutes = (id: string) => Array.from({ length: builders[id].frames.length + 1 }, (_, f) => (f ? `/solutions/${id}?f=${f}` : `/solutions/${id}`))
+/** All steps of a solution, as one page. */
+const solutionPage = (id: string) => {
+  const ps = solutionRoutes(id).map(page)
+  return { text: ps.map((p) => p.text).join('\n'), html: ps.map((p) => p.html).join('\n') }
+}
 let allAttrs = new Set<string>()
 let allText = ''
 
@@ -35,8 +42,10 @@ beforeAll(() => {
     '/',
     '/problems',
     ...topics.order.map((id) => `/topic/${id}`),
-    ...solutions.map((s) => `/solutions/${s.id}`),
-    ...oods.map((o) => `/ood/${o.id}`),
+    // A solution shows one interview step at a time: every step (?f=…) is a page of its own.
+    ...solutions.flatMap((s) => solutionRoutes(s.id)),
+    // An OOD problem opens on its class diagram; the notebook and module are tabs (?view=…).
+    ...oods.flatMap((o) => [`/ood/${o.id}`, `/ood/${o.id}?view=notebook`, `/ood/${o.id}?view=module`]),
   ]
   for (const r of routes) page(r)
   allAttrs = new Set([...pages.values()].flatMap((p) => [...p.attrs]))
@@ -88,7 +97,7 @@ describe('coverage', () => {
     expect(missing).toEqual([])
   })
 
-  it('every solution heading is rendered on its solution page', () => {
+  it('every solution heading is rendered on its solution page (across its steps)', () => {
     const missing: string[] = []
     let checked = 0
     for (const dir of solutionDirs()) {
@@ -100,7 +109,7 @@ describe('coverage', () => {
         missing.push(`${path} → no solution data`)
         continue
       }
-      const p = page(`/solutions/${sol.id}`)
+      const p = solutionPage(sol.id)
       for (const h of hs)
         if (!sol.nodes[h.slug] || !p.text.includes(h.title) || (h.depth > 1 && !p.html.includes(`data-section-id="${h.slug}"`)))
           missing.push(`${path}:${h.line} "${h.title}"`)
