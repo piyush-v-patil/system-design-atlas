@@ -7,6 +7,7 @@ import type { Timeline } from '../../content/visuals/_shared/path.ts'
  */
 const READ_KEY = 'atlas-read'
 const TIMELINE_KEY = 'atlas-timeline'
+const CURSOR_KEY = 'atlas-path-cursor'
 
 function load<T>(key: string, fallback: T): T {
   try {
@@ -25,6 +26,7 @@ function save(key: string, value: unknown) {
 }
 
 let read: Set<string> = new Set(typeof window === 'undefined' ? [] : load<string[]>(READ_KEY, []))
+let cursor: string | null = typeof window === 'undefined' ? null : load<string | null>(CURSOR_KEY, null)
 let timeline: Timeline = typeof window === 'undefined' ? 'medium' : load<Timeline>(TIMELINE_KEY, 'medium')
 const listeners = new Set<() => void>()
 const emit = () => listeners.forEach((l) => l())
@@ -42,7 +44,21 @@ export function resetProgress() {
   read = new Set()
   readSnapshot = read
   save(READ_KEY, [])
+  cursor = null
+  save(CURSOR_KEY, null)
   emit()
+}
+
+/** The last learning-path stop the reader reached in order: where "Back to your path" returns to. */
+export function setPathCursor(id: string | null) {
+  if (cursor === id) return
+  cursor = id
+  save(CURSOR_KEY, id)
+  emit()
+}
+export const getPathCursor = () => cursor
+export function usePathCursor(): string | null {
+  return useSyncExternalStore(subscribe, () => cursor, () => null)
 }
 export function useRead(): Set<string> {
   return useSyncExternalStore(subscribe, () => readSnapshot, () => readSnapshot)

@@ -178,10 +178,13 @@ def add(topic_id, **kw):
 add('system-design-topics-start-here', diagram='guide', component='learning-path', props={'stage': 'start'},
     summary=Q("First, you'll need a basic understanding of common principles, learning about what they are, how they are used, and their pros and cons.", 376),
     related=['step-1-review-the-scalability-video-lecture', 'step-2-review-the-scalability-article', 'next-steps', 'study-guide'])
-add('step-1-review-the-scalability-video-lecture', diagram='guide', component='key-points',
-    summary=Q('Scalability Lecture at Harvard', 380),
+# The two study resources: the link is the main thing; each topic it covers points to where the Atlas covers it
+# (our mapping, labelled as such in the UI).
+add('step-1-review-the-scalability-video-lecture', diagram='guide', component='study-resource',
+    props={'kind': 'Video lecture', 'covers': 'Horizontal scaling=horizontal-scaling|Caching=cache|Load balancing=load-balancer|Database replication=replication|Database partitioning=sharding,federation'},
     related=['horizontal-scaling', 'cache', 'load-balancer', 'replication', 'sharding', 'federation'])
-add('step-2-review-the-scalability-article', diagram='reference', component='reading-list',
+add('step-2-review-the-scalability-article', diagram='reference', component='study-resource',
+    props={'kind': 'Article series', 'covers': 'Clones=horizontal-scaling|Databases=database|Caches=cache|Asynchronism=asynchronism'},
     related=['horizontal-scaling', 'database', 'cache', 'asynchronism'])
 add('next-steps', diagram='guide', component='learning-path', props={'stage': 'tradeoffs'},
     summary=Q('Keep in mind that everything is a trade-off.', 408),

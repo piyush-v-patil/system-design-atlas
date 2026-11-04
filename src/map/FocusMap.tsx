@@ -73,7 +73,9 @@ function NodeMark({ n, selected, onSelect }: { n: FocusNode; selected: boolean; 
   )
 }
 
-export function FocusMap({ selectedId, onSelect }: { selectedId?: string; onSelect: (id: string) => void }) {
+/** `selectedId` is the topic the map centres on; `markId` (default: the same) is the one drawn as "you are here". */
+export function FocusMap({ selectedId, onSelect, markId }: { selectedId?: string; onSelect: (id: string) => void; markId?: string }) {
+  const mark = markId ?? selectedId
   const wrapRef = useRef<HTMLDivElement>(null)
   const svgRef = useRef<SVGSVGElement>(null)
   const gRef = useRef<SVGGElement>(null)
@@ -177,7 +179,7 @@ export function FocusMap({ selectedId, onSelect }: { selectedId?: string; onSele
           <g fill="none">
             {layout.links.map((l) => {
               const tn = topics.nodes[l.target]
-              const on = selectedId === l.target
+              const on = mark === l.target
               return (
                 <path
                   key={`${layout.focusId}-${l.id}`}
@@ -192,7 +194,7 @@ export function FocusMap({ selectedId, onSelect }: { selectedId?: string; onSele
             })}
           </g>
           {layout.nodes.map((n) => (
-            <NodeMark key={n.id} n={n} selected={selectedId === n.id} onSelect={onSelect} />
+            <NodeMark key={n.id} n={n} selected={mark === n.id} onSelect={onSelect} />
           ))}
         </g>
       </svg>

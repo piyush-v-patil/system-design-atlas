@@ -1,35 +1,79 @@
-import { useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { getTopic } from '../lib/content.ts'
-import { RadialMap } from '../map/RadialMap.tsx'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { getVisual } from '../../content/visuals/index.ts'
+import { getTopic, topics } from '../lib/content.ts'
+import { VIA_PATH } from '../lib/journey.ts'
+import { PATH_ORDER, pathPosition, PATH } from '../lib/learningPath.ts'
+import { usePathCursor, useRead } from '../lib/progress.ts'
+import { paragraphs } from '../visuals/auto.ts'
 import { FocusMap } from '../map/FocusMap.tsx'
 import { OutlineView } from '../map/OutlineView.tsx'
-import { TopicCard } from '../card/TopicCard.tsx'
-import { Link } from 'react-router-dom'
-import { useRead } from '../lib/progress.ts'
-import { PATH, PATH_ORDER } from '../lib/learningPath.ts'
-import { topics } from '../lib/content.ts'
+import { RadialMap } from '../map/RadialMap.tsx'
+import { AreaChip } from '../topic/parts.tsx'
 
-/** Shown on the home map: tells newcomers where to begin and returning readers where they left off. */
+/** Shown on the home map: where to begin, or where you left off. */
 function StartHere() {
   const read = useRead()
-  const next = PATH_ORDER.find((id) => !read.has(id) && !PATH.some((s) => s.depth.includes(id))) ?? PATH_ORDER[0]
-  const started = read.size > 0
+  const cursor = usePathCursor()
+  const started = read.size > 0 && cursor !== null
+  const target = cursor ?? PATH_ORDER[0]
   return (
-    <div className="absolute right-3 bottom-16 z-10 max-w-[19rem] rounded-xl border border-line bg-surface/95 p-3 text-sm shadow-lg backdrop-blur md:top-3 md:bottom-auto">
+    <div className="absolute right-3 bottom-16 z-10 max-w-[20rem] rounded-xl border border-line bg-surface/95 p-4 text-sm shadow-lg backdrop-blur md:top-3 md:bottom-auto">
       <div className="font-semibold">{started ? 'Pick up where you left off' : 'New to system design?'}</div>
-      <p className="mt-0.5 text-xs text-muted">
-        {started ? 'Your next stop on the learning path:' : 'Follow the learning path: the Primer’s own order, from the basics to practice.'}
+      <p className="mt-1 text-xs text-muted">
+        {started
+          ? 'Your place on the learning path:'
+          : 'Follow the learning path: the Primer’s own order, from the basics to practice. Or click any topic on the map.'}
       </p>
-      <div className="mt-2 flex flex-wrap gap-1.5">
-        <Link to={`/topic/${next}`} className="rounded-lg bg-[var(--accent)] px-2.5 py-1.5 text-xs font-medium text-white hover:opacity-90">
-          {started ? topics.nodes[next].title : 'Start: ' + topics.nodes[next].title} →
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        <Link to={`/topic/${target}`} state={VIA_PATH} className="rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white hover:opacity-90">
+          {started ? topics.nodes[target].title : 'Start reading'} →
         </Link>
-        <Link to="/path" className="rounded-lg border border-line px-2.5 py-1.5 text-xs font-medium hover:bg-surface-2">
+        <Link to="/path" className="rounded-lg border border-line px-3 py-1.5 text-xs font-medium hover:bg-surface-2">
           See the whole path
         </Link>
       </div>
     </div>
+  )
+}
+
+/** A short preview of the selected topic: enough to decide whether to read it. */
+function Preview({ id, onClose }: { id: string; onClose: () => void }) {
+  const node = topics.nodes[id]
+  const v = getVisual(id)
+  const lead = v?.summary?.text ?? paragraphs(node)[0]?.text
+  const pos = pathPosition(id)
+  const subs = node.childIds.filter((c) => topics.nodes[c].kind === 'topic').length
+  const target = node.kind !== 'topic' && node.parentId ? node.parentId : id
+  return (
+    <aside
+      aria-label="Topic preview"
+      className="absolute inset-x-3 bottom-14 z-20 rounded-xl border border-line bg-surface p-4 shadow-lg md:inset-x-auto md:top-3 md:right-3 md:bottom-auto md:w-[22rem]"
+    >
+      <div className="flex items-start justify-between gap-2">
+        <h2 className="text-lg leading-snug font-semibold">{node.title}</h2>
+        <button onClick={onClose} className="-mt-1 -mr-1 rounded-md p-1 text-muted hover:bg-surface-2 hover:text-ink" aria-label="Close preview">
+          <svg viewBox="0 0 16 16" className="size-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+            <path d="M4 4l8 8M12 4l-8 8" />
+          </svg>
+        </button>
+      </div>
+      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted">
+        <AreaChip node={node} />
+        {pos && PATH_ORDER.includes(id) && (
+          <span>
+            Learning path · stage {pos.stage.index + 1} of {PATH.length}
+          </span>
+        )}
+      </div>
+      {lead && <p className="mt-2 line-clamp-4 text-sm leading-relaxed">{lead}</p>}
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <Link to={`/topic/${target}`} className="rounded-lg bg-[var(--accent)] px-3 py-1.5 text-sm font-medium text-white hover:opacity-90">
+          Read this topic →
+        </Link>
+        {subs > 0 && <span className="text-xs text-muted">{subs} subtopics: they are around it on the map</span>}
+      </div>
+    </aside>
   )
 }
 
@@ -49,28 +93,12 @@ function readView(): View {
   }
 }
 
+/** The map is for finding your way: clicking a topic focuses it and shows a preview; reading happens on its page. */
 export function MapPage() {
   const { id } = useParams()
   const node = getTopic(id)
   const navigate = useNavigate()
   const [view, setView] = useState<View>(readView)
-  const [wide, setWide] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem('atlas-wide') === '1'
-    } catch {
-      return false
-    }
-  })
-  const toggleWide = () =>
-    setWide((w) => {
-      try {
-        localStorage.setItem('atlas-wide', w ? '0' : '1')
-      } catch {
-        /* storage unavailable */
-      }
-      return !w
-    })
-  const panelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     try {
@@ -80,11 +108,6 @@ export function MapPage() {
     }
   }, [view])
 
-  // Scroll the card to the top when switching topics.
-  useEffect(() => {
-    panelRef.current?.scrollTo({ top: 0 })
-  }, [id])
-
   useEffect(() => {
     if (!node) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && navigate('/')
@@ -92,6 +115,7 @@ export function MapPage() {
     return () => window.removeEventListener('keydown', onKey)
   }, [node, navigate])
 
+  const select = (nid: string) => navigate(`/map/${nid}`)
   return (
     <div className="relative flex min-h-0 flex-1">
       <section className="relative min-w-0 flex-1" aria-label="Topic map">
@@ -109,34 +133,16 @@ export function MapPage() {
           ))}
         </div>
         {view === 'focus' ? (
-          <FocusMap selectedId={node?.id} onSelect={(nid) => navigate(`/topic/${nid}`)} />
+          <FocusMap selectedId={node?.id} onSelect={select} />
         ) : view === 'map' ? (
-          <RadialMap selectedId={node?.id} onSelect={(nid) => navigate(`/topic/${nid}`)} />
+          <RadialMap selectedId={node?.id} onSelect={select} />
         ) : (
           <div className="h-full pt-12">
             <OutlineView selectedId={node?.id} />
           </div>
         )}
       </section>
-
-      {!id && <StartHere />}
-
-      {id && !node && (
-        <aside className="absolute inset-x-3 bottom-3 rounded-xl border border-line bg-surface p-4 text-sm shadow-lg md:static md:w-[420px] md:rounded-none md:border-y-0 md:border-r-0">
-          No topic with id <code>{id}</code>.
-        </aside>
-      )}
-
-      {node && (
-        <aside
-          ref={panelRef}
-          aria-label="Topic card"
-          className={`fixed inset-x-0 bottom-0 z-20 max-h-[82vh] overflow-y-auto rounded-t-2xl border-t border-line bg-surface p-5 shadow-[0_-8px_30px_rgba(0,0,0,0.18)] md:static md:z-auto md:max-h-none ${wide ? 'md:w-[min(1040px,72vw)]' : 'md:w-[min(620px,50vw)]'} md:shrink-0 md:rounded-none md:border-t-0 md:border-l md:shadow-none`}
-        >
-          <div aria-hidden className="mx-auto -mt-2 mb-3 h-1 w-10 rounded-full bg-line md:hidden" />
-          <TopicCard node={node} onClose={() => navigate('/')} wide={wide} onToggleWide={toggleWide} />
-        </aside>
-      )}
+      {node ? <Preview id={node.id} onClose={() => navigate('/')} /> : id ? <p className="absolute top-14 left-3 text-sm">No topic with id “{id}”.</p> : <StartHere />}
     </div>
   )
 }

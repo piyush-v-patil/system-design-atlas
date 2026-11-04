@@ -4,8 +4,8 @@ import { topics } from '../../lib/content.ts'
 import { bulletsAfter } from '../auto.ts'
 import { Diagram } from '../kit/svg.tsx'
 import { ClaimText, LineRef } from '../kit/Claims.tsx'
-import { ModeToggle } from '../kit/Stepper.tsx'
-import { q } from '../../../content/visuals/types.ts'
+import { ModeToggle, ProcessPlayer, useStepper } from '../kit/Stepper.tsx'
+import { q, type ProcessStep } from '../../../content/visuals/types.ts'
 
 /* ------------------------------------------------------------------ latency numbers */
 
@@ -297,72 +297,110 @@ export function EnvelopeCalc({ visual }: VisualProps) {
 
 /* ------------------------------------------------------------------ performance vs scalability */
 
-export function PerfScaleVisual({ node }: VisualProps) {
-  const [users, setUsers] = useState(1)
-  const W = 480
-  const H = 150
-  const xs = Array.from({ length: 41 }, (_, i) => i / 40)
-  // Illustrative response-time curves (ms) against load; no numbers come from the Primer.
-  const curves = {
-    perf: (x: number) => 700 + 120 * x,
-    scale: (x: number) => 90 + 900 * Math.pow(x, 3.2),
-    ok: (x: number) => 90 + 140 * x,
-  }
-  const maxY = 1100
-  const path = (f: (x: number) => number) => xs.map((x, i) => `${i ? 'L' : 'M'}${40 + x * W} ${20 + H - (f(x) / maxY) * H}`).join('')
-  const x = (users - 1) / 999
+export function PerfScaleVisual({ node, visual }: VisualProps) {
   const bl = bulletsAfter(topics.nodes[node.id], 'Another way to look at performance vs scalability:')
-  const at = (f: (x: number) => number) => Math.round(f(x))
+  const steps: ProcessStep[] = [
+    bl[0] && { caption: 'With one user, the system with a performance problem is already slow.', source: bl[0].claim },
+    bl[1] && { caption: 'Under heavy load, the system with a scalability problem slows down, though it was fast for one user.', source: bl[1].claim },
+    visual.summary && { caption: 'A scalable system: add resources and performance grows in proportion.', source: visual.summary },
+  ].filter(Boolean) as ProcessStep[]
+  const stepper = useStepper(steps.length, 3600)
+  const st = stepper.step
+  const focus = st === 1 ? 'perf' : st === 2 ? 'scale' : st === 3 ? 'ok' : null
+  // Illustrative response-time curves against load (no numbers come from the Primer).
+  const W = 360
+  const H = 150
+  const X0 = 48
+  const Y0 = 24
+  const xs = Array.from({ length: 41 }, (_, i) => i / 40)
+  const curves = {
+    perf: { f: (x: number) => 0.72 + 0.1 * x, color: 'var(--bad)', label: ['Performance problem', 'slow even for one user'] },
+    scale: { f: (x: number) => 0.12 + 0.82 * Math.pow(x, 3), color: 'var(--warn)', label: ['Scalability problem', 'fast alone, slow under load'] },
+    ok: { f: (x: number) => 0.12 + 0.06 * x, color: 'var(--ok)', label: ['Scalable', 'resources added as load grows'] },
+  }
+  const px = (x: number) => X0 + x * W
+  const py = (y: number) => Y0 + H - y * H
+  const path = (f: (x: number) => number) => xs.map((x, i) => `${i ? 'L' : 'M'}${px(x)} ${py(f(x))}`).join('')
+  const markerX = st === 1 ? 0 : st === 2 ? 1 : null
+  // Labels sit at the right end of each line, spaced so they never overlap.
+  const labelY = { scale: py(curves.scale.f(1)) + 4, perf: py(curves.perf.f(1)) + 22, ok: py(curves.ok.f(1)) + 4 }
+  // Second chart: work served as servers are added.
+  const servers = [1, 2, 3, 4, 5, 6, 7, 8]
+  const sx = (n: number) => X0 + ((n - 1) / 7) * W
+  const sy = (v: number) => Y0 + 120 - (v / 8) * 120
+  const linear = servers.map((n, i) => `${i ? 'L' : 'M'}${sx(n)} ${sy(n)}`).join('')
+  const flat = servers.map((n, i) => `${i ? 'L' : 'M'}${sx(n)} ${sy(2.6 * (1 - Math.exp(-(n - 1) / 1.6)) + 1)}`).join('')
+  const dim = (k: keyof typeof curves) => (focus && focus !== k ? 0.22 : 1)
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-3 sm:p-4">
-      <Diagram width={560} height={200} title="Response time as load grows, for a performance problem and a scalability problem">
-        <line x1={40} y1={20 + H} x2={40 + W} y2={20 + H} stroke="var(--border)" />
-        <line x1={40} y1={20} x2={40} y2={20 + H} stroke="var(--border)" />
-        <text x={40 + W} y={20 + H + 16} fontSize={10} textAnchor="end" className="muted">
-          load (users) →
-        </text>
-        <text x={44} y={16} fontSize={10} className="muted">
-          response time ↑
-        </text>
-        <path d={path(curves.ok)} fill="none" stroke="var(--ok)" strokeWidth={2} strokeDasharray="5 4" />
-        <path d={path(curves.perf)} fill="none" stroke="var(--bad)" strokeWidth={2.4} />
-        <path d={path(curves.scale)} fill="none" stroke="var(--warn)" strokeWidth={2.4} />
-        <line x1={40 + x * W} x2={40 + x * W} y1={20} y2={20 + H} stroke="var(--accent)" strokeDasharray="3 3" style={{ transition: 'all 150ms' }} />
-        {[curves.perf, curves.scale, curves.ok].map((f, i) => (
-          <circle key={i} cx={40 + x * W} cy={20 + H - (f(x) / maxY) * H} r={4} fill={['var(--bad)', 'var(--warn)', 'var(--ok)'][i]} style={{ transition: 'all 150ms' }} />
-        ))}
-      </Diagram>
-      <label className="flex items-center gap-3 text-sm">
-        Users
-        <input type="range" min={1} max={1000} value={users} onChange={(e) => setUsers(Number(e.target.value))} className="w-56 accent-[var(--accent)]" />
-        <span className="tabular-nums">{users}</span>
-      </label>
-      <div className="grid gap-2 text-sm sm:grid-cols-3">
-        <div className="rounded-lg border border-[var(--bad)]/40 p-2.5">
-          <div className="font-semibold text-bad">Performance problem · {at(curves.perf)} ms</div>
-          {bl[0] && (
-            <div className="text-xs text-muted">
-              {bl[0].claim.text}
-              <LineRef claim={bl[0].claim} />
-            </div>
+    <ProcessPlayer steps={steps} stepper={stepper}>
+      <div className="flex flex-col gap-1">
+        <Diagram width={560} height={210} title="Response time as the number of users grows, for three systems">
+          <text x={X0} y={14} fontSize={11} fontWeight={600}>
+            Response time as users grow
+          </text>
+          <line x1={X0} y1={Y0 + H} x2={X0 + W} y2={Y0 + H} stroke="var(--border)" />
+          <line x1={X0} y1={Y0} x2={X0} y2={Y0 + H} stroke="var(--border)" />
+          <text x={X0 - 6} y={Y0 + 8} fontSize={10} textAnchor="end" className="muted">
+            slow
+          </text>
+          <text x={X0 - 6} y={Y0 + H} fontSize={10} textAnchor="end" className="muted">
+            fast
+          </text>
+          <text x={X0} y={Y0 + H + 16} fontSize={10} className="muted">
+            one user
+          </text>
+          <text x={X0 + W} y={Y0 + H + 16} fontSize={10} textAnchor="end" className="muted">
+            heavy load
+          </text>
+          {markerX !== null && (
+            <g className="fade-in">
+              <rect x={px(markerX) - (markerX ? 30 : 0)} y={Y0} width={30} height={H} fill="var(--accent-soft)" opacity={0.6} />
+            </g>
           )}
+          {(Object.keys(curves) as (keyof typeof curves)[]).map((k) => (
+            <g key={k} opacity={dim(k)} style={{ transition: 'opacity 300ms' }}>
+              <path d={path(curves[k].f)} fill="none" stroke={curves[k].color} strokeWidth={focus === k ? 3.2 : 2.4} strokeLinecap="round" />
+              <text x={X0 + W + 8} y={labelY[k]} fontSize={10.5} fontWeight={700} style={{ fill: curves[k].color }}>
+                {curves[k].label[0]}
+              </text>
+              <text x={X0 + W + 8} y={labelY[k] + 12} fontSize={9.5} className="muted">
+                {curves[k].label[1]}
+              </text>
+            </g>
+          ))}
+        </Diagram>
+        <div style={{ opacity: st === 0 || st === 3 ? 1 : 0.35, transition: 'opacity 300ms' }}>
+          <Diagram width={560} height={170} title="Work served as servers are added: proportional for a scalable system, levelling off otherwise">
+            <text x={X0} y={14} fontSize={11} fontWeight={600}>
+              Work served as resources are added
+            </text>
+            <line x1={X0} y1={Y0 + 120} x2={X0 + W} y2={Y0 + 120} stroke="var(--border)" />
+            <line x1={X0} y1={Y0} x2={X0} y2={Y0 + 120} stroke="var(--border)" />
+            <text x={X0} y={Y0 + 136} fontSize={10} className="muted">
+              1 server
+            </text>
+            <text x={X0 + W} y={Y0 + 136} fontSize={10} textAnchor="end" className="muted">
+              8 servers
+            </text>
+            <path d={linear} fill="none" stroke="var(--ok)" strokeWidth={st === 3 ? 3.2 : 2.4} strokeLinecap="round" />
+            <path d={flat} fill="none" stroke="var(--warn)" strokeWidth={2.2} strokeDasharray="5 4" strokeLinecap="round" />
+            <text x={X0 + W + 8} y={sy(8) + 4} fontSize={10.5} fontWeight={700} style={{ fill: 'var(--ok)' }}>
+              Scalable
+            </text>
+            <text x={X0 + W + 8} y={sy(8) + 16} fontSize={9.5} className="muted">
+              grows in proportion
+            </text>
+            <text x={X0 + W + 8} y={sy(3.5) + 4} fontSize={10.5} fontWeight={700} style={{ fill: 'var(--warn)' }}>
+              Not scalable
+            </text>
+            <text x={X0 + W + 8} y={sy(3.5) + 16} fontSize={9.5} className="muted">
+              more servers stop helping
+            </text>
+          </Diagram>
         </div>
-        <div className="rounded-lg border border-[var(--warn)]/40 p-2.5">
-          <div className="font-semibold text-warn">Scalability problem · {at(curves.scale)} ms</div>
-          {bl[1] && (
-            <div className="text-xs text-muted">
-              {bl[1].claim.text}
-              <LineRef claim={bl[1].claim} />
-            </div>
-          )}
-        </div>
-        <div className="rounded-lg border border-[var(--ok)]/40 p-2.5">
-          <div className="font-semibold text-ok">Scalable · {at(curves.ok)} ms</div>
-          <div className="text-xs text-muted">Performance grows with resources added.</div>
-        </div>
+        <p className="px-1 text-[11px] text-muted">The curves are illustrative: the Primer gives the definitions, not numbers.</p>
       </div>
-      <p className="text-[11px] text-muted">Curves and millisecond values are illustrative; the Primer gives the definitions, not numbers.</p>
-    </div>
+    </ProcessPlayer>
   )
 }
 
