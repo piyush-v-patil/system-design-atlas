@@ -944,3 +944,27 @@ The layout was chosen from mockups on the design canvas.
 - **Narrow screens:** one column. The ribbon ends the page, followed by the big Next button and the reading-order line.
 - **Maintainer notes:** accuracy notes on visuals (`visual.notes`) are no longer shown to readers; they stay in the
   data and in this document.
+
+### Phase 5: search, faster loading, deploy (flashcards dropped at the reader's request)
+
+- **Search.** Open it with Ctrl/Cmd+K, "/" or the header button.
+  - It covers all 160 topics, the 8 problems, the 6 OOD problems and the 38 explained terms. A term opens the topic
+    that links it.
+  - Every query word must start a word in the title or text; title matches rank first.
+  - Matches are highlighted, and body matches show a snippet.
+  - Arrow keys move through results, Enter opens one, Esc closes.
+  - The index and palette load on first use.
+  - `tests/search.test.ts` checks that every topic is found in the top 3 by its own title and that common queries
+    rank the obvious answer first.
+- **Faster loading.**
+  - Pages are lazy chunks.
+  - The full solution and notebook files moved to `src/lib/problems.ts`, which only the problem pages, the problem
+    card and search load. Everything else uses a small generated `content/problems-index.json`.
+  - First visit: ~200 kB gzipped instead of ~445 kB (614 kB uncompressed JS instead of 1.7 MB).
+  - Tests render pages synchronously through `AppRoutes({ pages })`.
+- **Deploy.** `.github/workflows/deploy.yml` runs on every push to `master` and on demand:
+  - checkout with the Primer submodule, `npm ci`, `npm test` (including coverage), `npm run build`;
+  - then it publishes `dist/` to GitHub Pages.
+  - These steps were verified in a fresh clone.
+  - **One-time setup:** Settings → Pages → Source: GitHub Actions.
+- Progress tracking and the learning path were already in place.
