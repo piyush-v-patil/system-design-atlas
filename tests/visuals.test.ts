@@ -91,7 +91,7 @@ describe('visual metadata', () => {
   it('gives every topic a visual card', () => {
     const missing = topics.order.filter((id) => {
       const v = getVisual(id)
-      return !v || !(v.component || v.comparison || v.tiles?.length)
+      return !v || !(v.component || v.comparison || v.tiles?.length || v.textOnly)
     })
     expect(missing).toEqual([])
   })

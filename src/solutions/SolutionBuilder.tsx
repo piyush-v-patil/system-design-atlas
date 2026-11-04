@@ -109,8 +109,7 @@ function MathPanel({ b, sol, src }: { b: Builder; sol: SolutionFile; src: string
     <section className="rounded-xl border border-line bg-surface p-3 sm:p-4" aria-label="Back-of-the-envelope check">
       <h3 className="text-sm font-semibold">Back-of-the-envelope, recomputed</h3>
       <p className="mt-0.5 text-xs text-muted">
-        Each figure is recomputed from the assumptions the Primer states, using its own conversion of 2.5 million seconds per month, and compared with the figure it
-        gives.
+        Each figure is worked out from the assumptions above, using 2.5 million seconds per month.
       </p>
       <div className="mt-3 overflow-x-auto">
         <table className="w-full min-w-[520px] text-left text-sm">
@@ -119,7 +118,7 @@ function MathPanel({ b, sol, src }: { b: Builder; sol: SolutionFile; src: string
               <th className="py-1.5 pr-3 font-medium">Figure</th>
               <th className="py-1.5 pr-3 font-medium">How</th>
               <th className="py-1.5 pr-3 font-medium">Recomputed</th>
-              <th className="py-1.5 font-medium">The Primer says</th>
+              <th className="py-1.5 font-medium">Rounded figure</th>
             </tr>
           </thead>
           <tbody>
@@ -142,7 +141,7 @@ function MathPanel({ b, sol, src }: { b: Builder; sol: SolutionFile; src: string
                       {exact ? '✓' : '≈'}
                     </span>{' '}
                     {fmt(m.value, m.unit)}
-                    {!exact && <span className="block text-[11px] text-muted">rounded by the Primer ({Math.round(err * 100)}% off)</span>}
+                    {!exact && <span className="block text-[11px] text-muted">rounded ({Math.round(err * 100)}% off)</span>}
                   </td>
                   <td className="py-2 text-xs">
                     <ClaimText claim={quote(sol, src, m.line)} />
@@ -254,7 +253,7 @@ function AdditionsPanel({ b, sol, src, frame, selected, setSelected }: { b: Buil
             )}
           </>
         ) : (
-          <span className="text-muted">Pick a change to highlight it on the diagram and see the sentence from the Primer that motivates it.</span>
+          <span className="text-muted">Pick a change to highlight it on the diagram and see why it was added.</span>
         )}
       </div>
       {links.length > 0 && (
@@ -277,10 +276,9 @@ function PrimerImage({ refUrl, label }: { refUrl: string; label: string }) {
   const { src, entry } = imageSrc(refUrl)
   return (
     <details className="rounded-xl border border-line bg-surface">
-      <summary className="cursor-pointer px-4 py-2.5 text-sm font-medium select-none hover:bg-surface-2">Compare with the Primer’s diagram for {label}</summary>
+      <summary className="cursor-pointer px-4 py-2.5 text-sm font-medium select-none hover:bg-surface-2">Reference diagram for {label}</summary>
       <div className="border-t border-line p-3">
-        <img src={src} alt={entry?.caption ?? `The Primer's diagram: ${label}`} loading="lazy" className="mx-auto max-h-[70vh] w-auto rounded bg-white p-2" />
-        <p className="mt-1 text-center text-[11px] text-muted">From The System Design Primer ({refUrl})</p>
+        <img src={src} alt={entry?.caption ?? `Reference diagram: ${label}`} loading="lazy" className="mx-auto max-h-[70vh] w-auto rounded bg-white p-2" />
       </div>
     </details>
   )
@@ -355,12 +353,12 @@ export function SolutionBuilder({ b, sol, frame, setFrame }: { b: Builder; sol: 
       {!talking && fr.image && <PrimerImage refUrl={fr.image} label={fr.step === 4 && b.frames.filter((x) => x.step === 4).length > 1 ? fr.label : `Step ${fr.step}`} />}
       {talking && (
         <p className="rounded-xl border border-line bg-surface p-3 text-sm text-muted sm:p-4">
-          The diagram shows the final design. The talking points that follow it in the Primer are in the original text.
+          The diagram shows the final design. The talking points are in the walkthrough.
         </p>
       )}
       {b.notes && b.notes.length > 0 && (
         <details className="rounded-xl border border-warn/40 bg-warn-soft/30 px-4 py-2.5 text-sm">
-          <summary className="cursor-pointer font-medium select-none">Notes on the source ({b.notes.length})</summary>
+          <summary className="cursor-pointer font-medium select-none">Notes ({b.notes.length})</summary>
           <ul className="mt-2 flex list-disc flex-col gap-1 pl-5 text-xs">
             {b.notes.map((n, i) => (
               <li key={i}>{n}</li>
@@ -369,7 +367,7 @@ export function SolutionBuilder({ b, sol, frame, setFrame }: { b: Builder; sol: 
         </details>
       )}
       <p className="text-[11px] text-muted">
-        Shown so far: {shown} component{shown === 1 ? '' : 's'}. Diagram transcribed from the Primer’s images; every quoted line links to the source.
+        Shown so far: {shown} component{shown === 1 ? '' : 's'}.
       </p>
     </div>
   )

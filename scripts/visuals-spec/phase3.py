@@ -191,8 +191,8 @@ add('next-steps', diagram='guide', component='learning-path', props={'stage': 't
     tiles=[tile('performance-vs-scalability', Q('If you have a performance problem, your system is slow for a single user.', 418)),
            tile('latency-vs-throughput', Q('Generally, you should aim for maximal throughput with acceptable latency.', 432)),
            tile('availability-vs-consistency', Q("You'll need to make a software tradeoff between consistency and availability.", 454))])
-add('performance-vs-scalability', diagram='comparison', component='perf-scale',
-    summary=Q('A service is scalable if it results in increased performance in a manner proportional to resources added.', 414),
+# Text only, at the reader's request: the two definitions say it best; an animation added nothing.
+add('performance-vs-scalability', diagram='guide', textOnly=True,
     related=['latency-vs-throughput', 'horizontal-scaling', 'load-balancer'])
 add('latency-vs-throughput', diagram='comparison', component='latency-throughput',
     summary=Q('Generally, you should aim for maximal throughput with acceptable latency.', 432),

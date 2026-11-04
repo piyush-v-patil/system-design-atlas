@@ -103,12 +103,15 @@ export function ClassDiagram({
   selected,
   onSelect,
   title,
+  thumb,
 }: {
   classes: PyClass[]
   associations: Association[]
   selected: { cls: string; line?: number } | null
   onSelect: (s: { cls: string; line?: number } | null) => void
   title: string
+  /** Static thumbnail: scales to fit its box, not interactive. */
+  thumb?: boolean
 }) {
   const { placed, width, height } = layoutClasses(classes)
   const sel = selected?.cls
@@ -139,8 +142,8 @@ export function ClassDiagram({
   })
 
   return (
-    <div className="overflow-x-auto">
-      <svg className="diagram class-diagram" viewBox={`0 0 ${width} ${height}`} style={{ minWidth: Math.min(width, 640) }} role="img" aria-label={title}>
+    <div className={thumb ? 'pointer-events-none size-full' : 'overflow-x-auto'}>
+      <svg className="diagram class-diagram" viewBox={`0 0 ${width} ${height}`} style={thumb ? { width: '100%', height: '100%' } : { minWidth: Math.min(width, 640) }} role="img" aria-label={title}>
         <title>{title}</title>
         <defs>
           <marker id="uml-inherit" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse">

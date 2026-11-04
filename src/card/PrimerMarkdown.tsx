@@ -9,6 +9,9 @@ import { codeKey } from '../lib/hash.ts'
 import { imageSrc } from '../lib/content.ts'
 import { resolveLink } from '../lib/links.ts'
 import { normalizeInlineHtml } from '../lib/markdown-fixups.ts'
+import { GLOSSARY } from '../../content/glossary.ts'
+import { GlossaryLink } from '../media/GlossaryLink.tsx'
+import { VideoEmbed, youTubeId } from '../media/VideoEmbed.tsx'
 
 /** Allow only the raw HTML the Primer actually uses: <p align>, <img>, <br>, <i>, <sup>, <a>. */
 const schema = {
@@ -65,6 +68,9 @@ function codeFromPre(children: ReactNode): { lang: string | null; code: string }
   return { lang, code: text.replace(/\n$/, '') }
 }
 
+const textOf = (n: ReactNode): string =>
+  typeof n === 'string' || typeof n === 'number' ? String(n) : Array.isArray(n) ? n.map(textOf).join('') : isValidElement(n) ? textOf((n.props as { children?: ReactNode }).children) : ''
+
 function components(docPath: string): Components {
   return {
     a({ href, children, node: _node, ...rest }) {
@@ -76,16 +82,33 @@ function components(docPath: string): Components {
             {children}
           </Link>
         )
-      return (
+      const entry = GLOSSARY[href]
+      if (entry)
+        return (
+          <GlossaryLink href={r.href} entry={entry}>
+            {children}
+          </GlossaryLink>
+        )
+      const link = (
         <a href={r.href} data-source-href={r.source === r.href ? undefined : r.source} target="_blank" rel="noopener noreferrer">
           {children}
         </a>
       )
+      // Videos play in the page; the link stays above the player.
+      const video = youTubeId(r.href)
+      if (video)
+        return (
+          <>
+            {link}
+            <VideoEmbed id={video} title={textOf(children) || 'Video'} />
+          </>
+        )
+      return link
     },
     img({ src, alt, node: _node, ...rest }) {
       const ref = typeof src === 'string' ? src : ''
       const { src: resolved, entry } = imageSrc(ref)
-      const fallbackAlt = entry?.caption ?? 'Diagram from The System Design Primer'
+      const fallbackAlt = entry?.caption ?? 'Diagram'
       return (
         <img
           {...rest}

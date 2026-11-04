@@ -40,7 +40,7 @@ export function OsiVisual(_: VisualProps) {
                   {l.n}
                 </span>
                 <span className="font-medium">{l.name}</span>
-                {hot && <span className="ml-auto rounded-full bg-surface-2 px-1.5 text-[10px] text-muted">in the Primer</span>}
+                {hot && <span className="ml-auto rounded-full bg-surface-2 px-1.5 text-[10px] text-muted">covered</span>}
               </button>
             </li>
           )
@@ -59,9 +59,9 @@ export function OsiVisual(_: VisualProps) {
             ))}
           </div>
         ) : (
-          <div className="text-xs text-muted">The Primer doesn’t cover this layer beyond its diagram.</div>
+          <div className="text-xs text-muted">Not covered further here.</div>
         )}
-        <p className="mt-auto text-[11px] text-muted">Layer names and examples follow the Primer’s OSI image (source: OSI 7 layer model).</p>
+        <p className="mt-auto text-[11px] text-muted">Layer names and examples follow the OSI image (source: OSI 7 layer model).</p>
       </div>
     </div>
   )
@@ -288,7 +288,7 @@ export function RpcVisual({ visual }: VisualProps) {
         {st === 3 && <Packet key="rq" path={line([190, 84], [302, 84])} to={[302, 84]} label="msg" />}
         {st === 6 && <Packet key="rp" path={line([302, 116], [190, 116])} to={[190, 116]} label="res" tone="ok" />}
         <Caption x={280} y={244} tone="muted">
-          “dispatcher” and “service procedure” appear in the Primer’s diagram
+          “dispatcher” and “service procedure” appear in the diagram
         </Caption>
       </Diagram>
     </ProcessPlayer>
@@ -327,7 +327,7 @@ export function RestVisual({ node }: VisualProps) {
           )
         })}
         <Caption x={440} y={150} tone="muted">
-          sample calls from the Primer’s table
+          sample calls
         </Caption>
       </Diagram>
       <ul className="grid gap-2 sm:grid-cols-2">
@@ -380,7 +380,7 @@ export function RpcRestTableVisual({ node }: VisualProps) {
         ))}
       </div>
       <p className="text-xs text-muted">
-        The same operation in both styles, verbatim from the Primer’s table.
+        The same operation in both styles.
         <LineRef claim={q(row.cells.join(' '), row.line)} />
       </p>
     </div>

@@ -23,7 +23,7 @@ function StartHere() {
       <p className="mt-1 text-xs text-muted">
         {started
           ? 'Your place on the learning path:'
-          : 'Follow the learning path: the Primer’s own order, from the basics to practice. Or click any topic on the map.'}
+          : 'Follow the learning path, from the basics to practice. Or click any topic on the map.'}
       </p>
       <div className="mt-3 flex flex-wrap gap-1.5">
         <Link to={`/topic/${target}`} state={VIA_PATH} className="rounded-lg bg-[var(--accent)] px-3 py-1.5 text-xs font-medium text-white hover:opacity-90">

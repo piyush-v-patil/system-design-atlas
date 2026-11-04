@@ -43,7 +43,7 @@ export function PathStrip({ node }: { node: TopicNode }) {
   if (!onPath || !pos)
     return (
       <div className="flex flex-col gap-1 rounded-xl border border-line bg-surface-2/60 px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between">
-        <span className="text-muted">This page is background from the Primer, not a stop on the learning path.</span>
+        <span className="text-muted">This page is background reading, not a stop on the learning path.</span>
         <Link to="/path" className="shrink-0 font-medium text-link hover:underline">
           See the learning path →
         </Link>
@@ -125,7 +125,7 @@ export function NextNav({ node }: { node: TopicNode }) {
         </div>
       )}
       <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted">
-        <span>In the Primer’s own order:</span>
+        <span>In reading order:</span>
         <span className="flex flex-wrap gap-x-4 gap-y-1">
           {prev && (
             <Link to={`/topic/${prev.id}`} className="hover:text-ink hover:underline">

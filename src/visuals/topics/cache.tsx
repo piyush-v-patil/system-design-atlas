@@ -161,7 +161,7 @@ export function CacheStrategyVisual({ visual, node }: VisualProps) {
   const md = topics.nodes[node.id].markdown
   const codeLines = CODE_LINES[strategy][stepper.step] ?? []
   const blocks = strategy === 'cache-aside' ? [codeBlock(md, 0)] : strategy === 'write-through' ? [codeBlock(md, 0), codeBlock(md, 1)] : []
-  const blockTitles = strategy === 'write-through' ? ['Application code', 'Cache code'] : ['From the Primer']
+  const blockTitles = strategy === 'write-through' ? ['Application code', 'Cache code'] : ['Example']
   return (
     <ProcessPlayer
       steps={steps}

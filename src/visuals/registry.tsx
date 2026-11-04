@@ -16,7 +16,7 @@ import { AcidBase, DataModelVisual, DenormalizationVisual, SqlNoSqlPicker } from
 import { CacheGranularityVisual, CacheLayersVisual } from './topics/caching.tsx'
 import { AsyncFlowVisual, BackPressureSim, MessageQueueVisual, TaskQueueVisual } from './topics/async.tsx'
 import { HttpVerbsVisual, OsiVisual, RestVisual, RpcRestTableVisual, RpcVisual, TcpUdpVisual } from './topics/communication.tsx'
-import { EnvelopeCalc, LatencyChart, LatencyThroughputVisual, PerfScaleVisual, PowersOfTwo } from './topics/numbers.tsx'
+import { EnvelopeCalc, LatencyChart, LatencyThroughputVisual, PowersOfTwo } from './topics/numbers.tsx'
 import { InterviewSteps, OodGallery, ProblemCard, ProblemGallery } from './topics/guide.tsx'
 
 export interface VisualProps {
@@ -71,7 +71,6 @@ export const registry: Record<string, ComponentType<VisualProps>> = {
   'latency-chart': LatencyChart,
   'powers-of-two': PowersOfTwo,
   envelope: EnvelopeCalc,
-  'perf-scale': PerfScaleVisual,
   'latency-throughput': LatencyThroughputVisual,
   'interview-steps': InterviewSteps,
   'problem-gallery': ProblemGallery,

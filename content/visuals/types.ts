@@ -56,6 +56,8 @@ export interface TopicVisual {
   pros?: Claim[]
   cons?: Claim[]
   related?: string[]
+  /** No visual on purpose: the text stands on its own. */
+  textOnly?: boolean
   /** Notes about the source itself (accuracy flags from docs/PLAN.md), shown on the card. */
   notes?: string[]
 }

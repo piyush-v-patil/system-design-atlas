@@ -17,7 +17,7 @@ export function ConsList({ node }: VisualProps) {
     <div className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-3 sm:p-4">
       {parent && (
         <p className="text-sm text-muted">
-          The Primer’s list of drawbacks for{' '}
+          Drawbacks of{' '}
           <Link to={`/topic/${parent.id}`} className="font-medium text-link hover:underline">
             {parent.title}
           </Link>
@@ -56,7 +56,7 @@ export function ReadingList({ node, visual }: VisualProps) {
     <div className="flex flex-col gap-3 rounded-xl border border-line bg-surface p-3 sm:p-4">
       {parent && node.kind === 'sources' && (
         <p className="text-sm text-muted">
-          Where the Primer goes deeper on{' '}
+          Further reading on{' '}
           <Link to={`/topic/${parent.id}`} className="font-medium text-link hover:underline">
             {parent.title}
           </Link>
@@ -175,80 +175,32 @@ export function KeyPoints({ node, visual }: VisualProps) {
 }
 
 /**
- * A study resource the Primer points to (the scalability lecture and article): the resource itself as the main
- * action, then what it covers, each with where the Atlas covers that topic (our mapping, labelled as such).
+ * A study resource (the scalability lecture and article). The resource itself is in the text (videos play in the
+ * page); this adds where each topic it covers is explained here.
  */
-export function StudyResource({ node, visual }: VisualProps) {
-  const all = links(node)
-  const main = all[0]
-  const covers = new Map(
-    String(visual.props?.covers ?? '')
-      .split('|')
-      .filter(Boolean)
-      .map((pair) => {
-        const [label, ids] = pair.split('=')
-        return [label, ids.split(',')] as const
-      }),
-  )
-  const items = bullets(node).filter((b) => b.depth > 0)
-  if (!main) return null
-  const k = resourceKind(main.url)
+export function StudyResource({ visual }: VisualProps) {
+  const covers = String(visual.props?.covers ?? '')
+    .split('|')
+    .filter(Boolean)
+    .map((pair) => {
+      const [label, ids] = pair.split('=')
+      return { label, ids: ids.split(',') }
+    })
   return (
-    <div className="flex flex-col gap-4 rounded-xl border border-line bg-surface p-3 sm:p-4">
-      <a
-        href={main.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="group flex items-center gap-3 rounded-xl border border-[var(--accent)]/50 bg-accent-soft/50 p-3 hover:border-[var(--accent)]"
-      >
-        <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-lg bg-[var(--accent)] text-lg text-white">
-          {visual.props?.kind === 'Video lecture' ? '▶' : '¶'}
-        </span>
-        <span className="min-w-0 flex-1">
-          <span className="block text-xs text-muted">
-            {String(visual.props?.kind ?? k.label)} · {domainOf(main.url)} · opens in a new tab
-          </span>
-          <span className="block text-base font-semibold group-hover:text-link">{main.title}</span>
-        </span>
-        <span aria-hidden className="text-lg text-[var(--accent)]">
-          ↗
-        </span>
-      </a>
-      <div>
-        <h3 className="text-sm font-semibold">What it covers</h3>
-        <p className="text-xs text-muted">From the Primer’s list. The “in the Atlas” links are our pointers to where the Primer covers the same idea.</p>
-        <ul className="mt-2 flex flex-col divide-y divide-line rounded-lg border border-line">
-          {items.map((b, i) => {
-            const label = b.claim.text
-            const ext = links({ ...node, markdown: b.md } as typeof node)[0]
-            const ids = covers.get(label) ?? []
-            return (
-              <li key={i} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 px-3 py-2 text-sm">
-                <span className="font-medium">
-                  {ext ? (
-                    <a href={ext.url} target="_blank" rel="noopener noreferrer" className="text-link hover:underline">
-                      {label} ↗
-                    </a>
-                  ) : (
-                    label
-                  )}
-                  <LineRef claim={b.claim} />
-                </span>
-                {ids.length > 0 && (
-                  <span className="flex flex-wrap gap-1.5 text-xs">
-                    <span className="text-muted">in the Atlas:</span>
-                    {ids.map((id) => (
-                      <Link key={id} to={`/topic/${id}`} className="rounded-full border border-line px-2 py-0.5 hover:border-[var(--accent)] hover:text-link">
-                        {topics.nodes[id]?.title ?? id}
-                      </Link>
-                    ))}
-                  </span>
-                )}
-              </li>
-            )
-          })}
-        </ul>
-      </div>
+    <div className="rounded-xl border border-line bg-surface p-3 sm:p-4">
+      <h3 className="text-sm font-semibold">Where these topics are explained here</h3>
+      <ul className="mt-2 grid gap-1.5 sm:grid-cols-2">
+        {covers.map((c) => (
+          <li key={c.label} className="flex flex-wrap items-center gap-1.5 text-sm">
+            <span className="text-muted">{c.label}:</span>
+            {c.ids.map((id) => (
+              <Link key={id} to={`/topic/${id}`} className="rounded-full border border-line px-2 py-0.5 text-xs hover:border-[var(--accent)] hover:text-link">
+                {topics.nodes[id]?.title ?? id}
+              </Link>
+            ))}
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }

@@ -258,7 +258,7 @@ export function BackPressureSim(_: VisualProps) {
       <p className="text-xs text-muted">
         “Once the queue fills up, clients get a server busy or HTTP 503 status code to try again later.”
         <LineRef claim={q('Once the queue fills up, clients get a server busy or HTTP 503 status code to try again later.', 1357)} /> Rejected requests retry
-        with exponential backoff. Rates and sizes here are illustrative, not from the Primer.
+        with exponential backoff. Rates and sizes here are illustrative.
       </p>
     </div>
   )

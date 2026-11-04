@@ -54,7 +54,7 @@ export function VisualSection({ visual, node, hideSummary }: { visual: TopicVisu
       <ProsCons pros={visual.pros} cons={visual.cons} />
       {visual.notes?.map((n, i) => (
         <p key={i} className="rounded-lg border border-[var(--warn)]/50 bg-[var(--warn-soft)] px-3 py-2 text-xs leading-relaxed">
-          <strong className="text-warn">Note on the source: </strong>
+          <strong className="text-warn">Note: </strong>
           {n}
         </p>
       ))}

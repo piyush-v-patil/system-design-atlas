@@ -46,8 +46,8 @@ export function PathPage() {
     <div className="mx-auto w-full max-w-4xl px-4 py-6 md:px-8">
       <h1 className="text-3xl font-semibold tracking-tight">Learning path</h1>
       <p className="mt-2 max-w-2xl text-muted">
-        Not sure what to study, or in what order? This route follows the Primer’s own guidance: its “start here”
-        section, then its topics in order, then practice from its study guide.
+        Not sure what to study, or in what order? This route starts with the basics, goes
+        through the topics in order, then ends with practice from the study guide.
       </p>
       <div className="mt-4 grid gap-3 rounded-xl border border-line bg-surface p-4 md:grid-cols-[1fr_auto] md:items-center">
         <div className="flex flex-col gap-2 text-sm">
