@@ -75,7 +75,7 @@ export function StudyGuideVisual(_: VisualProps) {
           </li>
         ))}
       </ol>
-      <Link to="/path" className="self-start rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:opacity-90">
+      <Link to="/path" className="btn btn-primary self-start">
         Follow this as a learning path →
       </Link>
     </div>

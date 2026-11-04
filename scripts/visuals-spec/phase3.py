@@ -506,7 +506,7 @@ add('index-of-system-design-topics', diagram='guide', component='learning-path',
     related=['study-guide', 'system-design-topics-start-here'])
 add('study-guide', diagram='guide', component='study-guide',
     summary=Q('Suggested topics to review based on your interview timeline (short, medium, long).', 184),
-    points=[Q("A: No, you don't need to know everything here to prepare for the interview.", 190),
+    points=[Q("No, you don't need to know everything here to prepare for the interview.", 190),
             Q('More experienced candidates are generally expected to know more about system design.', 200),
             Q('Start broad and go deeper in a few areas. It helps to know a little about various key system design topics.', 202)],
     related=['system-design-topics-start-here', 'how-to-approach-a-system-design-interview-question'])

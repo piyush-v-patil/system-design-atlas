@@ -51,14 +51,13 @@ export function useStepper(count: number, interval = 3000, initial = 0): Stepper
   }
 }
 
-const base = 'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-medium disabled:opacity-40'
-const btn = `${base} border-line bg-surface hover:bg-surface-2`
+const btn = 'btn btn-sm btn-secondary'
 
 export function StepControls({ s }: { s: Stepper }) {
   return (
     <div className="flex flex-wrap items-center gap-1.5" role="group" aria-label="Animation controls">
       {s.playing ? (
-        <button className={`${base} border-[var(--accent)] bg-surface text-[var(--accent)]`} onClick={s.pause}>
+        <button className="btn btn-sm btn-secondary" aria-pressed="true" onClick={s.pause}>
           <svg viewBox="0 0 12 12" className="size-3" fill="currentColor" aria-hidden>
             <rect x="2" y="1.5" width="3" height="9" rx="0.5" />
             <rect x="7" y="1.5" width="3" height="9" rx="0.5" />
@@ -66,7 +65,7 @@ export function StepControls({ s }: { s: Stepper }) {
           Pause
         </button>
       ) : (
-        <button className={`${base} border-[var(--accent)] bg-[var(--accent)] text-white hover:opacity-90`} onClick={s.play}>
+        <button className="btn btn-sm btn-primary" onClick={s.play}>
           <svg viewBox="0 0 12 12" className="size-3" fill="currentColor" aria-hidden>
             <path d="M3 1.5v9l7.5-4.5z" />
           </svg>
@@ -105,7 +104,7 @@ export function StepList({ steps, s }: { steps: ProcessStep[]; s: Stepper }) {
               className={`flex w-full gap-2.5 rounded-lg border px-2.5 py-1.5 text-left transition-colors ${active ? 'border-[var(--accent)] bg-accent-soft' : 'border-transparent hover:bg-surface-2'}`}
             >
               <span
-                className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${active ? 'bg-[var(--accent)] text-white' : done ? 'bg-surface-2 text-ink' : 'bg-surface-2 text-muted'}`}
+                className={`mt-0.5 grid size-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${active ? 'bg-[var(--accent)] text-on-accent' : done ? 'bg-surface-2 text-ink' : 'bg-surface-2 text-muted'}`}
               >
                 {n}
               </span>
@@ -168,14 +167,18 @@ export function ModeToggle<T extends string>({
   label: string
 }) {
   return (
-    <div className="inline-flex flex-wrap rounded-lg border border-line bg-surface-2 p-0.5 text-xs" role="radiogroup" aria-label={label}>
+    <div
+      className="grid w-full auto-cols-fr grid-flow-col rounded-lg border border-line bg-surface-2 p-0.5 text-xs sm:inline-grid sm:w-auto sm:auto-cols-auto"
+      role="radiogroup"
+      aria-label={label}
+    >
       {options.map((o) => (
         <button
           key={o.value}
           role="radio"
           aria-checked={value === o.value}
           onClick={() => onChange(o.value)}
-          className={`rounded-md px-2.5 py-1 font-medium ${value === o.value ? 'bg-surface text-ink shadow-sm' : 'text-muted hover:text-ink'}`}
+          className={`min-h-7 rounded-md px-2.5 py-1 text-center leading-tight font-medium ${value === o.value ? 'bg-surface text-ink shadow-sm' : 'text-muted hover:text-ink'}`}
         >
           {o.label}
         </button>

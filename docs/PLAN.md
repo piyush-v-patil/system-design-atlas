@@ -968,3 +968,19 @@ The layout was chosen from mockups on the design canvas.
   - These steps were verified in a fresh clone.
   - **One-time setup:** Settings → Pages → Source: GitHub Actions.
 - Progress tracking and the learning path were already in place.
+
+### Formatting pass
+
+- **One button system** (`.btn` plus `-primary` / `-secondary` / `-ghost`, and `-sm` / `-lg` sizes, in `index.css`),
+  used by the animation controls, simulators, map cards, the path page and the solution builder. Disabled buttons
+  are dimmed and show a not-allowed cursor; every button has a focus ring.
+- **Readable text on indigo.** A new `--on-accent` token puts white on the deep light-mode indigo and near-black on
+  the pale dark-mode one; the old white-on-pale-indigo failed contrast.
+- **Phones:**
+  - the header reads "Map · Path · Problems" on one line;
+  - mode toggles keep one even row;
+  - the map's welcome card is a compact bar along the bottom, and the zoom buttons are hidden (pinch and drag
+    work);
+  - the footer is a one-line credit that still notes the changes.
+- **Small fixes:** the CAP visual's outcome panel prompts "Press Play…" instead of sitting empty, and the learning
+  path card's quote no longer starts with a stray "A:".

@@ -34,7 +34,7 @@ export function PracticeLinks({ node }: { node: TopicNode }) {
   const sol = solutionRefByReadmeTopic.get(node.id)
   if (sol)
     return (
-      <Link to={`/solutions/${sol.id}`} className="inline-flex items-center gap-2 rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:opacity-90">
+      <Link to={`/solutions/${sol.id}`} className="btn btn-primary self-start">
         Open the solution walkthrough →
       </Link>
     )

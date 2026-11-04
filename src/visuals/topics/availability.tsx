@@ -157,11 +157,11 @@ function GroupEditor({ g, depth, onChange, root }: { g: AvGroup; depth: number; 
             { value: 'parallel', label: 'In parallel' },
           ]}
         />
-        <button className="rounded-md border border-line px-2 py-1 text-xs hover:bg-surface-2" onClick={() => set(g.id, (it) => ({ ...(it as AvGroup), children: [...(it as AvGroup).children, comp(`Component ${(it as AvGroup).children.length + 1}`, 99.9)] }))}>
+        <button className="btn btn-sm btn-secondary" onClick={() => set(g.id, (it) => ({ ...(it as AvGroup), children: [...(it as AvGroup).children, comp(`Component ${(it as AvGroup).children.length + 1}`, 99.9)] }))}>
           + component
         </button>
         {depth < 2 && (
-          <button className="rounded-md border border-line px-2 py-1 text-xs hover:bg-surface-2" onClick={() => set(g.id, (it) => ({ ...(it as AvGroup), children: [...(it as AvGroup).children, group('parallel', [comp('A', 99.9), comp('B', 99.9)])] }))}>
+          <button className="btn btn-sm btn-secondary" onClick={() => set(g.id, (it) => ({ ...(it as AvGroup), children: [...(it as AvGroup).children, group('parallel', [comp('A', 99.9), comp('B', 99.9)])] }))}>
             + group
           </button>
         )}

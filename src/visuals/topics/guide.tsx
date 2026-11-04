@@ -29,7 +29,7 @@ export function InterviewSteps({ visual }: VisualProps) {
               aria-pressed={active === i + 1}
               className={`flex h-full w-full items-start gap-2 rounded-lg border px-2.5 py-2 text-left text-xs transition-colors ${active === i + 1 ? 'border-[var(--accent)] bg-accent-soft' : 'border-line hover:bg-surface-2'}`}
             >
-              <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${active === i + 1 ? 'bg-[var(--accent)] text-white' : 'bg-surface-2'}`}>{i + 1}</span>
+              <span className={`grid size-6 shrink-0 place-items-center rounded-full text-[11px] font-bold ${active === i + 1 ? 'bg-[var(--accent)] text-on-accent' : 'bg-surface-2'}`}>{i + 1}</span>
               <span className="font-medium leading-snug">{topics.nodes[id].title.replace(/^Step \d: /, '')}</span>
             </button>
           </li>

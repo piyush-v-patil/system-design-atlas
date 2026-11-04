@@ -57,7 +57,7 @@ export function ProblemCard({ node }: VisualProps) {
           </ul>
         </div>
       </div>
-      <Link to={`/solutions/${sol.id}`} className="self-start rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:opacity-90">
+      <Link to={`/solutions/${sol.id}`} className="btn btn-primary self-start">
         Open the 4-step walkthrough →
       </Link>
     </div>

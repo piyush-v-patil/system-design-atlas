@@ -36,12 +36,13 @@ function Header({ onSearch }: { onSearch: () => void }) {
         </svg>
         <span className="hidden sm:inline">System Design Atlas</span>
       </NavLink>
-      <nav aria-label="Main" className="flex items-center gap-1 text-sm">
+      <nav aria-label="Main" className="flex items-center gap-0.5 text-sm whitespace-nowrap sm:gap-1">
         <NavLink to="/" end className={({ isActive }) => nav({ isActive: isActive || pathname.startsWith('/map/') })}>
           Map
         </NavLink>
         <NavLink to="/path" className={nav}>
-          Learning path
+          <span className="sm:hidden">Path</span>
+          <span className="hidden sm:inline">Learning path</span>
         </NavLink>
         <NavLink to="/problems" className={nav}>
           Problems

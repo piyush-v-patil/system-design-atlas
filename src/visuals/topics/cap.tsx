@@ -50,6 +50,13 @@ function CapDiagram({ mode, step }: { mode: Mode; step: number }) {
         <text x={12} y={22} fontSize={11} fontWeight={700}>
           {mode === 'CP' ? 'CP: consistency first' : 'AP: availability first'}
         </text>
+        {step < 3 && (
+          <text x={12} y={48} fontSize={10.5} className="muted">
+            <tspan x={12}>Press Play to see what</tspan>
+            <tspan x={12} dy={15}>a read from N2 returns</tspan>
+            <tspan x={12} dy={15}>during a partition.</tspan>
+          </text>
+        )}
         {step >= 3 && (
           <>
             <text x={12} y={48} fontSize={10.5} className="muted">Read from N2 returns:</text>

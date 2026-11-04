@@ -200,11 +200,11 @@ export function FocusMap({ selectedId, onSelect, markId }: { selectedId?: string
       </svg>
 
       {!layout.showGrandchildren && layout.nodes.some((n) => n.hidden > 0) && (
-        <p className="pointer-events-none absolute bottom-3 left-3 rounded-md bg-surface/90 px-2 py-1 text-[11px] text-muted">
+        <p className="pointer-events-none absolute bottom-3 left-3 hidden rounded-md bg-surface/90 px-2 py-1 text-[11px] text-muted sm:block">
           +N = subtopics. Click a topic to open it.
         </p>
       )}
-      <div className="absolute right-3 bottom-3 flex flex-col overflow-hidden rounded-lg border border-line bg-surface/90 text-sm backdrop-blur">
+      <div className="absolute right-3 bottom-3 hidden flex-col overflow-hidden rounded-lg border border-line bg-surface/90 text-sm backdrop-blur sm:flex">
         <button className="px-2.5 py-1.5 hover:bg-surface-2" onClick={() => zoomBy(1.3)} aria-label="Zoom in">
           +
         </button>

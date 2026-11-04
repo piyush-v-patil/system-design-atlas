@@ -66,11 +66,11 @@ export function PathPage() {
           <div className="h-2 w-48 rounded-full bg-surface-2">
             <div className="h-2 rounded-full bg-[var(--ok)] transition-all" style={{ width: `${(100 * breadthRead) / breadthAll.length}%` }} />
           </div>
-          <Link to={`/topic/${next}`} state={VIA_PATH} className="rounded-lg bg-[var(--accent)] px-3 py-2 text-sm font-medium text-white hover:opacity-90">
+          <Link to={`/topic/${next}`} state={VIA_PATH} className="btn btn-primary">
             {cursor ? 'Back to your place' : 'Start'}: {topics.nodes[next].title} →
           </Link>
           {read.size > 0 && (
-            <button onClick={resetProgress} className="text-xs text-muted hover:text-bad">
+            <button onClick={resetProgress} className="btn btn-sm btn-ghost">
               Reset progress
             </button>
           )}

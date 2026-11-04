@@ -5,7 +5,19 @@ export function Footer({ compact = false }: { compact?: boolean }) {
   const a = 'text-link underline-offset-2 hover:underline'
   return (
     <footer className={`shrink-0 border-t border-line bg-surface text-muted ${compact ? 'px-3 py-1.5 text-[11px] leading-snug md:px-4' : 'mt-auto px-4 py-5 text-xs md:px-8'}`}>
-      <p>
+      {compact && (
+        <p className="sm:hidden">
+          Adapted, with changes, from{' '}
+          <a className={a} href={meta.repo} target="_blank" rel="noopener noreferrer">
+            The System Design Primer
+          </a>{' '}
+          by Donne Martin and contributors ·{' '}
+          <a className={a} href={meta.license.url} target="_blank" rel="noopener noreferrer">
+            {meta.license.name}
+          </a>
+        </p>
+      )}
+      <p className={compact ? 'hidden sm:block' : undefined}>
         An adapted visual edition of{' '}
         <a className={a} href={meta.repo} target="_blank" rel="noopener noreferrer">
           The System Design Primer

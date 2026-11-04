@@ -111,7 +111,7 @@ export function NextCard({ node }: { node: TopicNode }) {
   const t = step.target!
   const label = step.kind === 'back' ? 'Back to your path ↩' : step.kind === 'start' ? 'Follow the learning path →' : 'Next on your path →'
   return (
-    <Link to={`/topic/${t.id}`} state={step.kind === 'back' ? undefined : VIA_PATH} className={`${card} bg-[var(--accent)] text-[#0b1020] shadow-lg shadow-black/25 hover:opacity-95`}>
+    <Link to={`/topic/${t.id}`} state={step.kind === 'back' ? undefined : VIA_PATH} className={`${card} bg-[var(--accent)] text-on-accent shadow-lg shadow-black/25 hover:opacity-95`}>
       <span className="text-xs font-semibold">{label}</span>
       <span className="line-clamp-2 text-[15px] leading-snug font-bold">{t.title}</span>
     </Link>
